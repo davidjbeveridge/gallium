@@ -33,7 +33,7 @@ const target = join(bin, 'web-operator');
 if (existsSync(target) && realpathSync(target) !== resolve(root, 'bin/web-operator.mjs')) throw new Error('Existing web-operator command belongs to another installation.');
 if (!existsSync(target)) symlinkSync(resolve(root, 'bin/web-operator.mjs'), target);
 chmodSync(resolve(root, 'bin/web-operator.mjs'), 0o755);
-execFileSync('codex', ['mcp', 'add', 'web-operator', '--', process.execPath, resolve(root, 'bin/mcp.mjs')], { stdio: 'inherit' });
+execFileSync('codex', ['mcp', 'add', 'web-operator', '--', 'node', resolve(root, 'bin/mcp.mjs')], { stdio: 'inherit' });
 const skills = join(home, '.agents/skills'); mkdirSync(skills, { recursive: true });
 const skill = join(skills, 'web-operator');
 if (existsSync(skill) && realpathSync(skill) !== resolve(root, 'skills/web-operator')) throw new Error('Existing web-operator skill belongs to another installation.');

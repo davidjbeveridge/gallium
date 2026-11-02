@@ -7,7 +7,8 @@
 - TypeScript checks (`npm run typecheck`).
 - Full Node suite (`npm test`): 80 passing tests, including real stdio MCP child processes, real loopback HTTP, durable ownership/leases, uncertain effects, input cancellation, provider validation, and control-panel origin/host protection.
 - Real SDK + patched extension + Chrome gate (`npm run test:browser`).
-- Installed CLI launcher and doctor, private configuration, Codex MCP registration, routing-skill discovery, and a complete local panel operation.
+- Installed CLI launcher and doctor, private configuration, Codex MCP registration, installed stdio MCP operation, routing-skill discovery, and a complete local panel operation.
+- GitHub Actions clean Linux checkout/install/audit/check/build/browser gate passed: run 41531437604.
 - `npm audit`: zero reported vulnerabilities after pinned transitive dependency overrides; the Chrome gate was rerun against that dependency graph.
 
 ## Browser gate assertions

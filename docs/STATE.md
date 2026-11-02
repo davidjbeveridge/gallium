@@ -9,7 +9,7 @@ Continue Web Operator from the 0.1 prototype into an installed local CLI/MCP plu
 1. Import and reproduce 0.1. Complete: original 75 tests passed.
 2. Implement and qualify the Chrome/control/request vertical slice. Complete in a disposable Chrome profile: real SDK UI save, independent result verification, duplicate prevention, trusted input/user activation, actual debugger detach, restart while paused, explicit handback with zero actions, preserved cross-extension iframe, cookie/CSRF browser request.
 3. Install CLI, MCP, routing skill and local panel. Complete. Private config preserves user changes and starts with live-browser compatibility disabled.
-4. Publish source and run CI. In progress.
+4. Publish source and run CI. Complete: clean GitHub checkout, npm ci, audit, TypeScript/unit checks, extension build and real Chrome gate passed.
 5. Install/qualify the bridge in the personal Chrome profile and test the actual password manager. Pending action-time approval for debugger/site access. Do not claim this is complete.
 
 ## Decisions
@@ -31,7 +31,8 @@ Continue Web Operator from the 0.1 prototype into an installed local CLI/MCP plu
 - `npm audit`: zero vulnerabilities. Dependency overrides were followed by full local and Chrome checks.
 - Installed CLI/API operation verified; repeat returned ALREADY_VERIFIED.
 - Control panel completed an operation in the actual Chrome profile (fixture route, not bridge).
-- Codex MCP registered. New chats load it. Routing skill installed and skillq synchronized.
+- Codex MCP registered and installed stdio smoke test verified an operation through all four advertised tools. New chats load it. Routing skill installed and skillq synchronized.
+- GitHub Actions run 41531437604 passed clean install, audit, unit/type checks, extension build and browser gate on Linux.
 
 ## Running services
 
@@ -39,7 +40,7 @@ Local panel on 127.0.0.1:8788; harmless fixture on 127.0.0.1:8787. Start with `w
 
 ## Exact next action
 
-Publish the current source, observe CI, then request the required personal-profile extension access approval. Built bridge is `dist/extension`; private `preserveExtensionsVerified` remains false.
+Request the required personal-profile extension access approval, then install the built bridge and qualify the actual profile/password-manager path. Built bridge is `dist/extension`; private `preserveExtensionsVerified` remains false.
 
 ## Remaining limits
 
