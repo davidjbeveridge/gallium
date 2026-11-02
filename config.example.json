@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "stateDir": "./.state",
+  "scopes": [
+    { "id": "demo", "origin": "https://fixture.invalid", "account": "demo-user" }
+  ],
+  "recipes": [
+    {
+      "id": "set-name",
+      "scopeId": "demo",
+      "description": "Save the supplied name in the local fixture profile.",
+      "adapter": "fixture",
+      "inputs": { "name": "string" },
+      "maxActions": 6
+    }
+  ],
+  "navigators": {
+    "deterministic": { "provider": "deterministic" }
+  }
+}

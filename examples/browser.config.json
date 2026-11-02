@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "stateDir": "../.state-browser",
+  "scopes": [{ "id": "local-profile", "origin": "http://127.0.0.1:8787", "account": "demo-user" }],
+  "recipes": [{
+    "id": "save-profile",
+    "scopeId": "local-profile",
+    "description": "Save the supplied profile name after the form is ready.",
+    "adapter": "playwriter",
+    "inputs": { "name": "string" },
+    "navigator": "deterministic",
+    "browser": {
+      "urlPrefix": "http://127.0.0.1:8787/profile",
+      "account": { "selector": "[data-account]", "text": "demo-user" },
+      "goal": { "selector": "[data-saved-name]", "inputKey": "name" },
+      "candidates": [
+        { "id": "enter-name", "kind": "type", "label": "Enter the supplied profile name", "effect": "ui", "selector": "#name", "inputKey": "name", "when": { "selector": "[data-stage='empty']" } },
+        { "id": "save-name", "kind": "click", "label": "Save profile", "effect": "write", "selector": "#save", "when": { "selector": "[data-stage='ready']" } }
+      ]
+    }
+  }],
+  "navigators": { "deterministic": { "provider": "deterministic" } },
+  "playwriter": { "preserveExtensionsVerified": false, "timeoutMs": 5000, "tabGroup": "operator" }
+}

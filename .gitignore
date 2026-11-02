@@ -1,0 +1,15 @@
+.state/
+node_modules/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+.env
+coverage/
+work/
+.state-*/
+dist/
+config.local.json
+*.tsbuildinfo
+.agents/skills/
+!bin/
+!bin/*.mjs

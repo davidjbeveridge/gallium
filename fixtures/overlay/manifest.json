@@ -1,0 +1,6 @@
+{
+  "manifest_version": 3,
+  "name": "Web Operator overlay test fixture",
+  "version": "1.0.0",
+  "web_accessible_resources": [{ "resources": ["overlay.html"], "matches": ["http://127.0.0.1/*"] }]
+}

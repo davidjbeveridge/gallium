@@ -1,0 +1,15 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "web-operator",
+  "version": "0.2.0",
+  "description": "Local web operations with durable verification, browser-session requests, and explicit human handoff.",
+  "extensions": {
+    "com.openai": {
+      "requires_local_executor": true,
+      "interface": {
+        "displayName": "Web Operator",
+        "shortDescription": "Verified web operations with human takeover"
+      }
+    }
+  }
+}

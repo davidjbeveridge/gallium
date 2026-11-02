@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "stateDir": "../.state-http",
+  "scopes": [{ "id": "local-api", "origin": "http://127.0.0.1:8787", "account": "demo-user" }],
+  "recipes": [{
+    "id": "save-profile-api",
+    "scopeId": "local-api",
+    "description": "Save the supplied profile name through an explicitly configured portable API.",
+    "adapter": "http",
+    "inputs": { "name": "string" },
+    "http": {
+      "url": "http://127.0.0.1:8787/api/profile",
+      "method": "POST",
+      "effect": "write",
+      "inputKeys": ["name"],
+      "verifyUrl": "http://127.0.0.1:8787/api/profile",
+      "accountPath": "account",
+      "goalPath": "name",
+      "expectedInputKey": "name",
+      "idempotencyHeader": "Idempotency-Key"
+    }
+  }],
+  "navigators": { "deterministic": { "provider": "deterministic" } }
+}

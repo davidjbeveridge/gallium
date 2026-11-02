@@ -1,0 +1,45 @@
+{
+  "name": "web-operator",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Small local web operator with durable control, verification, and configurable navigators",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.ts",
+    "demo": "node src/cli.ts demo",
+    "start": "node src/mcp.ts",
+    "cli": "node src/cli.ts",
+    "typecheck": "tsc",
+    "build:extension": "node scripts/build-extension.ts",
+    "test:browser": "node test/browser-e2e.ts",
+    "check": "npm run typecheck && npm test",
+    "install:local": "node scripts/install.ts",
+    "ui": "node src/cli.ts ui",
+    "fixture": "node fixtures/server.ts"
+  },
+  "optionalDependencies": {
+    "playwriter": "0.9.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.0.315",
+    "@types/node": "24.19.2",
+    "typescript": "5.9.3",
+    "vite": "7.3.7",
+    "vite-plugin-static-copy": "3.4.0"
+  },
+  "bin": {
+    "web-operator": "bin/web-operator.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/davidjbeveridge/web-operator.git"
+  },
+  "overrides": {
+    "@hono/node-server": "2.1.3",
+    "minimatch": "11.0.1",
+    "glob": "14.0.2"
+  }
+}
