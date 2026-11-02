@@ -1,0 +1,72 @@
+diff --git a/extension/src/background.ts b/extension/src/background.ts
+--- a/extension/src/background.ts
++++ b/extension/src/background.ts
+@@ -1796,61 +1796,13 @@
+   sessionId: string
+ }
+ 
+-// Remove chrome-extension:// iframes from the page DOM before attaching the debugger.
+-// Chrome's chrome.debugger.attach API refuses to attach to tabs that contain frames from
+-// other extensions ("Cannot access a chrome-extension:// URL of different extension").
+-// Extensions like LastPass, SurfingKeys, etc. inject chrome-extension:// iframes into every
+-// page, breaking debugger attachment. This function temporarily removes them so the debugger
+-// can attach. The iframes stay removed while the debugger is active — they're typically
+-// re-injected by the owning extension on next page load. Iframes injected after attach make
+-// Chrome detach the debugger instead, see reattachTab.
+-// Chromium marked this Won't Fix (Intended Behavior): https://issues.chromium.org/issues/498987209
+-// See: https://github.com/remorses/playwriter/issues/18
+-async function removeRestrictedIframes(tabId: number): Promise<number> {
+-  try {
+-    const results = await chrome.scripting.executeScript({
+-      // allFrames: true ensures we also scan same-origin subframes, not just the top document.
+-      target: { tabId, allFrames: true },
+-      func: (ownExtIds: string[]) => {
+-        // Returns the extension ids of removed iframes. Extensions like 1Password put their
+-        // iframes in closed shadow roots, only reachable via chrome.dom from an isolated world.
+-        const removeFrom = (root: Document | ShadowRoot): string[] => {
+-          const removed = Array.from(root.querySelectorAll('iframe')).flatMap((iframe) => {
+-            const src = iframe.src || iframe.getAttribute('src') || ''
+-            if (!src.startsWith('chrome-extension://')) {
+-              return []
+-            }
+-            const extId = src.replace('chrome-extension://', '').split('/')[0]
+-            if (ownExtIds.includes(extId)) {
+-              return []
+-            }
+-            iframe.remove()
+-            return [extId]
+-          })
+-          const nested = Array.from(root.querySelectorAll('*')).flatMap((el) => {
+-            const shadow = el instanceof HTMLElement ? chrome.dom.openOrClosedShadowRoot(el) : null
+-            return shadow ? removeFrom(shadow) : []
+-          })
+-          return [...removed, ...nested]
+-        }
+-        return removeFrom(document)
+-      },
+-      args: [OUR_EXTENSION_IDS],
+-    })
+-    const removedExtIds = results.flatMap((r) => r.result ?? [])
+-    if (removedExtIds.length > 0) {
+-      logger.warn(
+-        `Removed ${removedExtIds.length} chrome-extension:// iframe(s) from tab ${tabId}, injected by:`,
+-        [...new Set(removedExtIds)].join(', '),
+-      )
+-    }
+-    return removedExtIds.length
+-  } catch (e) {
+-    // Scripting may fail on restricted pages (chrome://, about:, etc.) — that's fine,
+-    // those pages won't have extension iframes anyway.
+-    logger.debug('Could not remove restricted iframes (expected on some pages):', (e as Error).message)
+-    return 0
+-  }
++// Preserve other extensions' overlays. A debugger conflict requires human handoff.
++// This intentionally disables iframe-removal recovery in both attach and reattach paths.
++async function removeRestrictedIframes(_tabId: number): Promise<number> {
++  throw new Error(
++    'WEB_OPERATOR_EXTENSION_CONFLICT: debugger attachment conflicts with another extension. ' +
++      'Its overlays have been preserved. Detach Playwriter and complete authentication manually.',
++  )
+ }
+ 
+ // Concurrent attaches of one tab share one promise. The relay handshake

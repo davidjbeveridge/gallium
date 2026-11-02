@@ -13,3 +13,4 @@ config.local.json
 .agents/skills/
 !bin/
 !bin/*.mjs
+!docs/patches/*.patch
