@@ -16,7 +16,6 @@ npm run demo
 npm run build:extension
 npm run test:browser               # installed Chrome; disposable test profile
 npm run install:local
-web-operator ui                   # http://127.0.0.1:8788
 ```
 
 The installer preserves an existing `~/.config/web-operator/config.json`, creates a private durable state directory under `~/Library/Application Support/WebOperator`, installs the `web-operator` command and routing skill, and registers the stdio MCP server with Codex. New chats load the server. The launcher can find a newer installed Node when the shell default is older.
@@ -43,7 +42,7 @@ Repeat the same operation ID and inputs after interruption. A changed task needs
 
 The local compatibility extension is built into `dist/extension`. Installing it into a personal Chrome profile is a separate, explicit permission step because it grants debugger and website access. It is not installed by the CLI installer.
 
-After approving installation, load that folder through Chrome's **Load unpacked** control. Open `http://127.0.0.1:8787/profile`, then click the bridge extension to enable that tab. Only enable `playwriter.preserveExtensionsVerified` in the private configuration after checking the installed build. Use the local panel's Take over and Resume controls to qualify the actual profile. [Compatibility details](docs/playwriter-compatibility.md).
+After approving installation, load that folder through Chrome's **Load unpacked** control. Open `http://127.0.0.1:8787/profile`, then click the bridge extension to enable that tab. Only enable `playwriter.preserveExtensionsVerified` in the private configuration after checking the installed build. Use MCP web_control pause and resume to qualify the actual profile. [Compatibility details](docs/playwriter-compatibility.md).
 
 The extension is pinned to Playwriter `bf2b96717e2b36ee9781d260d4ed8a7228f47c48`, with a SHA-256 checked source archive. It preserves other extensions' iframes, disables automatic reattachment after unexpected detach, and exposes a local detach/resume protocol. The test checks detachment by verifying that this extension can no longer send a debugger command; another independent debugger may still exist.
 
@@ -56,9 +55,9 @@ The extension is pinned to Playwriter `bf2b96717e2b36ee9781d260d4ed8a7228f47c48`
 | `web_act` | Bounded observe/choose/execute/verify run |
 | `web_control` | Pause, explicitly resume, or cancel a scope |
 
-The panel works independently of the navigator. Human ownership survives restart. Browser scopes report `detach_required` until detachment is verified; `handed_off` means work has quiesced and the bridge released its debugger. Resume keeps human ownership until reattachment succeeds, then a reissued operation verifies account and goal before acting.
+MCP control works independently of the navigator. Human ownership survives restart. Browser scopes report `detach_required` until detachment is verified; `handed_off` means work has quiesced and the bridge released its debugger. Resume keeps human ownership until reattachment succeeds, then a reissued operation verifies account and goal before acting.
 
-The extension's Command-Shift-Y shortcut detaches the current origin's enabled tabs. Use the panel's **Take over** for the complete durable runtime ownership transition. Dictation/Fn/Globe shortcuts are never used.
+The extension's Command-Shift-Y shortcut detaches the current origin's enabled tabs. Use MCP web_control for the complete durable runtime ownership transition. Dictation/Fn/Globe shortcuts are never used.
 
 A possibly completed write remains unresolved until verified. It cannot be repeated by switching to another route or changing operation IDs. Local journaling does not guarantee exactly-once effects at arbitrary services. Provider idempotency and conditional writes should be used where supported.
 

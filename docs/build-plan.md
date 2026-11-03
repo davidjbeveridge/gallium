@@ -12,7 +12,7 @@ Acceptance: existing tabs stay open; no other extension iframe is removed; accou
 
 ## 2. Complete authentication handoff
 
-Add a local controller/shortcut independent of the model, a small existing-browser control panel, verified per-tab debugger detach plus reattach suppression, and a foreground native adapter where needed. Generalize scope locking to an explicit shared authentication-context ID for sites that span origins. Keep operation effect state separate from control ownership.
+Add a local controller/shortcut independent of the model, verified per-tab debugger detach plus reattach suppression, and a foreground native adapter where needed. Generalize scope locking to an explicit shared authentication-context ID for sites that span origins. Keep operation effect state separate from control ownership.
 
 Start with existing sessions, then Bitwarden overlay/autofill, then normal user completion of MFA and passkeys. Add scoped email/OTP or credential-provider integrations only when the user has authorized that provider and account. Use credential exclusion windows with no DOM values, screenshots, response bodies, or model traces while credentials are visible.
 

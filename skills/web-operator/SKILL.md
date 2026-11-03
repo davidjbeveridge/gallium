@@ -15,7 +15,7 @@ For unfamiliar sites, inspect the actual supported interface before authoring a 
 
 For authentication, pause with `web_control` and wait for `handed_off` **and no `BROWSER_CONTROL_REQUIRED` error**. Verified debugger detachment is part of the transition. During human control, do not capture screenshots, inspect form values, or compete for focus. Use existing sessions first; password managers are optional. Request assistance for physical-device approvals and CAPTCHA. Never bypass a challenge.
 
-Resume requires explicit user handback. Resume then reissue the original operation: it verifies the account and checks whether the user already completed the goal before acting. Restart does not grant control. `web-operator ui` provides local Take over, Resume and Cancel controls independent of the navigator.
+Resume requires explicit user handback. Resume then reissue the original operation: it verifies the account and checks whether the user already completed the goal before acting. Restart does not grant control.
 
 The bundled bridge preserves extension overlays. The normal Playwriter extension is not a substitute for the patched compatibility build. Never set `preserveExtensionsVerified` from unit tests or assumptions about a different build. See `docs/playwriter-compatibility.md` in the source checkout.
 

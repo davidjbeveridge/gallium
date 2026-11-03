@@ -5,9 +5,9 @@
 ## Executed
 
 - TypeScript checks (`npm run typecheck`).
-- Full Node suite (`npm test`): 80 passing tests, including real stdio MCP child processes, real loopback HTTP, durable ownership/leases, uncertain effects, input cancellation, provider validation, and control-panel origin/host protection.
+- Full Node suite (`npm test`): 79 passing tests, including real stdio MCP child processes, real loopback HTTP, durable ownership/leases, uncertain effects, input cancellation, provider validation,.
 - Real SDK + patched extension + Chrome gate (`npm run test:browser`).
-- Installed CLI launcher and doctor, private configuration, Codex MCP registration, installed stdio MCP operation, routing-skill discovery, and a complete local panel operation.
+- Installed CLI launcher and doctor, private configuration, Codex MCP registration, installed stdio MCP operation, routing-skill discovery.
 - GitHub Actions clean Linux checkout/install/audit/check/build/browser gate passed: run 41531437604.
 - `npm audit`: zero reported vulnerabilities after pinned transitive dependency overrides; the Chrome gate was rerun against that dependency graph.
 
@@ -28,6 +28,6 @@ The latest executable evidence is generated as `work/browser-evidence.json`. The
 
 ## Remaining qualification
 
-Personal Chrome-profile installation and real password-manager interaction still require the user's action-time approval for the bridge's debugger/site access. No real vault, credential, paid model, physical-device approval, native dialog, generic website discovery, or production write was used. No existing integration has been disabled. A fixture pass cannot establish those capabilities.
+The approved bridge was installed in personal Chrome. The installed MCP verified a loopback fixture save with two actions, paused to human ownership with verified debugger detachment, and resumed to agent ownership. Real password-manager interaction remains unqualified. No real vault, credential, paid model, physical-device approval, native dialog, generic website discovery, or production write was used. No existing integration has been disabled. A fixture pass cannot establish those capabilities.
 
 The development dependency tree measured approximately 156 MiB; the built extension approximately 332 KiB. No clean-machine installed footprint or model cost has been claimed.

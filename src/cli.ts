@@ -6,7 +6,6 @@ import { createEngine } from './runtime.ts';
 import { FixtureAdapter } from './adapters/fixture.ts';
 import { OperatorError } from './contracts.ts';
 import type { Config, Inputs, Operation } from './contracts.ts';
-import { createControlServer } from './control-server.ts';
 
 const HELP = `Web Operator 0.2.0 — Node 24+, no install required for the core
 
@@ -16,7 +15,6 @@ const HELP = `Web Operator 0.2.0 — Node 24+, no install required for the core
   node src/cli.ts [--config FILE] act --recipe ID --operation ID --input '{"name":"Ada"}'
   node src/cli.ts [--config FILE] pause|resume|cancel --scope ID
   node src/cli.ts [--config FILE] doctor
-  node src/cli.ts [--config FILE] ui [--port 8788]
 
 Use --input - to read a JSON object from stdin. Inputs must be non-secret business fields.
 Reuse the same operation ID after interruption. A possibly completed write is reconciled, never blindly retried.
@@ -26,7 +24,7 @@ Cancel stops all unfinished operations in the scope. Resume returns control, but
 function parse(args: string[]): { command: string; flags: Record<string, string> } {
   let command = '';
   const flags: Record<string, string> = {};
-  const allowed = new Set(['config','operation','scope','recipe','input','max-actions','port']);
+  const allowed = new Set(['config','operation','scope','recipe','input','max-actions']);
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     if (arg === '--help' || arg === '-h') return { command: 'help', flags: {} };
@@ -112,16 +110,6 @@ async function main(): Promise<void> {
     return;
   }
   const engine = await createEngine(config);
-  if (command === 'ui') {
-    const port = Number(flags.port ?? 8788);
-    if (!Number.isInteger(port) || port < 0 || port > 65535) throw new OperatorError('CLI_ARGUMENT', 'Invalid control panel port.');
-    const server = await createControlServer(engine, port);
-    process.stdout.write('Web Operator control: ' + server.origin + '\n');
-    const stop = async () => { await engine.close(); await server.close(); };
-    process.once('SIGINT', () => { void stop(); });
-    process.once('SIGTERM', () => { void stop(); });
-    return;
-  }
   const controller = new AbortController();
   const interrupt = () => controller.abort(new OperatorError('INTERRUPTED', 'CLI operation interrupted.'));
   process.once('SIGINT', interrupt);
