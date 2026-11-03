@@ -47,3 +47,9 @@ TypeScript and 84 tests pass. Two unfamiliar public-document tasks went through 
 Executable scheduling tests confirm overlapping independent HTTP reads and serialized browser reads. Restart tests confirm human ownership survives. Public destination validation rejects loopback, private, reserved, credential-bearing, and non-HTTPS targets.
 
 Cumulative provider-reported usage is 30 Jev calls and $0.000927402. These are qualification results, not a general latency benchmark. Static-document evidence extraction is bounded and its semantic relevance remains model-assessed.
+
+## Recipe-free dynamic exploration
+
+`npm run check`: 92 tests and TypeScript passed. `npm run test:exploration` is an opt-in paid live MCP gate using the configured router and existing shared Chrome. It found Bob Marley’s quote on page 4 of Quotes to Scrape’s JavaScript edition, and clicked Start then waited for Hello World on The Internet dynamic-loading example. Both returned rechecked live-DOM evidence through the same service PID. No site recipes or extra browser profiles were created.
+
+The initial quotes trial exposed missing generic containers; the final implementation includes them. Dynamic auth and CAPTCHA workflows are not qualified by these public tests. Task-owned tabs close on completion or stop.

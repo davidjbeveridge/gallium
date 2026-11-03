@@ -4,7 +4,7 @@
 
 Web Operator accepts delegated tasks through MCP and a routing skill. One local service owns the shared Chrome connection. Jev supplies typed judgments through OpenRouter; code selects routes, coordinates execution, and verifies outcomes.
 
-This release covers unfamiliar public-document retrieval and configured authenticated workflows. It does not promise universal site automation.
+This release covers unfamiliar public-document retrieval, dynamic public-site exploration, and configured authenticated workflows. It does not promise universal site automation.
 
 ## Canonical plan and decisions
 
@@ -17,7 +17,7 @@ This release covers unfamiliar public-document retrieval and configured authenti
 | Controlled restart and upgrades | Finished | Source/config fingerprints detect mismatched clients. service-restart refuses active work and preserves durable ownership. |
 | Authentication handoff | Existing mechanism qualified | Verified debugger detach, persistent ownership, and explicit handback pass. Real Bitwarden login remains unqualified; SMTP2GO stays paused pending handback. |
 | Automatic mutation/API discovery | Shelved | Effect and retry semantics cannot be inferred reliably from a page alone. Use configured procedures for authenticated tasks and writes. |
-| Broad dynamic-site browser exploration | Shelved | The current compact recipe executor is qualified. General exploration needs separate task-success and account-binding evidence. |
+| Dynamic-site browser exploration | Implemented and live-qualified | Core controller fallback and direct UI route. Observed controls, internal Jev judgments, same-origin navigation, loading waits, live evidence verification, one shared Chrome queue. No site recipes. |
 | Alternate browsers and broad native automation | Shelved | No demonstrated benefit against the installed Chrome path. |
 | Learned route ranking | Shelved | Fixed route preference is understandable; collect representative performance evidence before learning a policy. |
 | Fake typing mistakes and incidental mouse jitter | Shelved | Additional latency and error surface without demonstrated task-success benefit. |
@@ -35,6 +35,19 @@ This release covers unfamiliar public-document retrieval and configured authenti
 
 ## Operational boundaries
 
-Public reads cover bounded excerpts of static HTTPS documents. Redirects, private destinations, unsupported formats, oversized responses, missing evidence, and dynamic-page requirements return explicit errors or capability codes. evidence_found establishes passage provenance; semantic relevance is a Jev judgment.
+Public reads cover bounded excerpts of static HTTPS documents and live dynamic pages. Dynamic exploration uses a task-owned tab, 12 observations and a 60-second deadline. It supports links, buttons judged read-only, disclosures, tabs, and GET search fields. Search currently submits the user goal as the query. Cross-origin navigation, iframe controls, infinite scrolling, and authenticated mutations are not generalized. Challenge/auth pages stop and close the task-owned tab; this is not a credential handoff flow. Redirects, private destinations, unsupported formats, oversized responses, missing evidence, and exhausted exploration return explicit errors or capability codes. evidence_found establishes passage provenance; semantic relevance is a Jev judgment.
 
 Existing configured procedures retain account checks, independent result verification, uncertain-write reconciliation, and persistent human control. No standalone UI is part of the product.
+
+## Dynamic exploration correction
+
+Shelving unfamiliar-site exploration contradicted the core use case. It is now an internal route, with no host-selected tool or site recipe. The static HTTP fast path remains.
+
+- TypeScript and 92 tests pass, including unknown effects, invented targets, changing evidence, loading, challenge stop, and loop termination.
+- Real CLI and MCP tasks found Bob Marley’s quote after three next-page interactions on the JavaScript Quotes to Scrape site, and clicked Start then waited for Hello World on The Internet dynamic-loading example. MCP checks confirmed one shared service PID throughout.
+- Initial live trial exposed missing generic text containers; extraction was corrected and the task passed. An explicit UI request initially failed the informational-intent test; the intent now distinguishes display interaction from consequential effects.
+- SMTP2GO remains untouched and paused. No password-manager qualification is claimed.
+
+Opt-in reproducible live MCP gate: `npm run test:exploration` (uses the configured paid router and existing Chrome). Both tasks passed with one service PID. Production dependency audit reports zero vulnerabilities.
+
+Cumulative reported Jev spend after this qualification: 79 calls, $0.003675168 of the authorized $2, including failed trials.

@@ -1,3 +1,5 @@
+import { explorePage, type Ask } from './exploration.ts';
+import type { PlaywriterAdapter } from './adapters/playwriter.ts';
 import { runTask, type TaskRequest } from './task-controller.ts';
 import { randomUUID } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -24,6 +26,7 @@ export class Engine {
   private navigators: Record<string, Navigator>;
   private active = new Map<string, AbortController>();
   private shuttingDown = false;
+  private explorationActive = new Map<string, AbortController>();
   private queues = new Map<string, Promise<void>>();
 
   private schedule<T>(recipe: Recipe, execute: () => Promise<T>, signal?: AbortSignal): Promise<T> {
@@ -56,6 +59,28 @@ export class Engine {
 
   async task(request: TaskRequest, signal?: AbortSignal): Promise<Record<string, unknown>> {
     return runTask(this, request, signal);
+  }
+
+  async explore(target: string, goal: string, ask: Ask, signal: AbortSignal) {
+    const adapter = this.adapters.playwriter as PlaywriterAdapter | undefined;
+    if (!adapter?.explore) return { code: 'BROWSER_REQUIRED' };
+    const pending = (this.queues.get('browser') ?? Promise.resolve()).then(async () => {
+      signal.throwIfAborted();
+      if (this.shuttingDown) throw new OperatorError('SHUTDOWN', 'Operator shutting down.');
+      // Never open another tab on an origin whose configured session is human-owned.
+      if (this.config.scopes.some(scope => scope.origin === new URL(target).origin && this.journal.control(scope.id).owner === 'human'))
+        return { code: 'PAUSED' };
+      const origin = new URL(target).origin;
+      const controller = new AbortController();
+      this.explorationActive.set(origin, controller);
+      const deadline = AbortSignal.any([signal, controller.signal, AbortSignal.timeout(60000)]);
+      try { return await explorePage(await adapter.explore(target, deadline), goal, ask, deadline); }
+      finally { this.explorationActive.delete(origin); }
+    });
+    const tail = pending.then(() => {}, () => {});
+    this.queues.set('browser', tail);
+    void tail.then(() => { if (this.queues.get('browser') === tail) this.queues.delete('browser'); });
+    return pending;
   }
 
   private recipe(id: string): Recipe {
@@ -135,6 +160,8 @@ export class Engine {
       this.journal.changeControl(scopeId, action);
       this.journal.setBrowserControl(scopeId, 'unknown');
     }
+    const scopeOrigin = this.config.scopes.find(scope => scope.id === scopeId)?.origin;
+    if (action !== 'resume' && scopeOrigin) this.explorationActive.get(scopeOrigin)?.abort(new OperatorError('CONTROL_REVOKED', 'Control ownership changed.'));
     const controller = this.active.get(scopeId);
     if (controller) controller.abort(new OperatorError('CONTROL_REVOKED', 'Control ownership changed.'));
     if (action !== 'resume') {
@@ -343,10 +370,11 @@ export class Engine {
 
   async close(): Promise<void> {
     this.shuttingDown = true;
+    for (const controller of this.explorationActive.values()) controller.abort(new OperatorError('SHUTDOWN', 'Operator shutting down.'));
     for (const controller of this.active.values()) controller.abort(new OperatorError('SHUTDOWN', 'Operator shutting down.'));
     const until = Date.now() + 5000;
-    while (this.active.size && Date.now() < until) await delay(20);
-    if (this.active.size) return; // Leave durable leases/effect state for explicit recovery; do not close SQLite under live work.
+    while ((this.active.size || this.explorationActive.size) && Date.now() < until) await delay(20);
+    if (this.active.size || this.explorationActive.size) return; // Leave durable leases/effect state for explicit recovery; do not close SQLite under live work.
     for (const adapter of new Set(Object.values(this.adapters))) await adapter?.close?.();
     this.journal.close();
   }

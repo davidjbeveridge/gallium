@@ -40,3 +40,21 @@ test('independent HTTP reads overlap while browser reads share one queue', async
  await new Promise(resolve=>setTimeout(resolve,10));
  assert.equal(maximum,1);releases.shift()!();await two;
 });
+
+test('dynamic exploration shares the browser queue and respects human ownership',async t=>{
+ const dir=mkdtempSync(join(tmpdir(),'wo-explore-queue-'));
+ const config:Config={version:1,stateDir:dir,navigators:{},scopes:[{id:'public',origin:'https://example.org',account:'public'}],recipes:[]};
+ let opened=0,active=0,maximum=0;
+ const adapter={name:'playwriter',async explore(){opened++;active++;maximum=Math.max(maximum,active);return {
+  async observe(){await new Promise(r=>setTimeout(r,5));return {url:'https://example.org/',passages:['The museum opens at nine.'],controls:[]}},
+  async act(){throw Error('not expected')},async close(){active--}
+ }}};
+ const engine=new Engine(config,{playwriter:adapter as any},{});
+ t.after(async()=>{await engine.close();rmSync(dir,{recursive:true,force:true})});
+ const ask=async()=>({supported:{type:'noul',noul:1},passage:{type:'choice',choice:'p0'}});
+ const signal=new AbortController().signal;
+ await Promise.all([engine.explore('https://example.org/','hours',ask,signal),engine.explore('https://example.org/','hours',ask,signal)]);
+ assert.equal(opened,2);assert.equal(maximum,1);
+ engine.journal.changeControl('public','pause');
+ assert.equal((await engine.explore('https://example.org/','hours',ask,signal)).code,'PAUSED');assert.equal(opened,2);
+});

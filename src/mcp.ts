@@ -18,7 +18,7 @@ const inputs = { type: 'object', maxProperties: 64, additionalProperties: {
 } };
 const tools = [
   {
-    name: 'web_task', description: 'Delegate an authorized goal to the internal System One router. Supply target for a public information task without a recipe, or scopeId and input for a configured account task. The operator selects the route. Preserve operationId for retries. Supply non-secret inputs and the configured account scope.',
+    name: 'web_task', description: 'Delegate an authorized goal to the internal System One router. Supply target for a public information task; the controller fetches or explores the live shared Chrome page without a recipe, or scopeId and input for a configured account task. The operator selects the route. Preserve operationId for retries. Supply non-secret inputs and the configured account scope.',
     inputSchema: { type: 'object', properties: { operationId: identifier, scopeId: identifier, target: { type: 'string', maxLength: 2048 }, goal: { type: 'string', minLength: 1, maxLength: 4000 }, input: inputs }, required: ['operationId','goal'], additionalProperties: false },
     annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: true },
   },

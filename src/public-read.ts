@@ -20,8 +20,8 @@ export function publicTarget(value: string): URL {
   let url: URL;
   try { url = new URL(value); } catch { throw new OperatorError('INPUT','Provide a public HTTPS URL.'); }
   if (value.length > 2048 || url.protocol !== 'https:' || url.username || url.password ||
-    (url.port && url.port !== '443') || url.hash)
-    throw new OperatorError('PUBLIC_TARGET_REQUIRED','Public reads require HTTPS without credentials, fragments, or custom ports.');
+    (url.port && url.port !== '443'))
+    throw new OperatorError('PUBLIC_TARGET_REQUIRED','Public reads require HTTPS without credentials or custom ports.');
   for (const key of url.searchParams.keys()) {
     if (/token|key|auth|session|password|secret|signature/i.test(key))
       throw new OperatorError('PUBLIC_TARGET_REQUIRED','Credential-bearing URLs require a configured procedure.');
@@ -107,14 +107,32 @@ export async function readPublicTask(engine: Engine, task: { operationId: string
     return response.answers;
   };
   const intent = await ask({ goal: task.goal }, {
-    information: { type:'noul', instructions:'Does goal ask only to retrieve or check existing public information?',
-      criteria:{true:'The task reads, finds, or checks information.',false:'The task requires a change, submission, authentication, purchase, or other side effect.'} },
+    information: { type:'noul', instructions:'Is the requested outcome retrieving or checking public information, possibly through navigation, search, or display-only UI interaction?',
+      criteria:{true:'The task reads, finds, checks, or reveals information through read-only interaction.',false:'The task changes stored data or settings, authenticates, purchases, sends a message, or performs another consequential side effect.'} },
+    interactive: { type: 'noul', instructions: 'Does the user explicitly request interacting with the live interface, rather than merely obtaining a factual answer?', criteria: { true: 'The goal requests using, opening, clicking, searching, or revealing something in the interface.', false: 'A factual answer from document text suffices.' } },
   });
-  if (!validNoul(intent?.information)) throw new OperatorError('NAVIGATOR_RESPONSE_INVALID','Invalid intent judgment.');
+  if (!validNoul(intent?.information) || !validNoul(intent?.interactive)) throw new OperatorError('NAVIGATOR_RESPONSE_INVALID','Invalid intent judgment.');
   if (intent.information.noul < 0.7) return unavailable('CONFIGURED_PROCEDURE_REQUIRED');
-  const document = await fetchPublicText(url.href, signal);
+  const explore = async () => {
+    let result;
+    try { result = await engine.explore(url.href, task.goal, ask, signal); }
+    catch (error) {
+      unavailable(error instanceof OperatorError ? error.code : signal.aborted ? 'INTERRUPTED' : 'EXPLORATION_FAILED');
+      throw error;
+    }
+    engine.journal.db.prepare('UPDATE public_tasks SET state=?,evidence_hash=? WHERE id=?')
+      .run(('state' in result ? result.state : result.code.toLowerCase()) ?? 'unknown', 'evidenceHash' in result ? result.evidenceHash ?? null : null, task.operationId);
+    return { operationId: task.operationId, ...result };
+  };
+  if (intent.interactive.noul >= 0.7) return explore();
+  let document: string;
+  try { document = await fetchPublicText(url.href, signal); }
+  catch (error) {
+    if (error instanceof OperatorError && ['PUBLIC_HTTP_STATUS','PUBLIC_FETCH_FAILED'].includes(error.code)) return explore();
+    throw error;
+  }
   const blocks = evidenceBlocks(document);
-  if (!blocks.length) return unavailable('BROWSER_REQUIRED');
+  if (!blocks.length) return explore();
   const candidates = Object.fromEntries(blocks.map((text,index)=>['passage_'+index,text]));
   const answers = await ask({ goal:task.goal, source:url.href, passages:candidates }, {
     supported:{type:'noul',instructions:'Does at least one supplied passage directly provide the information requested by goal?',
@@ -122,7 +140,7 @@ export async function readPublicTask(engine: Engine, task: { operationId: string
     passage:{type:'choice',instructions:'Which supplied passage directly answers goal?',criteria:candidates},
   });
   if (!validNoul(answers?.supported)) throw new OperatorError('NAVIGATOR_RESPONSE_INVALID','Invalid evidence judgment.');
-  if (answers.supported.noul < 0.7) return unavailable('EVIDENCE_INSUFFICIENT');
+  if (answers.supported.noul < 0.7) return explore();
   const selected = answers?.passage?.choice;
   if (typeof selected !== 'string' || !Object.hasOwn(candidates,selected))
     throw new OperatorError('NAVIGATOR_RESPONSE_INVALID','Invalid evidence selection.');

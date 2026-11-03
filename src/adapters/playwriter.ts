@@ -1,3 +1,4 @@
+import { openExplorationPage } from './exploration-page.ts';
 import { randomUUID } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
 import { assertActive, OperatorError } from '../contracts.ts';
@@ -12,7 +13,7 @@ import type {
 type Handle = any;
 type Page = any;
 interface Connection {
-  browser: { contexts(): { pages(): Page[] }[] };
+  browser: { contexts(): { pages(): Page[]; newPage(): Promise<Page> }[] };
   extensionBrowser?: { id: string };
   sessionId?: string;
   close(): Promise<void>;
@@ -157,6 +158,11 @@ export class PlaywriterAdapter implements Adapter {
     this.scopePages.set(scope.id, matches[0]);
     await this.assertIdentity(matches[0], operation, guard);
     return matches[0];
+  }
+
+  async explore(target: string, signal: AbortSignal) {
+    const connection = await this.connection();
+    return openExplorationPage(connection.browser.contexts()[0], target, signal);
   }
 
   private async unique(page: Page, selector: string): Promise<Handle | undefined> {

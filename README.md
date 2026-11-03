@@ -4,7 +4,7 @@ Local CLI/MCP plugin for verified web operations, browser-session requests, and 
 
 Version 0.2 completes a real Chrome workflow: UI save → independent verification → duplicate prevention → debugger detach → human completion → runtime restart → explicit handback with zero additional actions. The same engine performs a cookie-authenticated, CSRF-protected request inside Chrome. A second extension's actual iframe is preserved when attachment conflicts.
 
-**This is a working recipe-based vertical slice. General website discovery, real password-manager qualification, native dialogs, and live navigator benchmarks remain open.** See [validation](VALIDATION.md) and [current state](docs/STATE.md).
+**Public information tasks explore unfamiliar dynamic sites without recipes. Authenticated writes use configured procedures; real password-manager qualification and native dialogs remain open.** See [validation](VALIDATION.md) and [current state](docs/STATE.md).
 
 ## Run
 
@@ -98,6 +98,6 @@ Call web_task with an operation ID, goal, and target, for example:
 {"operationId":"rfc418","goal":"What does HTTP status 418 mean in this document?","target":"https://www.rfc-editor.org/rfc/rfc2324.txt"}
 ```
 
-The controller checks that the goal is informational, fetches a bounded public HTTPS document without credentials, and asks Jev to select a relevant passage. Public DNS is pinned for the connection and private addresses are rejected. The response contains source, evidence, evidence hash, and evidence_found status. This establishes passage provenance; semantic relevance remains a model judgment. Extraction covers a bounded excerpt. Redirects, oversized documents, unsupported formats, dynamic pages, and absent evidence return explicit errors or capability codes.
+The controller checks that the goal is informational, fetches a bounded public HTTPS document without credentials, and asks Jev to select a relevant passage. Public DNS is pinned for the connection and private addresses are rejected. The response contains source, evidence, evidence hash, and evidence_found status. This establishes passage provenance; semantic relevance remains a model judgment. Extraction covers a bounded excerpt. When document text cannot answer the question, the controller explores the live site in a task-owned tab of the shared Chrome session. Explicit UI tasks go directly to Chrome. It discovers links, buttons, disclosures, tabs, and GET search fields, asks Jev which controls are useful and read-only, and rechecks literal evidence in the live DOM. It waits for explicit loading states and stops after 12 observations or 60 seconds. Existing tabs are preserved and task-owned tabs are closed. Navigation stays on the target origin; unknown effects, authentication, challenges, stale controls, and loops return explicit capability codes. Unsupported document formats and oversized HTTP responses retain their bounded errors.
 
-Public reads do not grant authority to mutate a site. Automatic discovery of write endpoints, broad browser exploration, alternate browser engines, and synthetic typing mistakes are shelved for this release.
+Public reads do not grant authority to mutate a site. Automatic discovery of write endpoints, alternate browser engines, and synthetic typing mistakes remain shelved. Browser exploration is part of the core controller, not a per-site recipe requirement. Exploration currently covers public informational workflows; authenticated mutations still require account binding and a verifier.
