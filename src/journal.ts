@@ -54,6 +54,7 @@ export class Journal {
     chmodSync(path, 0o600);
     this.db.exec(`PRAGMA busy_timeout=3000; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;
       CREATE TABLE IF NOT EXISTS model_usage(model TEXT NOT NULL, cost REAL, elapsed_ms INTEGER NOT NULL, created_at INTEGER NOT NULL);
+      CREATE TABLE IF NOT EXISTS public_tasks(id TEXT PRIMARY KEY, fingerprint TEXT NOT NULL, state TEXT NOT NULL, evidence_hash TEXT);
       CREATE TABLE IF NOT EXISTS task_routes (id TEXT PRIMARY KEY, fingerprint TEXT NOT NULL, recipe TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS operations (
         id TEXT PRIMARY KEY, scope_id TEXT NOT NULL, recipe TEXT NOT NULL, fingerprint TEXT NOT NULL,

@@ -38,3 +38,12 @@ The development dependency tree measured approximately 156 MiB; the built extens
 The task-controller release passes 81 local tests. The live MCP qualification used two clients and confirmed one shared service PID. Jev selected configured procedures for two public GitHub license checks and a public Chrome page check. Unsupported deletion intent was rejected. A fixture browser scope paused through one client and resumed through the other. The installed default MCP entry also verified a fixture write.
 
 Observed Jev provider usage, including failed trials, totaled 23 calls and $0.000422142. The evaluated model was typesafe/jev-1.14-20261014 through OpenRouter System One. These are qualification observations, not a general performance benchmark. Unfamiliar website exploration remains pending.
+
+
+## Bounded public tasks and scheduling release
+
+TypeScript and 84 tests pass. Two unfamiliar public-document tasks went through MCP without recipes: RFC 1149 carrier information and RFC 2324 status 418 semantics. Returned passages matched their source documents. A deletion request was rejected before fetching. The installed task entry also retrieved RFC 1149 delay/throughput evidence and preserved its receipt across service restart.
+
+Executable scheduling tests confirm overlapping independent HTTP reads and serialized browser reads. Restart tests confirm human ownership survives. Public destination validation rejects loopback, private, reserved, credential-bearing, and non-HTTPS targets.
+
+Cumulative provider-reported usage is 30 Jev calls and $0.000927402. These are qualification results, not a general latency benchmark. Static-document evidence extraction is bounded and its semantic relevance remains model-assessed.

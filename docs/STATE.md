@@ -1,60 +1,40 @@
 # Current state
 
-## Objective
+## Objective and release boundary
 
-Continue Web Operator from the 0.1 prototype into an installed local CLI/MCP plugin with a working browser workflow, durable takeover/handback, verified request reuse, and configurable navigation. Primary checkout under `~/src/web-operator`; public repository `davidjbeveridge/web-operator`.
+Web Operator accepts delegated tasks through MCP and a routing skill. One local service owns the shared Chrome connection. Jev supplies typed judgments through OpenRouter; code selects routes, coordinates execution, and verifies outcomes.
 
-## Canonical plan
+This release covers unfamiliar public-document retrieval and configured authenticated workflows. It does not promise universal site automation.
 
-1. Import and reproduce 0.1. Complete: original 75 tests passed.
-2. Implement and qualify the Chrome/control/request vertical slice. Complete in a disposable Chrome profile: real SDK UI save, independent result verification, duplicate prevention, trusted input/user activation, actual debugger detach, restart while paused, explicit handback with zero actions, preserved cross-extension iframe, cookie/CSRF browser request.
-3. Install CLI, MCP, routing skill. Complete. Private config preserves user changes and starts with live-browser compatibility disabled.
-4. Publish source and run CI. Complete: clean GitHub checkout, npm ci, audit, TypeScript/unit checks, extension build and real Chrome gate passed.
-5. Install/qualify the bridge in the personal Chrome profile and test the actual password manager. Approved bridge installed. Installed MCP saved the loopback fixture, detached for handoff, and resumed. Real password-manager interaction remains unqualified. SMTP2GO qualification started in a dedicated signed-out Chrome tab. The real bridge detached and a fresh MCP process confirmed durable human ownership and rejected a page read while paused. Awaiting user authentication and explicit handback.
+## Canonical plan and decisions
 
-## Decisions
-
-- Reuse installed Chrome and Node. No browser download, profile copy, Docker, or required model endpoint.
-- Deterministic recipes and configurable TypeSafe/OpenAI-compatible navigator providers share one engine.
-- Browser-session requests keep cookies and CSRF inside Chrome. Only configured scalar account/goal fields leave the page.
-- Human ownership survives restart. A failed detach is durably visible as `detach_required`; resume retains human ownership until reattachment succeeds.
-- Uncertain writes block repeat mutations across routes in the same scope.
-- MCP web_control is the full durable takeover path. The extension shortcut only detaches tabs; no unsupported global native keyboard hook is claimed.
-- Existing browser integrations stay installed until personal-profile/password-manager qualification passes.
+| Work | Decision | Reason and acceptance |
+| --- | --- | --- |
+| Goal-level internal routing | Finished | web_task selects configured procedures internally and handles public HTTPS information tasks without recipes. |
+| Public reconnaissance | Finished, bounded | Unauthenticated HTTPS, pinned public IPv4 resolution, document-size limits, typed applicability and evidence selection. Returns the source passage and hash. |
+| Scheduling | Finished | Independent HTTP work overlaps. Chrome and operations sharing an account serialize. Queued operations reject changed ownership epochs. |
+| Shared Chrome | Finished | Default MCP and CLI clients use the same service and installed profile. No browser download or implicit profile launch. |
+| Controlled restart and upgrades | Finished | Source/config fingerprints detect mismatched clients. service-restart refuses active work and preserves durable ownership. |
+| Authentication handoff | Existing mechanism qualified | Verified debugger detach, persistent ownership, and explicit handback pass. Real Bitwarden login remains unqualified; SMTP2GO stays paused pending handback. |
+| Automatic mutation/API discovery | Shelved | Effect and retry semantics cannot be inferred reliably from a page alone. Use configured procedures for authenticated tasks and writes. |
+| Broad dynamic-site browser exploration | Shelved | The current compact recipe executor is qualified. General exploration needs separate task-success and account-binding evidence. |
+| Alternate browsers and broad native automation | Shelved | No demonstrated benefit against the installed Chrome path. |
+| Learned route ranking | Shelved | Fixed route preference is understandable; collect representative performance evidence before learning a policy. |
+| Fake typing mistakes and incidental mouse jitter | Shelved | Additional latency and error surface without demonstrated task-success benefit. |
+| Automatic takeover of crashed service state | Shelved | An unreachable leftover socket fails closed. Controlled restart covers normal updates; crash recovery requires operator inspection. |
 
 ## Verification
 
-- Node 26.12.1; Chrome 156.0.8078.76; macOS.
-- `npm run check`: TypeScript + 81 tests pass.
-- `npm run build:extension`: pinned, hash-checked Playwriter compatibility build.
-- `npm run test:browser`: all assertions pass; generated evidence in ignored `work/browser-evidence.json`.
-- `npm audit`: zero vulnerabilities. Dependency overrides were followed by full local and Chrome checks.
-- Installed CLI/API operation verified; repeat returned ALREADY_VERIFIED.
-- Codex MCP registered and installed stdio smoke test verified an operation through all four advertised tools. New chats load it. Routing skill installed and skillq synchronized.
-- GitHub Actions run 41531437604 passed clean install, audit, unit/type checks, extension build and browser gate on Linux.
+- TypeScript and 84 tests passed, including HTTP concurrency, shared browser serialization, restart preserving human ownership, and public-address restrictions.
+- Real MCP tasks retrieved supporting passages from RFC 1149 and RFC 2324 without site recipes. Unsupported public deletion intent returned CONFIGURED_PROCEDURE_REQUIRED.
+- Installed CLI-to-service task retrieved RFC 1149 delay/throughput evidence. Its receipt survived service-restart.
+- Earlier live qualification verified VS Code and TypeScript license metadata through GitHub, a public page through existing Chrome, and cross-client fixture pause/resume.
+- Cumulative Jev evaluation, including unsuccessful trials, reported 30 calls and $0.000927402 against the authorized $2 budget. Model typesafe/jev-1.14-20261014 through OpenRouter System One.
+- Raw test artifacts remain in ignored work/. The journal stores task fingerprints, state, hashes, and usage metadata; public page bodies are returned to the caller rather than persisted.
+- Latest published predecessor 60ef671 passed GitHub Actions 41695925165. The current release still requires publication and the clean browser gate.
 
-The private installation enables the verified bridge for the configured loopback fixture. Shipped configurations still default to disabled.
+## Operational boundaries
 
-Concurrent first startup now publishes the journal key atomically. TypeScript and all 79 tests passed after the change. This work is local.
+Public reads cover bounded excerpts of static HTTPS documents. Redirects, private destinations, unsupported formats, oversized responses, missing evidence, and dynamic-page requirements return explicit errors or capability codes. evidence_found establishes passage provenance; semantic relevance is a Jev judgment.
 
-## Remaining implementation and acceptance
-
-The revised product contract in build-plan.md supersedes host-selected recipe routing. Goal-level MCP routing and the shared service are implemented for configured procedures. Automatic discovery of unfamiliar websites remains pending. SMTP2GO remains under human ownership until explicit handback.
-
-1. Qualify real Bitwarden handoff first. Use a dedicated Chrome tab and a private, exact-origin recipe with an authenticated account marker. Observe the signed-out state without collecting form values. Pause and verify debugger detachment, then exercise Bitwarden and any user-owned authentication steps. Resume only on explicit handback and verify the account through a read-only recipe. Test that an account mismatch fails closed. Record only outcomes and versions.
-2. Add shared authentication contexts and qualify cross-origin handoff, native input, and approval flows.
-3. Add route resolution and host connector handoff. Preserve operation identity and the uncertain-write barrier across transports.
-4. Add redacted endpoint observation and reviewed recipe promotion. Keep discovery separate from execution authority.
-5. Extend scoped browser observations, frame support, and text generation. Run reproducible navigator and input measurements with authorized providers.
-6. Finish retention controls and integration packaging. Keep all product interaction in MCP and the routing skill.
-
-## Task controller release
-
-- Added web_task. It bundles procedure applicability judgments through OpenRouter System One using Jev 1.14. Code chooses the route and persists task identity and selected procedure before execution.
-- MCP clients default to a shared local Unix-socket service. One process owns the Chrome connection. Tasks serialize while status and control bypass the queue. Client disconnect cancels its pending work. Multiple available Chrome bridges require a configured selection.
-- Installed private OpenRouter credential-file binding and shared-service setting. Installed MCP verified a fixture write with one action.
-- Real task checks verified VS Code and TypeScript license metadata through the public GitHub API, and the Learn more link on the public Example Domain page through existing Chrome.
-- Two MCP clients shared a service PID and verified cross-client browser pause/resume. Unsupported deletion intent returned CAPABILITY_UNCERTAIN.
-- Live evaluation including unsuccessful trials used 23 Jev requests and reported $0.000422142, below the authorized $2 limit. Generated receipts are in ignored work/.
-- TypeScript and 81 tests passed. Published implementation commit 0f92510; GitHub Actions 41695762307 passed clean install, audit, type/unit checks, extension build, and the real Chrome gate.
-- Remaining limits include configured procedures, fixed route preference rather than learned performance ranking, serialization of HTTP tasks as well as browser tasks, and explicit service recovery after crashes or configuration changes.
+Existing configured procedures retain account checks, independent result verification, uncertain-write reconciliation, and persistent human control. No standalone UI is part of the product.

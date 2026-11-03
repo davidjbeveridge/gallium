@@ -64,11 +64,11 @@ A possibly completed write remains unresolved until verified. It cannot be repea
 
 ## Shared service and internal routing
 
-MCP clients use one local service per private state directory by default. The service owns one lazy Chrome connection and serializes tasks. Status and control bypass the task queue. Client disconnect cancels its active or queued work. A single available Chrome bridge is selected automatically; multiple profiles require an explicit browser ID. The runtime never launches Chrome.
+MCP clients use one local service per private state directory by default. The service owns one lazy Chrome connection and serializes Chrome operations and work on the same account. Independent HTTP work runs concurrently. Status and control bypass operation queues. Client disconnect cancels its active or queued work. A single available Chrome bridge is selected automatically; multiple profiles require an explicit browser ID. The runtime never launches Chrome.
 
-`web_task` accepts `operationId`, `scopeId`, `goal`, and nonsecret `input`. One System One request judges whether each compatible procedure satisfies the goal. Code selects an applicable route, preferring HTTP, browser-session requests, then browser interaction. The selected route and task fingerprint persist across retries. Unsupported or uncertain goals return a capability code without execution. Procedures still require configuration; automatic website exploration is pending.
+`web_task` accepts `operationId`, `scopeId`, `goal`, and nonsecret `input`. One System One request judges whether each compatible procedure satisfies the goal. Code selects an applicable route, preferring HTTP, browser-session requests, then browser interaction. The selected route and task fingerprint persist across retries. Unsupported or uncertain goals return a capability code without execution. Public information tasks accept a goal and HTTPS target without a procedure. They return a source passage selected by Jev. Authenticated tasks and mutations require configured procedures.
 
-Configure `taskRouter` with `provider: "typesafe"`, `endpoint: "https://openrouter.ai/api/v1/systemone"`, a Jev model ID, and either `apiKeyEnv` or an absolute `apiKeyFile`. Key files must be private regular files. Responses record model version, elapsed time, and provider-reported cost in the private journal. Supply `sharedService: false` only for explicit standalone diagnostics. Configuration changes require a quiescent service restart.
+Configure `taskRouter` with `provider: "typesafe"`, `endpoint: "https://openrouter.ai/api/v1/systemone"`, a Jev model ID, and either `apiKeyEnv` or an absolute `apiKeyFile`. Key files must be private regular files. Responses record model version, elapsed time, and provider-reported cost in the private journal. Supply `sharedService: false` only for explicit standalone diagnostics. Use `web-operator service-restart` after configuration or source changes. Restart refuses active requests and preserves durable ownership. A crashed service with an unreachable socket fails closed and needs operator recovery.
 
 ## Configure routes and models
 
@@ -89,3 +89,15 @@ The portable package contains `plugin.json`, `mcp.json`, and `skills/`, followin
 The measured development installation uses approximately 156 MiB for dependencies and 332 KiB for the compatibility extension on this Mac. That includes development dependencies and optional SDK components; it is not a clean-machine production footprint or a latency benchmark. Core fixture/HTTP execution has no third-party runtime dependencies.
 
 [Architecture roadmap](docs/build-plan.md) · [Validation](VALIDATION.md) · [Third-party notices](THIRD_PARTY_NOTICES.md)
+
+## Public information tasks
+
+Call web_task with an operation ID, goal, and target, for example:
+
+```json
+{"operationId":"rfc418","goal":"What does HTTP status 418 mean in this document?","target":"https://www.rfc-editor.org/rfc/rfc2324.txt"}
+```
+
+The controller checks that the goal is informational, fetches a bounded public HTTPS document without credentials, and asks Jev to select a relevant passage. Public DNS is pinned for the connection and private addresses are rejected. The response contains source, evidence, evidence hash, and evidence_found status. This establishes passage provenance; semantic relevance remains a model judgment. Extraction covers a bounded excerpt. Redirects, oversized documents, unsupported formats, dynamic pages, and absent evidence return explicit errors or capability codes.
+
+Public reads do not grant authority to mutate a site. Automatic discovery of write endpoints, broad browser exploration, alternate browser engines, and synthetic typing mistakes are shelved for this release.

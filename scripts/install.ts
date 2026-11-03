@@ -21,6 +21,13 @@ if (!existsSync(configPath)) {
   // Both configured routes bind the exact same account/origin and must share control.
   for (const recipe of fixture.recipes) if (recipe.adapter === 'http') recipe.scopeId = browser.scopes[0].id;
   fixture.playwriter = browser.playwriter;
+  fixture.sharedService = true;
+  fixture.taskRouter = {
+    provider: 'typesafe', endpoint: 'https://openrouter.ai/api/v1/systemone',
+    model: 'typesafe/jev-1.14-20261014', apiKeyEnv: 'OPENROUTER_API_KEY', timeoutMs: 15000,
+    ...(existsSync(join(home, '.openrouter_key')) ? { apiKeyFile: join(home, '.openrouter_key') } : {}),
+  };
+
   const request = structuredClone(browser.recipes[0]);
   request.id = 'save-browser-request'; request.adapter = 'browser-request';
   request.http = { ...http.recipes[0].http, url: 'http://127.0.0.1:8787/api/session-profile', verifyUrl: 'http://127.0.0.1:8787/api/session-profile' };

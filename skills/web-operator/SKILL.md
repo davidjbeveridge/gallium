@@ -5,7 +5,7 @@ description: Execute configured web operations with durable verification, human 
 
 # Web Operator
 
-Delegate an authorized task through `web_task` with its goal, stable operation ID, account scope, and nonsecret inputs. The internal Jev router selects the procedure and transport. Use `web_status` to discover configured scopes and input fields. The same tools are available through `web-operator` CLI. If the MCP server is not loaded in this chat, use the CLI and restart the chat when convenient.
+Delegate an authorized task through `web_task` with its goal and stable operation ID. Supply a public HTTPS target for an information task, or an account scope and nonsecret inputs for a configured procedure. The internal Jev router selects the procedure and transport. Use `web_status` to discover configured scopes and input fields. The same tools are available through `web-operator` CLI. If the MCP server is not loaded in this chat, use the CLI and restart the chat when convenient.
 
 Honor the host's operation route requirements: assess the existing CLI, then integrations, then supported API scripts, then Chrome. Record actual route evidence where required. Within Web Operator, let the internal controller choose the route. It evaluates semantic applicability and prefers a portable API, then a browser-session request, then browser interaction. A failed write is never permission to change transport and repeat it.
 
@@ -21,4 +21,6 @@ The bundled bridge preserves extension overlays. The normal Playwriter extension
 
 Use optional natural pacing only as an input preference; it provides no guarantee of physical-human equivalence or bot-detection acceptance. Never trigger dictation or Fn/Globe shortcuts.
 
-MCP clients share one local service and Chrome connection by default. Tasks queue while status and pause stay responsive. Use `sharedService: false` only for explicit isolated diagnostics. A changed service configuration requires restarting its known owning process after active work is quiescent. Missing procedures return CAPABILITY_REQUIRED or CAPABILITY_UNCERTAIN. These are capability gaps, not permission to guess endpoints or silently switch tools.
+MCP clients share one local service and Chrome connection by default. Chrome operations and operations on the same account queue. Independent HTTP work runs concurrently while status and pause stay responsive. Use `sharedService: false` only for explicit isolated diagnostics. After a configuration or source update, use `web-operator service-restart`; it refuses to interrupt active requests. Missing procedures return CAPABILITY_REQUIRED or CAPABILITY_UNCERTAIN. These are capability gaps, not permission to guess endpoints or silently switch tools.
+
+For unfamiliar public information tasks, submit `target` and `goal` without `scopeId`. The tool performs a bounded unauthenticated HTTPS read and returns an exact source-text passage. `evidence_found` proves provenance of the passage; assess its relevance to the user’s question. Dynamic pages return BROWSER_REQUIRED and unsupported writes return CONFIGURED_PROCEDURE_REQUIRED. Browser discovery, credential handling, and inferred mutations are outside this release.

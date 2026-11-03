@@ -1,3 +1,4 @@
+import { readPublicTask } from './public-read.ts';
 import { OperatorError } from './contracts.ts';
 import type { Inputs, Recipe } from './contracts.ts';
 import type { Engine } from './engine.ts';
@@ -7,20 +8,30 @@ import { systemOne } from './navigators.ts';
 export interface TaskRequest {
   operationId: string;
   goal: string;
-  scopeId: string;
+  scopeId?: string;
+  target?: string;
   input: Inputs;
 }
 
 /** One semantic matching request, followed by deterministic route selection and the existing execution loop. */
 export async function runTask(engine: Engine, task: TaskRequest, signal = new AbortController().signal) {
   validateId(task.operationId);
-  validateId(task.scopeId);
+
   if (typeof task.goal !== 'string' || !task.goal.trim() || task.goal.length > 4000)
     throw new OperatorError('INPUT', 'Supply a bounded task goal.');
+  if (task.target) {
+    if (task.scopeId || Object.keys(task.input ?? {}).length) throw new OperatorError('INPUT','Public tasks accept a goal and target without account inputs.');
+    return readPublicTask(engine, { operationId:task.operationId,goal:task.goal,target:task.target }, signal);
+  }
+  validateId(task.scopeId);
+  if (engine.journal.db.prepare('SELECT id FROM public_tasks WHERE id=?').get(task.operationId))
+    throw new OperatorError('OPERATION_CONFLICT','This ID belongs to a public read task.');
+
   const scope = engine.config.scopes.find(scope => scope.id === task.scopeId);
   if (!scope) throw new OperatorError('UNKNOWN_SCOPE', 'Unknown task scope.');
   if (engine.journal.control(scope.id).owner === 'human')
     return { code: 'PAUSED', scopeId: scope.id };
+  const epoch = engine.journal.control(scope.id).epoch;
   const fingerprint = engine.journal.fingerprint(task);
   const previous = engine.journal.db.prepare('SELECT fingerprint, recipe FROM task_routes WHERE id=?').get(task.operationId) as
     { fingerprint: string; recipe: string } | undefined;
@@ -82,5 +93,6 @@ export async function runTask(engine: Engine, task: TaskRequest, signal = new Ab
       return selected.recipe;
     });
   }
+  if (engine.journal.control(scope.id).epoch !== epoch) return { code: 'CONTROL_REVOKED', scopeId: scope.id };
   return { ...await engine.act({ operationId: task.operationId, recipe, input: task.input }, signal), route: recipe };
 }

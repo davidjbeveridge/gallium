@@ -1,3 +1,4 @@
+import { sharedEngine, restartSharedService } from './shared-service.ts';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -9,6 +10,8 @@ import type { Config, Inputs, Operation } from './contracts.ts';
 
 const HELP = `Web Operator 0.2.0 — Node 24+, no install required for the core
 
+  node src/cli.ts task --operation ID --goal TEXT --target HTTPS_URL
+  node src/cli.ts service-restart
   node src/cli.ts demo
   node src/cli.ts [--config FILE] status [--operation ID] [--scope ID]
   node src/cli.ts [--config FILE] read --recipe ID --input '{"name":"Ada"}'
@@ -24,7 +27,7 @@ Cancel stops all unfinished operations in the scope. Resume returns control, but
 function parse(args: string[]): { command: string; flags: Record<string, string> } {
   let command = '';
   const flags: Record<string, string> = {};
-  const allowed = new Set(['config','operation','scope','recipe','input','max-actions']);
+  const allowed = new Set(['config','operation','scope','recipe','input','max-actions','goal','target']);
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     if (arg === '--help' || arg === '-h') return { command: 'help', flags: {} };
@@ -95,7 +98,12 @@ async function main(): Promise<void> {
   const { command, flags } = parse(process.argv.slice(2));
   if (command === 'help') { process.stdout.write(HELP); return; }
   if (command === 'demo') { process.stdout.write(JSON.stringify(await demo(), null, 2) + '\n'); return; }
-  const config = loadConfig(resolve(flags.config ?? process.env.WEB_OPERATOR_CONFIG ?? 'config.example.json'));
+  const configPath = resolve(flags.config ?? process.env.WEB_OPERATOR_CONFIG ?? 'config.example.json');
+  const config = loadConfig(configPath);
+  if (command === 'service-restart') {
+    await restartSharedService(configPath, config);
+    process.stdout.write(JSON.stringify({ restarted: true }) + '\n'); return;
+  }
   if (command === 'doctor') {
     let playwriterAvailable = false;
     try { import.meta.resolve(config.playwriter?.module ?? 'playwriter'); playwriterAvailable = true; } catch { /* Optional. */ }
@@ -109,7 +117,7 @@ async function main(): Promise<void> {
     }, null, 2) + '\n');
     return;
   }
-  const engine = await createEngine(config);
+  const engine = config.sharedService !== false ? await sharedEngine(configPath, config) : await createEngine(config);
   const controller = new AbortController();
   const interrupt = () => controller.abort(new OperatorError('INTERRUPTED', 'CLI operation interrupted.'));
   process.once('SIGINT', interrupt);
@@ -117,7 +125,9 @@ async function main(): Promise<void> {
   let result: unknown;
   try {
     switch (command) {
-      case 'status': result = engine.status(flags.scope, flags.operation); break;
+      case 'task': result = await engine.task({ operationId: flags.operation, goal: flags.goal,
+        ...(flags.target ? { target: flags.target } : { scopeId: flags.scope }), input: await inputs(flags.input) }, controller.signal); break;
+      case 'status': result = await engine.status(flags.scope, flags.operation); break;
       case 'read': result = await engine.read(flags.recipe, await inputs(flags.input), controller.signal); break;
       case 'act': {
         if (!flags.operation) throw new OperatorError('CLI_ARGUMENT', 'An explicit --operation ID is required for resumable actions.');

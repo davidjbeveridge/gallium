@@ -1,6 +1,6 @@
 import { createServer, createConnection } from 'node:net';
 import { spawn } from 'node:child_process';
-import { chmodSync, mkdirSync, lstatSync, existsSync } from 'node:fs';
+import { chmodSync, mkdirSync, lstatSync, existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { randomUUID, createHash } from 'node:crypto';
@@ -13,7 +13,12 @@ import type { Config } from './contracts.ts';
 import type { Engine } from './engine.ts';
 
 const methods = new Set(['task','act','read','status','control']);
-function identity(config: Config) { return createHash('sha256').update(JSON.stringify(config)).digest('hex'); }
+function identity(config: Config) {
+  const hash = createHash('sha256').update(JSON.stringify(config));
+  for (const file of readdirSync(import.meta.dirname, { recursive: true }).map(String).filter(file => file.endsWith('.ts')).sort())
+    hash.update(file).update(readFileSync(join(import.meta.dirname, file)));
+  return hash.digest('hex');
+}
 function socketPath(config: Config) {
   mkdirSync(config.stateDir, { recursive: true, mode: 0o700 });
   if (lstatSync(config.stateDir).isSymbolicLink()) throw new OperatorError('STATE_PATH','Unsafe service directory.');
@@ -26,8 +31,7 @@ function socketPath(config: Config) {
 async function serve(config: Config) {
   const engine = await createEngine(config);
   const fingerprint = identity(config);
-  let browserQueue = Promise.resolve();
-  // All tasks are serialized initially. Control and status bypass the queue.
+  let outstanding = 0;
   const server = createServer(socket => {
     const requests = new Map<string, AbortController>();
     let size = 0;
@@ -35,11 +39,21 @@ async function serve(config: Config) {
     const lines = createInterface({ input: socket });
     lines.on('line', async line => {
       let request: any;
+      let counted = false;
       try {
         request = JSON.parse(line);
+        if (request.method === 'restart') {
+          if (outstanding) throw new OperatorError('SERVICE_BUSY','Finish or cancel active requests before restarting.');
+          socket.end(JSON.stringify({ id: request.id, result: { restarting: true } }) + '\n');
+          server.close(() => { void engine.close().then(() => process.exit()); });
+          return;
+        }
         if (request.cancel) { requests.get(request.cancel)?.abort(); return; }
         if (request.fingerprint !== fingerprint) throw new OperatorError('SERVICE_CONFIG_CHANGED','Restart the shared service after a configuration change.');
         if (!methods.has(request.method) || !Array.isArray(request.args)) throw new OperatorError('INPUT','Unknown service operation.');
+        if (outstanding >= 64 && !['control','status'].includes(request.method))
+          throw new OperatorError('SERVICE_BUSY','Shared service queue is full.');
+        outstanding++; counted = true;
         const controller = new AbortController();
         requests.set(request.id, controller);
         const execute = async () => {
@@ -53,17 +67,11 @@ async function serve(config: Config) {
             case 'control': return engine.control(args[0], args[1]);
           }
         };
-        let result;
-        if (['control','status'].includes(request.method)) result = await execute();
-        else {
-          const pending = browserQueue.then(execute);
-          browserQueue = pending.then(() => {}, () => {});
-          result = await pending;
-        }
+        const result = await execute();
         if (!socket.destroyed) socket.write(JSON.stringify({ id: request.id, result }) + '\n');
       } catch (error) {
         if (!socket.destroyed) socket.write(JSON.stringify({ id: request?.id, error: error instanceof OperatorError ? error.code : 'SERVICE_ERROR' }) + '\n');
-      } finally { if (request?.id) requests.delete(request.id); }
+      } finally { if (counted) outstanding--; if (request?.id) requests.delete(request.id); }
     });
     socket.on('close', () => { for (const controller of requests.values()) controller.abort(); });
   });
@@ -128,10 +136,20 @@ export async function sharedEngine(configPath: string, config: Config): Promise<
     read: (recipe: string, input: any, signal?: AbortSignal) => call('read',[recipe,input],signal),
     status: (scope?: string, operation?: string) => call('status',[scope,operation]),
     control: (scope: string, action: string) => call('control',[scope,action]),
+    restartService: () => call('restart',[]),
     close: async () => {},
   } as unknown as Engine;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   serve(loadConfig(resolve(process.argv[2]))).catch(() => { process.exitCode = 1; });
+}
+
+export async function restartSharedService(configPath: string, config: Config): Promise<void> {
+  const service = await sharedEngine(configPath, config);
+  await (service as unknown as { restartService(): Promise<void> }).restartService();
+  const deadline = Date.now() + 5000;
+  while (existsSync(socketPath(config)) && Date.now() < deadline) await delay(25);
+  if (existsSync(socketPath(config))) throw new OperatorError('SERVICE_BUSY','Shared service has not finished stopping.');
+  await sharedEngine(configPath, config);
 }

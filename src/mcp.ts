@@ -18,8 +18,8 @@ const inputs = { type: 'object', maxProperties: 64, additionalProperties: {
 } };
 const tools = [
   {
-    name: 'web_task', description: 'Delegate an authorized goal to the internal System One router. The operator selects and executes a matching procedure. Preserve operationId for retries. Supply non-secret inputs and the configured account scope.',
-    inputSchema: { type: 'object', properties: { operationId: identifier, scopeId: identifier, goal: { type: 'string', minLength: 1, maxLength: 4000 }, input: inputs }, required: ['operationId','scopeId','goal','input'], additionalProperties: false },
+    name: 'web_task', description: 'Delegate an authorized goal to the internal System One router. Supply target for a public information task without a recipe, or scopeId and input for a configured account task. The operator selects the route. Preserve operationId for retries. Supply non-secret inputs and the configured account scope.',
+    inputSchema: { type: 'object', properties: { operationId: identifier, scopeId: identifier, target: { type: 'string', maxLength: 2048 }, goal: { type: 'string', minLength: 1, maxLength: 4000 }, input: inputs }, required: ['operationId','goal'], additionalProperties: false },
     annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: true },
   },
   {
@@ -62,9 +62,12 @@ function inputValue(value: unknown): value is Inputs {
 
 function validArguments(name: string, value: unknown): value is RecordValue {
   if (!object(value)) return false;
-  if (name === 'web_task') return exactKeys(value, ['operationId','scopeId','goal','input'], ['operationId','scopeId','goal','input'])
-    && identifierValue(value.operationId) && identifierValue(value.scopeId) && typeof value.goal === 'string'
-    && value.goal.length > 0 && value.goal.length <= 4000 && inputValue(value.input);
+  if (name === 'web_task') return exactKeys(value, ['operationId','scopeId','target','goal','input'], ['operationId','goal'])
+    && identifierValue(value.operationId) && typeof value.goal === 'string'
+    && value.goal.length > 0 && value.goal.length <= 4000
+    && (value.input === undefined || inputValue(value.input))
+    && ((identifierValue(value.scopeId) && value.target === undefined && inputValue(value.input))
+      || (value.scopeId === undefined && typeof value.target === 'string' && value.target.length <= 2048));
   if (name === 'web_status') return exactKeys(value, ['scopeId', 'operationId'])
     && (value.scopeId === undefined || identifierValue(value.scopeId))
     && (value.operationId === undefined || identifierValue(value.operationId));

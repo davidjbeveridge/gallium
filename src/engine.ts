@@ -24,6 +24,28 @@ export class Engine {
   private navigators: Record<string, Navigator>;
   private active = new Map<string, AbortController>();
   private shuttingDown = false;
+  private queues = new Map<string, Promise<void>>();
+
+  private schedule<T>(recipe: Recipe, execute: () => Promise<T>, signal?: AbortSignal): Promise<T> {
+    if (this.journal.control(recipe.scopeId).owner === 'human') return execute();
+    const keys = ['scope:' + recipe.scopeId];
+    if (['playwriter','browser-request'].includes(recipe.adapter)) keys.push('browser');
+    const epoch = this.journal.control(recipe.scopeId).epoch;
+    const previous = Promise.all(keys.map(key => this.queues.get(key)));
+    const pending = previous.then(() => {
+      signal?.throwIfAborted();
+      if (this.journal.control(recipe.scopeId).epoch !== epoch)
+        throw new OperatorError('CONTROL_REVOKED','Ownership changed while the task was queued.');
+      return execute();
+    });
+    const tail = pending.then(() => {}, () => {});
+    for (const key of keys) this.queues.set(key, tail);
+    void tail.then(() => {
+      for (const key of keys) if (this.queues.get(key) === tail) this.queues.delete(key);
+    });
+    return pending;
+  }
+
   constructor(config: Config, adapters: AdapterMap, navigators: Record<string, Navigator>, journal?: Journal) {
     this.config = config;
     this.adapters = adapters;
@@ -67,6 +89,8 @@ export class Engine {
   status(scopeId?: string, operationId?: string): Record<string, unknown> {
     if (scopeId && !this.config.scopes.some(s => s.id === scopeId)) throw new OperatorError('UNKNOWN_SCOPE', 'Unknown configured scope.');
     if (operationId) {
+      const publicTask = this.journal.db.prepare('SELECT id,state,evidence_hash FROM public_tasks WHERE id=?').get(operationId);
+      if (publicTask) return { publicTask };
       const row = this.journal.get(operationId);
       if (!row) throw new OperatorError('UNKNOWN_OPERATION', 'Unknown operation ID.');
       return { operation: publicRow(row), control: this.controlStatus(row.scope_id) };
@@ -158,6 +182,10 @@ export class Engine {
   }
 
   async read(recipeId: string, input: Inputs, signal?: AbortSignal): Promise<Record<string, unknown>> {
+    return this.schedule(this.recipe(recipeId), () => this.readInternal(recipeId, input, signal), signal);
+  }
+
+  private async readInternal(recipeId: string, input: Inputs, signal?: AbortSignal): Promise<Record<string, unknown>> {
     const recipe = this.recipe(recipeId);
     const op: Operation = { id: 'read-' + randomUUID(), recipe, input: validateInput(recipe, input) };
     const adapter = this.adapter(recipe);
@@ -176,6 +204,10 @@ export class Engine {
   }
 
   async act(request: ActRequest, signal?: AbortSignal): Promise<Record<string, unknown>> {
+    return this.schedule(this.recipe(request.recipe), () => this.actInternal(request, signal), signal);
+  }
+
+  private async actInternal(request: ActRequest, signal?: AbortSignal): Promise<Record<string, unknown>> {
     validateId(request.operationId);
     const recipe = this.recipe(request.recipe);
     const op: Operation = { id: request.operationId, recipe, input: validateInput(recipe, request.input) };
