@@ -31,7 +31,7 @@ This release covers unfamiliar public-document retrieval and configured authenti
 - Earlier live qualification verified VS Code and TypeScript license metadata through GitHub, a public page through existing Chrome, and cross-client fixture pause/resume.
 - Cumulative Jev evaluation, including unsuccessful trials, reported 30 calls and $0.000927402 against the authorized $2 budget. Model typesafe/jev-1.14-20261014 through OpenRouter System One.
 - Raw test artifacts remain in ignored work/. The journal stores task fingerprints, state, hashes, and usage metadata; public page bodies are returned to the caller rather than persisted.
-- Latest published predecessor 60ef671 passed GitHub Actions 41695925165. The current release still requires publication and the clean browser gate.
+- Published implementation 92d5c2d passed GitHub Actions 41697756492, including clean install, audit, type/unit checks, extension build, and the real Chrome gate. Installed MCP registration and skill are refreshed.
 
 ## Operational boundaries
 
