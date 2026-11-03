@@ -56,5 +56,5 @@ The revised product contract in build-plan.md supersedes host-selected recipe ro
 - Real task checks verified VS Code and TypeScript license metadata through the public GitHub API, and the Learn more link on the public Example Domain page through existing Chrome.
 - Two MCP clients shared a service PID and verified cross-client browser pause/resume. Unsupported deletion intent returned CAPABILITY_UNCERTAIN.
 - Live evaluation including unsuccessful trials used 23 Jev requests and reported $0.000422142, below the authorized $2 limit. Generated receipts are in ignored work/.
-- TypeScript and 81 tests passed. Publishing still requires the clean CI browser gate.
+- TypeScript and 81 tests passed. Published implementation commit 0f92510; GitHub Actions 41695762307 passed clean install, audit, type/unit checks, extension build, and the real Chrome gate.
 - Remaining limits include configured procedures, fixed route preference rather than learned performance ranking, serialization of HTTP tasks as well as browser tasks, and explicit service recovery after crashes or configuration changes.
