@@ -13,6 +13,7 @@ export function launch(entry, args = []) {
   const root = resolve(import.meta.dirname, '..');
   const config = process.env.WEB_OPERATOR_CONFIG || join(homedir(), '.config/web-operator/config.json');
   const configured = existsSync(config) ? config : resolve(root, 'config.example.json');
-  const child = spawnSync(node, [resolve(root, entry), '--config', configured, ...args], { stdio: 'inherit' });
+  const configArgs = args.includes('--config') ? [] : ['--config', configured];
+  const child = spawnSync(node, [resolve(root, entry), ...configArgs, ...args], { stdio: 'inherit' });
   process.exit(child.status ?? 1);
 }

@@ -11,7 +11,7 @@ import type { Config } from '../src/contracts.ts';
 
 const executable = fileURLToPath(new URL('../src/mcp.ts', import.meta.url));
 const configuration = (stateDir: string): Config => ({
-  version: 1, stateDir,
+  version: 1, stateDir, sharedService: false,
   scopes: [{ id: 'fixture', origin: 'https://fixture.invalid', account: 'demo-user' }],
   recipes: [{ id: 'set-name', scopeId: 'fixture', description: 'Save the supplied profile name.', adapter: 'fixture', inputs: { name: 'string' } }],
   navigators: { deterministic: { provider: 'deterministic' } },
@@ -89,7 +89,7 @@ function decoded(response: any): any {
   return response.result.structuredContent ?? JSON.parse(response.result.content[0].text);
 }
 
-test('real MCP child negotiates its protocol and exposes exactly four tools', async t => {
+test('real MCP child negotiates its protocol and exposes task routing and control tools', async t => {
   const directory = mkdtempSync(join(tmpdir(), 'web-operator-mcp-'));
   const client = start(fixtureConfig(directory));
   t.after(async () => { await client.stop(); rmSync(directory, { recursive: true, force: true }); });
@@ -97,7 +97,7 @@ test('real MCP child negotiates its protocol and exposes exactly four tools', as
   assert.equal(initial.protocolVersion, '2025-11-25');
   assert.deepEqual(initial.capabilities, { tools: {} });
   const listing = await client.call('tools/list');
-  assert.deepEqual(listing.result.tools.map((tool: any) => tool.name), ['web_read', 'web_act', 'web_status', 'web_control']);
+  assert.deepEqual(listing.result.tools.map((tool: any) => tool.name), ['web_task', 'web_read', 'web_act', 'web_status', 'web_control']);
   assert.ok(listing.result.tools.every((tool: any) => tool.inputSchema.additionalProperties === false));
   assert.deepEqual((await client.call('ping')).result, {});
 });

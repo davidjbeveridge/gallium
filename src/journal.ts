@@ -1,7 +1,7 @@
 import { DatabaseSync } from 'node:sqlite';
-import { mkdirSync, chmodSync, existsSync, lstatSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, chmodSync, existsSync, lstatSync, readFileSync, writeFileSync, linkSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
-import { createHmac, randomBytes } from 'node:crypto';
+import { createHmac, randomBytes, randomUUID } from 'node:crypto';
 import { OperatorError } from './contracts.ts';
 
 export type EffectState = 'none' | 'dispatched' | 'acknowledged' | 'unknown' | 'verified';
@@ -35,11 +35,14 @@ export class Journal {
     if (lstatSync(stateDir).isSymbolicLink()) throw new OperatorError('STATE_PATH', 'State directory must not be a symlink.');
     chmodSync(stateDir, 0o700);
     const keyPath = join(stateDir, 'journal.key');
-    if (!existsSync(keyPath) && existsSync(join(stateDir, 'journal.sqlite')))
-      throw new OperatorError('STATE_KEY', 'An established journal is missing its key. Restore the matching key; do not regenerate it.');
     if (!existsSync(keyPath)) {
-      try { writeFileSync(keyPath, randomBytes(32), { flag: 'wx', mode: 0o600 }); }
+      if (existsSync(join(stateDir, 'journal.sqlite')) && !existsSync(keyPath))
+        throw new OperatorError('STATE_KEY', 'An established journal is missing its key. Restore the matching key; do not regenerate it.');
+      const staged = join(stateDir, 'journal.key.' + randomUUID());
+      writeFileSync(staged, randomBytes(32), { flag: 'wx', mode: 0o600 });
+      try { linkSync(staged, keyPath); }
       catch (error: any) { if (error.code !== 'EEXIST') throw error; }
+      finally { unlinkSync(staged); }
     }
     if (lstatSync(keyPath).isSymbolicLink()) throw new OperatorError('STATE_PATH', 'State key must not be a symlink.');
     chmodSync(keyPath, 0o600);
@@ -50,6 +53,8 @@ export class Journal {
     this.db = new DatabaseSync(path);
     chmodSync(path, 0o600);
     this.db.exec(`PRAGMA busy_timeout=3000; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;
+      CREATE TABLE IF NOT EXISTS model_usage(model TEXT NOT NULL, cost REAL, elapsed_ms INTEGER NOT NULL, created_at INTEGER NOT NULL);
+      CREATE TABLE IF NOT EXISTS task_routes (id TEXT PRIMARY KEY, fingerprint TEXT NOT NULL, recipe TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS operations (
         id TEXT PRIMARY KEY, scope_id TEXT NOT NULL, recipe TEXT NOT NULL, fingerprint TEXT NOT NULL,
         state TEXT NOT NULL, effect TEXT NOT NULL, actions INTEGER NOT NULL DEFAULT 0,

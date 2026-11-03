@@ -2,7 +2,28 @@
 
 0.2 implements the browser/control/request vertical slice. See `STATE.md` and `VALIDATION.md` for current evidence. The original staged architecture below remains a roadmap; personal password-manager, native, discovery/learning and live-model gates remain open.
 
+## Revised product contract
+
+The primary MCP entry accepts the user's goal, target, nonsecret business inputs, and stable operation identity. The host delegates the task to Web Operator. Task analysis, capability selection, route selection, navigation, and verification run inside the operator. The routing skill directs agents to this entry point by default.
+
+Configure separate System One providers for task assessment, route selection, and action selection. Reuse the existing TypeSafe/Jev and structured-output provider interface. Deterministic execution remains available for previously validated tasks. Record each decision's latency and provider usage when reported.
+
+Task assessment combines the request with bounded read-only reconnaissance. A direct page fetch can identify forms, script dependence, authentication redirects, extension requirements, and challenge indicators. It cannot establish that a challenge is absent or that a logged-in browser shares the response. Credentials and raw page content stay out of durable records.
+
+The task controller chooses among configured service tools, portable HTTP, authenticated in-page requests, compact browser interaction, and native interaction. Rank feasible routes using measured success, latency, model usage, and startup cost. One-shot execution requires an explicit verifier and an effect contract. Ambiguous writes retain the original operation identity and prevent speculative transport fallback.
+
+The host need not approve individual ordinary actions within the delegated task. Local ownership, scope, and effect checks remain executable boundaries. Escalation is reserved for missing task authority, unresolvable ambiguity, unavailable capability, required platform confirmation, or a human challenge.
+
+Use one machine-wide browser session by default. A broker owns the installed Chrome profile and bridge connection; MCP clients share its state and acquire operation/tab leases. Independent profile sessions are explicit configuration. Pause propagates to every client sharing the authentication context. Starting a client must never launch another Chrome profile implicitly.
+
+Investigate a compact Jev-style observation and execution path against the existing bridge. Compare protocol round trips, DOM payload size, runtime memory, cold and warm latency, and independent task success. Existing installed Chrome is the initial baseline. A lighter engine is an optional measured alternative only after session, extension, and login compatibility is demonstrated.
+
+Input policy is separate from planning. Support efficient interaction and configurable pointer paths, target-relative click positions, selection, typing bursts, and bounded edit corrections. Check ownership throughout and preserve the requested final text. Changes to timing or motion carry no guarantee of avoiding automation detection. Password fields and irreversible shortcuts require their own interaction rules.
+
+The product remains MCP and skill driven. No standalone control panel.
+
 # Original staged plan
+
 
 ## 1. Validate the real browser bridge
 

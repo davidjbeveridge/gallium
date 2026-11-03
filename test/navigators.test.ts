@@ -35,11 +35,11 @@ test('TypeSafe submits operation and target questions together, consuming only t
     assert.equal(new Headers(init?.headers).get('authorization'), 'Bearer test-provider-key');
     const body = JSON.parse(String(init?.body));
     assert.equal(body.model, 'configured-jev');
-    assert.deepEqual(Object.keys(body.questions), ['operation', 'click_target', 'type_text_target']);
-    assert.equal(body.state.context.epoch, 4);
-    assert.equal(body.state.context.observation, 'obs-1');
+    assert.deepEqual(Object.keys(body.questions), ['applicable', 'operation', 'click_target', 'type_text_target']);
+    assert.equal(body.state.goal, request().goal);
+    assert.deepEqual(body.state.input, request().input);
     assert.deepEqual(Object.keys(body.questions.type_text_target.criteria), ['2']);
-    return jsonResponse({ answers: {
+    return jsonResponse({ answers: { applicable: {type: "noul", noul: 0.95},
       operation: chosen(Object.keys(body.questions.operation.criteria), 'TYPE_TEXT'),
       type_text_target: chosen(['2'], '2'), click_target: { deliberately: 'unused and malformed' },
     } });
@@ -52,7 +52,7 @@ test('TypeSafe maps controls without allowing candidate IDs to become operation 
   const navigator = createNavigator({ provider: 'typesafe', apiKeyEnv: 'WEB_OPERATOR_TEST_NAV_KEY' }, async (_url, init) => {
     const body = JSON.parse(String(init?.body));
     assert.ok(body.questions.operation.criteria.SCROLL_1);
-    return jsonResponse({ answers: { operation: chosen(Object.keys(body.questions.operation.criteria), 'SCROLL_1') } });
+    return jsonResponse({ answers: { applicable: {type: "noul", noul: 0.95}, operation: chosen(Object.keys(body.questions.operation.criteria), 'SCROLL_1') } });
   });
   assert.deepEqual(await navigator.choose(request([{ id: 'DONE', kind: 'scroll', label: 'Scroll down', effect: 'ui' }]), signal()),
     { type: 'act', candidateId: 'DONE', score: 0.98 });
@@ -61,7 +61,7 @@ test('TypeSafe maps controls without allowing candidate IDs to become operation 
 test('TypeSafe DONE is a proposal for the verifier, not an execution or success receipt', async () => {
   const navigator = createNavigator({ provider: 'typesafe', apiKeyEnv: 'WEB_OPERATOR_TEST_NAV_KEY' }, async (_url, init) => {
     const body = JSON.parse(String(init?.body));
-    return jsonResponse({ answers: { operation: chosen(Object.keys(body.questions.operation.criteria), 'DONE') } });
+    return jsonResponse({ answers: { applicable: {type: "noul", noul: 0.95}, operation: chosen(Object.keys(body.questions.operation.criteria), 'DONE') } });
   });
   assert.deepEqual(await navigator.choose(request(), signal()), { type: 'done' });
 });
@@ -76,7 +76,7 @@ test('TypeSafe rejects unknown target IDs and invalid probability vectors', asyn
       if (corruption === 'probabilities') target.probabilities['extra'] = 0;
       if (corruption === 'max') { operation.probabilities.CLICK = 0.1; operation.probabilities.DONE = 0.9; }
       if (corruption === 'confidence') operation.confidence = Number.NaN;
-      return jsonResponse({ answers: { operation, click_target: target } });
+      return jsonResponse({ answers: { applicable: {type: "noul", noul: 0.95}, operation, click_target: target } });
     });
     await assert.rejects(navigator.choose(request(), signal()), { code: 'NAVIGATOR_RESPONSE_INVALID' });
   }

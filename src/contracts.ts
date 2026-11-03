@@ -127,6 +127,7 @@ export interface NavigatorConfig {
   endpoint?: string;
   model?: string;
   apiKeyEnv?: string;
+  apiKeyFile?: string;
   timeoutMs?: number;
 }
 
@@ -136,6 +137,8 @@ export interface Config {
   scopes: ScopeConfig[];
   recipes: Recipe[];
   navigators: Record<string, NavigatorConfig>;
+  sharedService?: boolean;
+  taskRouter?: NavigatorConfig;
   playwriter?: {
     browserId?: string;
     tabGroup?: string;

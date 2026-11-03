@@ -114,9 +114,11 @@ export class PlaywriterAdapter implements Adapter {
         return await connect({
           tabGroup: this.config.tabGroup ?? 'operator', closeTabsOnEnd: false,
           logger: { log: () => {} }, // Raw relay diagnostics must not enter MCP stdout or model context.
-          ...(this.config.browserId ? {
-            selectBrowser: (browsers: { id: string }[]) => browsers.find((browser) => browser.id === this.config.browserId),
-          } : {}),
+          selectBrowser: (browsers: { id: string }[]) => {
+            if (this.config.browserId) return browsers.find(browser => browser.id === this.config.browserId);
+            if (browsers.length !== 1) throw new OperatorError('BROWSER_SELECTION_REQUIRED', 'Select one Chrome profile when multiple bridges are available.');
+            return browsers[0];
+          },
         });
       })().catch(() => {
         this.connecting = undefined;

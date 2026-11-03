@@ -17,6 +17,11 @@ export function validateConfig(value: unknown, baseDir = process.cwd()): Config 
   requireThat(Array.isArray(config.scopes) && config.scopes.length > 0, 'CONFIG', 'Configure at least one scope.');
   requireThat(Array.isArray(config.recipes), 'CONFIG', 'recipes must be an array.');
   requireThat(config.navigators && typeof config.navigators === 'object' && !Array.isArray(config.navigators), 'CONFIG', 'navigators must be an object.');
+  requireThat(config.sharedService === undefined || typeof config.sharedService === 'boolean', 'CONFIG', 'sharedService must be boolean.');
+  if (config.taskRouter) {
+    requireThat(config.taskRouter.provider === 'typesafe', 'CONFIG', 'Task routing requires the System One API.');
+    requireThat(!config.taskRouter.apiKeyFile || config.taskRouter.apiKeyFile.startsWith('/'), 'CONFIG', 'Credential file paths must be absolute.');
+  }
   const scopeIds = new Set<string>();
   const identities = new Set<string>();
   for (const scope of config.scopes) {

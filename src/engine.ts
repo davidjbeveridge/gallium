@@ -1,3 +1,4 @@
+import { runTask, type TaskRequest } from './task-controller.ts';
 import { randomUUID } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
 import { OperatorError, assertActive } from './contracts.ts';
@@ -29,6 +30,10 @@ export class Engine {
     this.navigators = navigators;
     this.journal = journal ?? new Journal(config.stateDir);
     for (const scope of config.scopes) this.journal.ensureScope(scope.id);
+  }
+
+  async task(request: TaskRequest, signal?: AbortSignal): Promise<Record<string, unknown>> {
+    return runTask(this, request, signal);
   }
 
   private recipe(id: string): Recipe {

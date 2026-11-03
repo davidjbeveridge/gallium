@@ -50,6 +50,7 @@ The extension is pinned to Playwriter `bf2b96717e2b36ee9781d260d4ed8a7228f47c48`
 
 | Tool | Behavior |
 | --- | --- |
+| `web_task` | Submit a goal for internal Jev applicability assessment and route selection |
 | `web_status` | Discover recipes and inspect durable state |
 | `web_read` | Fresh observation of a configured recipe |
 | `web_act` | Bounded observe/choose/execute/verify run |
@@ -60,6 +61,14 @@ MCP control works independently of the navigator. Human ownership survives resta
 The extension's Command-Shift-Y shortcut detaches the current origin's enabled tabs. Use MCP web_control for the complete durable runtime ownership transition. Dictation/Fn/Globe shortcuts are never used.
 
 A possibly completed write remains unresolved until verified. It cannot be repeated by switching to another route or changing operation IDs. Local journaling does not guarantee exactly-once effects at arbitrary services. Provider idempotency and conditional writes should be used where supported.
+
+## Shared service and internal routing
+
+MCP clients use one local service per private state directory by default. The service owns one lazy Chrome connection and serializes tasks. Status and control bypass the task queue. Client disconnect cancels its active or queued work. A single available Chrome bridge is selected automatically; multiple profiles require an explicit browser ID. The runtime never launches Chrome.
+
+`web_task` accepts `operationId`, `scopeId`, `goal`, and nonsecret `input`. One System One request judges whether each compatible procedure satisfies the goal. Code selects an applicable route, preferring HTTP, browser-session requests, then browser interaction. The selected route and task fingerprint persist across retries. Unsupported or uncertain goals return a capability code without execution. Procedures still require configuration; automatic website exploration is pending.
+
+Configure `taskRouter` with `provider: "typesafe"`, `endpoint: "https://openrouter.ai/api/v1/systemone"`, a Jev model ID, and either `apiKeyEnv` or an absolute `apiKeyFile`. Key files must be private regular files. Responses record model version, elapsed time, and provider-reported cost in the private journal. Supply `sharedService: false` only for explicit standalone diagnostics. Configuration changes require a quiescent service restart.
 
 ## Configure routes and models
 

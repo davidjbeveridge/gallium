@@ -31,3 +31,10 @@ The latest executable evidence is generated as `work/browser-evidence.json`. The
 The approved bridge was installed in personal Chrome. The installed MCP verified a loopback fixture save with two actions, paused to human ownership with verified debugger detachment, and resumed to agent ownership. Real password-manager interaction remains unqualified. No real vault, credential, paid model, physical-device approval, native dialog, generic website discovery, or production write was used. No existing integration has been disabled. A fixture pass cannot establish those capabilities.
 
 The development dependency tree measured approximately 156 MiB; the built extension approximately 332 KiB. No clean-machine installed footprint or model cost has been claimed.
+
+
+## Internal routing and shared service
+
+The task-controller release passes 81 local tests. The live MCP qualification used two clients and confirmed one shared service PID. Jev selected configured procedures for two public GitHub license checks and a public Chrome page check. Unsupported deletion intent was rejected. A fixture browser scope paused through one client and resumed through the other. The installed default MCP entry also verified a fixture write.
+
+Observed Jev provider usage, including failed trials, totaled 23 calls and $0.000422142. The evaluated model was typesafe/jev-1.14-20261014 through OpenRouter System One. These are qualification observations, not a general performance benchmark. Unfamiliar website exploration remains pending.

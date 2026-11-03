@@ -1,3 +1,4 @@
+import { readFileSync, lstatSync } from 'node:fs';
 import { OperatorError } from './contracts.ts';
 import type { Candidate, Decision, DecisionRequest, Navigator, NavigatorConfig } from './contracts.ts';
 
@@ -101,7 +102,13 @@ async function responseJson(response: Response, signal: AbortSignal): Promise<un
 async function post(config: NavigatorConfig, endpoint: string, body: unknown, signal: AbortSignal, fetcher: Fetcher): Promise<unknown> {
   if (signal.aborted) throw new OperatorError('NAVIGATOR_ABORTED', 'Navigation decision was cancelled.');
   const env = config.apiKeyEnv ?? (config.provider === 'typesafe' ? 'TYPESAFE_API_KEY' : 'NAVIGATOR_API_KEY');
-  const key = process.env[env];
+  let key = process.env[env];
+  if (!key && config.apiKeyFile) {
+    const stat = lstatSync(config.apiKeyFile);
+    if (!stat.isFile() || stat.isSymbolicLink() || (stat.mode & 0o077))
+      throw new OperatorError('CREDENTIAL_PERMISSIONS', 'Credential file must be a private regular file.');
+    key = readFileSync(config.apiKeyFile, 'utf8').trim();
+  }
   if (!key || !key.trim() || /[\r\n]/.test(key)) {
     throw new OperatorError('NAVIGATOR_KEY_MISSING', 'The configured navigator credential is unavailable.');
   }
@@ -175,7 +182,9 @@ function typeSafeBody(request: DecisionRequest, model: string) {
   operations.BLOCKED = 'No offered operation can progress.';
   operations.ESCALATE = 'The next action is ambiguous or needs the supervisor.';
   const questions: Record<string, unknown> = {
-    operation: { type: 'choice', criteria: operations, instructions: { goal: request.goal, input: request.input, rules: NEXT_ACTION } },
+    applicable: { type: 'noul', instructions: 'Does at least one offered action advance the requested goal in this observed state?',
+      criteria: { true: 'An offered action advances an unmet requirement.', false: 'The goal is already satisfied, or the offered actions do not advance it.' } },
+    operation: { type: 'choice', criteria: operations, instructions: { question: 'Which offered operation corresponds to the unmet requirement in goal?', rules: NEXT_ACTION } },
   };
   for (const [operation, candidates] of targets) {
     questions[`${operation.toLowerCase()}_target`] = {
@@ -185,7 +194,7 @@ function typeSafeBody(request: DecisionRequest, model: string) {
         input_binding: candidate.inputKey ?? null,
         effect: candidate.effect,
       }])),
-      instructions: { goal: request.goal, operation, rules: [NEXT_ACTION, TARGET] },
+      instructions: { question: 'Which observed target corresponds to goal for this operation?', operation, rules: [NEXT_ACTION, TARGET] },
     };
   }
   const observation = request.observation;
@@ -194,9 +203,9 @@ function typeSafeBody(request: DecisionRequest, model: string) {
     body: {
       model,
       state: {
+        goal: request.goal, input: request.input,
         page: { url: observation.origin, title: '', text: observation.summary },
         elements, facts: observation.facts, recent_actions: [],
-        context: { operation: request.operationId, observation: observation.id, document: observation.documentId, epoch: request.epoch },
       },
       questions,
     },
@@ -241,6 +250,12 @@ export function createNavigator(config: NavigatorConfig, fetcher: Fetcher = glob
         const result = await post(config, endpoint, space.body, signal, fetcher);
         if (!object(result) || !object(result.answers)) throw invalid();
         const selected = choice(result.answers.operation, Object.keys(space.operations));
+        const applicability = result.answers.applicable;
+        if (!object(applicability) || applicability.type !== 'noul' || typeof applicability.noul !== 'number'
+          || !Number.isFinite(applicability.noul) || applicability.noul < 0 || applicability.noul > 1) throw invalid();
+        if (applicability.noul < 0.3) return selected.id === 'DONE' ? { type: 'done' } : { type: 'blocked', reason: 'no_applicable_action' };
+        if (applicability.noul < 0.7) return { type: 'escalate', reason: 'action_applicability_uncertain' };
+
         const targetSet = space.targets.get(selected.id);
         if (targetSet) {
           const target = choice(result.answers[`${selected.id.toLowerCase()}_target`], [...targetSet.keys()]);
@@ -284,4 +299,10 @@ export function createNavigator(config: NavigatorConfig, fetcher: Fetcher = glob
       return finish(decision.type);
     },
   };
+}
+
+/** Shared typed-question transport for routing and action judgments. */
+export async function systemOne(config: NavigatorConfig, body: unknown, signal: AbortSignal): Promise<any> {
+  if (config.provider !== 'typesafe') throw new OperatorError('ROUTER_CONFIG', 'Task routing requires a System One provider.');
+  return post(config, endpointFor(config), body, signal, globalThis.fetch);
 }
