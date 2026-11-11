@@ -6,7 +6,7 @@ The finish/shelve decisions and current release boundary in STATE.md supersede t
 
 ## Revised product contract
 
-The primary MCP entry accepts the user's goal, target, nonsecret business inputs, and stable operation identity. The host delegates the task to Web Operator. Task analysis, capability selection, route selection, navigation, and verification run inside the operator. The routing skill directs agents to this entry point by default.
+The primary MCP entry accepts the user's goal, target, nonsecret business inputs, and stable operation identity. The host delegates the task to Gallium. Task analysis, capability selection, route selection, navigation, and verification run inside the operator. The routing skill directs agents to this entry point by default.
 
 Configure separate System One providers for task assessment, route selection, and action selection. Reuse the existing TypeSafe/Jev and structured-output provider interface. Deterministic execution remains available for previously validated tasks. Record each decision's latency and provider usage when reported.
 
@@ -67,7 +67,7 @@ Acceptance: independent business success on repeated trials; fewer host/model ro
 
 ## 6. Package the preferred integration
 
-After the browser and authentication gates pass, add the routing skill and local installer. The routing policy should select connectors/direct requests before browser UI and progressively load auth/recipe references. Register Web Operator as the preferred integration and disable competing configurable browser servers when the user chooses. A plugin cannot rewrite the host's built-in browser implementation.
+After the browser and authentication gates pass, add the routing skill and local installer. The routing policy should select connectors/direct requests before browser UI and progressively load auth/recipe references. Register Gallium as the preferred integration and disable competing configurable browser servers when the user chooses. A plugin cannot rewrite the host's built-in browser implementation.
 
 Keep runtime dependencies optional. Preserve one durable data directory outside versioned plugin caches, keep unresolved operation receipts, and expose explicit data retention controls for completed records. Finish a locked, reproducible optional SDK dependency graph only after measuring it.
 

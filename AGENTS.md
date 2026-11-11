@@ -1,4 +1,4 @@
-# Web Operator
+# Gallium
 
 Read `docs/STATE.md` before work. Keep it as the canonical plan and verification record.
 Use Node 24+; the Mac has Node 26 at `/opt/homebrew/opt/node@26/bin/node`.

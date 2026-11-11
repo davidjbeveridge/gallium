@@ -1,0 +1,15 @@
+# Gallium
+
+> Gallium is a local browser automation tool for AI agents. It supports public website research, configured tasks in an existing Chrome session, independent result verification, and human takeover.
+
+## Start here
+
+- [Product website](https://davidjbeveridge.github.io/gallium/): Overview, use cases, and frequently asked questions.
+- [Quickstart](https://github.com/davidjbeveridge/gallium#try-it-in-one-minute): Run the fixture demo with Node 24 or later.
+- [Setup and configuration](https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md): Install the CLI and MCP server, connect Chrome, and configure a model and procedures.
+- [Validation](https://github.com/davidjbeveridge/gallium/blob/main/VALIDATION.md): Executed tests, fixture outcomes, and qualification boundaries.
+- [Current state](https://github.com/davidjbeveridge/gallium/blob/main/docs/STATE.md): Supported workflows and current limitations.
+
+## Scope
+
+Public exploration requires a configured model router and is bounded by origin, time, observations, and supported controls. Configured signed-in workflows bind the account, allowed actions, and result to check. The Chrome integration requires separate bridge setup. Gallium supports explicit human pause and handback.

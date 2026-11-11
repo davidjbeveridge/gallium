@@ -2,7 +2,7 @@
 
 ## Objective and release boundary
 
-Web Operator accepts delegated tasks through MCP and a routing skill. One local service owns the shared Chrome connection. Jev supplies typed judgments through OpenRouter; code selects routes, coordinates execution, and verifies outcomes.
+Gallium accepts delegated tasks through MCP and a routing skill. One local service owns the shared Chrome connection. Jev supplies typed judgments through OpenRouter; code selects routes, coordinates execution, and verifies outcomes.
 
 This release covers unfamiliar public-document retrieval, dynamic public-site exploration, and configured authenticated workflows. It does not promise universal site automation.
 
@@ -51,3 +51,18 @@ Shelving unfamiliar-site exploration contradicted the core use case. It is now a
 Opt-in reproducible live MCP gate: `npm run test:exploration` (uses the configured paid router and existing Chrome). Both tasks passed with one service PID. Production dependency audit reports zero vulnerabilities.
 
 Cumulative reported Jev spend after this qualification: 79 calls, $0.003675168 of the authorized $2, including failed trials.
+
+## Naming research — 2026-11-10
+
+Recommend **Webstint** (a stint is a defined spell of work); **Tabtrot** is a more playful option that suggests Chrome more strongly. Suggested descriptor: “Delegate web tasks. Get verified results.” The owner subsequently selected **Gallium**.
+
+- Public web searches for the exact, spaced and hyphenated forms alongside browser automation, agent and MCP terms surfaced no similar projects for either finalist. GitHub repository name searches and the official MCP Registry returned no matches; the exact npm and PyPI package lookups returned 404. Verisign’s `.com` registry returned 404 for both domains at the time of the check. This was a public collision screen, not trademark clearance.
+- Set aside Errandry (Errand is already a browser agent), Webgofer (Gofer is already an agent for delegated tasks), WebChore (WebChoreArena is a browser agent benchmark), and WebRunner and Browserhand (existing browser automation projects).
+
+## Gallium launch
+
+The owner selected Gallium. The GitHub repository and public package, CLI, MCP, bridge display, and routing skill use that name. Existing operation IDs, MCP tool names, bridge protocol, configuration, and durable state are compatible. The legacy CLI alias remains available.
+
+- [Product website](https://davidjbeveridge.github.io/gallium/) is built from `site/`. The main-branch workflow publishes it after the full runtime, browser, and site checks.
+- [Brand system](brand.md) records the shared README and website assets. [Search discovery](discovery.md) records the query research, crawl checks, and search visibility limits.
+- The local demo verified a save, rejected a repeat, preserved a pause across restart, and verified a task completed during handoff with zero extra actions. The full 92-test suite and static site checks passed locally.

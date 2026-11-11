@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://davidjbeveridge.github.io/gallium/sitemap.xml

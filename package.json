@@ -1,9 +1,9 @@
 {
-  "name": "web-operator",
+  "name": "gallium",
   "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Small local web operator with durable control, verification, and configurable navigators",
+  "description": "Local browser operations with durable control, verification, and configurable navigators",
   "engines": {
     "node": ">=24.0.0"
   },
@@ -31,11 +31,12 @@
     "vite-plugin-static-copy": "3.4.0"
   },
   "bin": {
+    "gallium": "bin/gallium.mjs",
     "web-operator": "bin/web-operator.mjs"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/davidjbeveridge/web-operator.git"
+    "url": "https://github.com/davidjbeveridge/gallium.git"
   },
   "overrides": {
     "@hono/node-server": "2.1.3",

@@ -15,7 +15,31 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm audit
       - run: npm run check
+      - run: python3 scripts/check-site.py
       - run: npm run build:extension
       - run: npm run test:browser
         env:
           CHROME_EXECUTABLE: /usr/bin/google-chrome
+  pages:
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4

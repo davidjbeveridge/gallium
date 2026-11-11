@@ -55,8 +55,8 @@ await build({
 });
 cpSync(resolve(source, 'extension/icons'), resolve(outDir, 'icons'), { recursive: true });
 const manifest = JSON.parse(readFileSync(resolve(source, 'extension/manifest.json'), 'utf8'));
-manifest.name = 'Web Operator Bridge (Playwriter)';
-manifest.description = 'Local Web Operator bridge: preserves extension overlays and supports explicit authentication detach.';
+manifest.name = 'Gallium Bridge (Playwriter)';
+manifest.description = 'Local Gallium bridge: preserves extension overlays and supports explicit authentication detach.';
 manifest.permissions.push('tabs');
 // Public development identity recognized by the pinned relay's extension-origin allowlist.
 const upstreamVite = readFileSync(resolve(source, 'extension/vite.config.mts'), 'utf8');

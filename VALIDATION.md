@@ -1,4 +1,4 @@
-# Validation
+# Gallium validation
 
 2026-11-02, Node 26.12.1, macOS, installed Chrome 156.0.8078.76.
 

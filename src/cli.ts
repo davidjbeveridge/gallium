@@ -8,7 +8,7 @@ import { FixtureAdapter } from './adapters/fixture.ts';
 import { OperatorError } from './contracts.ts';
 import type { Config, Inputs, Operation } from './contracts.ts';
 
-const HELP = `Web Operator 0.2.0 — Node 24+, no install required for the core
+const HELP = `Gallium 0.2.0 — Node 24+, no install required for the core
 
   node src/cli.ts task --operation ID --goal TEXT --target HTTPS_URL
   node src/cli.ts service-restart
@@ -98,7 +98,7 @@ async function main(): Promise<void> {
   const { command, flags } = parse(process.argv.slice(2));
   if (command === 'help') { process.stdout.write(HELP); return; }
   if (command === 'demo') { process.stdout.write(JSON.stringify(await demo(), null, 2) + '\n'); return; }
-  const configPath = resolve(flags.config ?? process.env.WEB_OPERATOR_CONFIG ?? 'config.example.json');
+  const configPath = resolve(flags.config ?? process.env.GALLIUM_CONFIG ?? process.env.WEB_OPERATOR_CONFIG ?? 'config.example.json');
   const config = loadConfig(configPath);
   if (command === 'service-restart') {
     await restartSharedService(configPath, config);

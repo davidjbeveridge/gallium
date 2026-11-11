@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -185,7 +185,10 @@ test('MCP parser recovers from malformed JSON and bounds an unterminated line', 
 test('MCP supports legacy protocol output and falls back from an unknown version', async t => {
   const directory = mkdtempSync(join(tmpdir(), 'web-operator-mcp-'));
   const path = fixtureConfig(directory);
-  const legacy = start(path); const unknown = start(path);
+  const secondDirectory = join(directory, 'unknown');
+  mkdirSync(secondDirectory);
+  const legacy = start(path);
+  const unknown = start(fixtureConfig(secondDirectory));
   t.after(async () => { await legacy.stop(); await unknown.stop(); rmSync(directory, { recursive: true, force: true }); });
   assert.equal((await legacy.initialize('2024-11-05')).protocolVersion, '2024-11-05');
   const response = await legacy.tool('web_status');
