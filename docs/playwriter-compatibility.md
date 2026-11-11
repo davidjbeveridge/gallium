@@ -1,4 +1,4 @@
-# Chrome bridge compatibility
+# Gallium Chrome bridge compatibility
 
 ## Qualified in the isolated Chrome fixture
 

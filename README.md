@@ -1,6 +1,6 @@
 # Gallium
 
-<img src="site/og-card.png" width="900" alt="Gallium. Put your agent to work.">
+<img src="site/og-card.png" width="900" alt="Gallium. Give your agent a web task.">
 
 **Give your agent a web task. Get a result you can check.**
 

@@ -1,5 +1,13 @@
 # Gallium validation
 
+## Gallium launch
+
+- The Node 26 suite passed all 92 tests. [GitHub Actions](https://github.com/davidjbeveridge/gallium/actions/runs/43109328325) also passed clean installation, dependency audit, type checking, extension build, real Chrome fixture, site checks, and Pages deployment.
+- The installed `gallium` launcher read the original configuration and state directory. An MCP initialization returned Gallium 0.2.0. A read-only status request confirmed the existing operation history was still available.
+- The site rendered in an isolated Chrome profile at widths of 320, 390, 820, 1024, and 1440 pixels. The page fit at every width and the FAQ opened and closed. The live homepage, stylesheet, social card, icon, sitemap, robots file, and `llms.txt` returned HTTP 200.
+
+## Original qualification
+
 2026-11-02, Node 26.12.1, macOS, installed Chrome 156.0.8078.76.
 
 ## Executed
