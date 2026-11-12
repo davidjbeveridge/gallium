@@ -127,10 +127,16 @@ For the stronger melt, isolated Chrome playback at 320, 390, and 1440 px reached
 
 “Like Chromium, but fluid.” leads the site and social card. The [positioning guide](../.agents/product-marketing.md) grounds that line in route changes during a task. The single-column page replaces the element picker with a Ga walkthrough of the recorded RFC lookup, the Chrome quote lookup, and the local verified save. The Cr disclosure carries the chromium aside.
 
-The `npx skills add davidjbeveridge/gallium --skill gallium` path installs the routing skill in an agent's project. Engine setup provides the CLI and MCP server. A clean Codex project install found the skill under `.agents/skills/gallium`. Isolated Chrome checked the single-column layout from 320 to 1440 px, mouse, touch and keyboard walkthrough selection, all five exact clipboard payloads, and clipboard fallback. Reduced motion and the static page passed. The local fixture verified the save, skipped the duplicate, and retained the pause across restart. All 92 tests, type checking, and the site check passed.
+The `npx skills add davidjbeveridge/gallium` path installs the routing skill in an agent's project. Engine setup provides the CLI and MCP server. A clean Codex project install found the skill under `.agents/skills/gallium`. Isolated Chrome checked the single-column layout from 320 to 1440 px, mouse, touch and keyboard walkthrough selection, all five exact clipboard payloads, and clipboard fallback. Reduced motion and the static page passed. The local fixture verified the save, skipped the duplicate, and retained the pause across restart. All 92 tests, type checking, and the site check passed.
 
 ## Continuous chrome flow
 
 The 4.2-second WebGL melt blends into two currents traveling around the frame at different speeds. The dark face and lettering hold position. The play and pause control resumes from the same point, and offscreen rendering stops. The ongoing flow draws near 30 fps at rest. Reduced Motion and unavailable WebGL show the existing still.
 
 Isolated Chrome checked the handoff at 320, 390, and 1440 px, with 27.8 seconds of desktop playback after the opening. Captures confirmed stable lettering. Keyboard pause, exact-position resume, pointer tilt, offscreen suspension, live changes to Reduced Motion, and the unavailable-WebGL fallback passed. Type checking, all 92 tests, and the site check passed.
+
+## Browser skill use cases and demos
+
+The site explains how to use Gallium as the agent's default browser skill. Four sample requests cover a direct read, a live site, a configured save, and taking over a step. The five demos show the recorded route and result. One request covered three Next clicks, and the fixture skipped a repeat save. The Chrome fallback, loading example, and handoff show how a supported task can continue when it needs another step.
+
+A fresh local demo returned a verified save, `ALREADY_VERIFIED` on repeat, and zero extra actions after handback. Both Chrome examples match the recorded live tests. Isolated Chrome at 320–1440 px verified the stacked page, five demo panels, keyboard and touch selection, the local demo link, clipboard controls, and the static and reduced-motion versions. Type checking, all 92 tests, and the site check passed.

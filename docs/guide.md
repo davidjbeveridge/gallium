@@ -67,10 +67,10 @@ Repeat the same operation ID and inputs after interruption. A changed task needs
 Run this in the project where your agent works:
 
 ```sh
-npx skills add davidjbeveridge/gallium --skill gallium
+npx skills add davidjbeveridge/gallium
 ```
 
-The skill uses the Gallium CLI or MCP server. Follow the [engine setup](#run) to make those available, then open a new agent session to load the skill.
+The skill uses the Gallium CLI or MCP server. Follow the [engine setup](#run) to make those available, then open a new agent session to load the skill. Add “Use the Gallium skill for web tasks.” to your project's agent instructions to make it your default.
 
 ## Connect Chrome
 

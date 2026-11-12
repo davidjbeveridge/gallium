@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gallium | Web task engine for AI agents</title>
-  <meta name="description" content="Gallium runs web tasks for AI agents. It can read public pages directly, switch to Chrome when needed, and check that a configured change took effect.">
+  <title>Gallium | Browser skill for AI agents</title>
+  <meta name="description" content="Use Gallium in place of your agent's default browser skill. It handles public lookups, live pages in Chrome, and changes you've configured.">
   <meta name="theme-color" content="#11181c">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Gallium | Like Chromium, but fluid">
-  <meta property="og:description" content="Gallium runs web tasks for AI agents. It can read public pages directly, switch to Chrome when needed, and check that a configured change took effect.">
+  <meta property="og:description" content="Use Gallium in place of your agent's default browser skill. It handles public lookups, live pages in Chrome, and changes you've configured.">
   <meta property="og:url" content="https://davidjbeveridge.github.io/gallium/">
   <meta property="og:image" content="https://davidjbeveridge.github.io/gallium/og-card.png">
   <meta property="og:image:width" content="1200">
@@ -32,7 +32,7 @@
       "@type": "WebPage",
       "@id": "https://davidjbeveridge.github.io/gallium/#page",
       "url": "https://davidjbeveridge.github.io/gallium/",
-      "name": "Gallium | Web task engine for AI agents",
+      "name": "Gallium | Browser skill for AI agents",
       "isPartOf": {
         "@id": "https://davidjbeveridge.github.io/gallium/#website"
       },
@@ -47,7 +47,7 @@
       "url": "https://davidjbeveridge.github.io/gallium/",
       "applicationCategory": "DeveloperApplication",
       "softwareVersion": "0.2.0",
-      "description": "Gallium runs web tasks for AI agents. It can read public pages directly, switch to Chrome when needed, and check that a configured change took effect.",
+      "description": "Use Gallium in place of your agent's default browser skill. It handles public lookups, live pages in Chrome, and changes you've configured.",
       "softwareRequirements": "Node.js 24+. Desktop Chrome and the Gallium bridge for browser routes.",
       "featureList": [
         "Direct HTTPS lookups with passages from the source",
@@ -77,7 +77,7 @@
   <header class="top">
     <div class="shell nav">
       <a class="brand" href="./"><img src="mark.svg" alt="" width="26" height="26">Gallium</a>
-      <nav aria-label="Main"><a href="#workflow">Walkthrough</a><a href="#engine">How it works</a><a href="#install">Install</a></nav>
+      <nav aria-label="Main"><a href="#use-cases">Use cases</a><a href="#workflow">Demos</a><a href="#engine">How it works</a><a href="#install">Install</a></nav>
       <a class="source-link" href="https://github.com/davidjbeveridge/gallium">GitHub <span aria-hidden="true">↗</span></a>
     </div>
   </header>
@@ -92,20 +92,51 @@
         </div>
         <div class="hero-copy">
           <h1 id="hero-title">Like Chromium, <span>but fluid.</span></h1>
-          <p class="lede">Gallium runs web tasks for AI agents. It can read a public page over HTTPS, then switch to Chrome if finding the answer takes a search or a click.</p>
+          <p class="lede">Use Gallium in place of your agent's default browser skill. Give it a job like finding a fact or checking a save. It reads a page directly or uses Chrome when the job needs it.</p>
           <div class="hero-actions">
             <a class="primary" href="#install">Install Gallium</a>
-            <a class="hero-secondary" href="#workflow">See how it works <span aria-hidden="true">↓</span></a>
+            <a class="hero-secondary" href="#workflow">See the demos <span aria-hidden="true">↓</span></a>
           </div>
           <p class="requirements">Runs locally through MCP or the CLI.</p>
         </div>
       </div>
     </section>
 
+    <section id="use-cases" class="use-cases" aria-labelledby="use-cases-title">
+      <div class="measure section-stack">
+        <div class="section-heading">
+          <h2 id="use-cases-title">What Gallium takes over</h2>
+          <p>Gallium is a skill for your agent and an engine that runs on your computer. The skill sends the job to the engine. One request from your agent can cover opening a page, following links, waiting for results, and checking the answer.</p>
+        </div>
+        <div class="case-list">
+          <article>
+            <h3>Read a public document</h3>
+            <blockquote>“Find the minimum Node version in this install guide and quote the line.”</blockquote>
+            <p>Gallium can fetch the text directly over HTTPS, saving a trip through Chrome. The reply includes the passage and source URL.</p>
+          </article>
+          <article>
+            <h3>Find something on a live site</h3>
+            <blockquote>“Find Saturday's opening time in this museum's public calendar.”</blockquote>
+            <p>If the fetched text comes up short, Gallium can switch to Chrome and keep looking. It can follow links, use tabs on the page, or search. In the quote demo, one task request covered three Next clicks.</p>
+          </article>
+          <article>
+            <h3>Make a change and check it saved</h3>
+            <blockquote>“Set my display name to Ada and check that it saved.”</blockquote>
+            <p>For an account you've configured, Gallium can run the change and read back the saved value. If a save might have gone through before a connection dropped, it checks the current value before retrying.</p>
+          </article>
+          <article>
+            <h3>Take over a step yourself</h3>
+            <blockquote>“Pause this task and give me the tab.”</blockquote>
+            <p>In a configured Chrome workflow, you can take control and hand it back when you're ready. The pause survives a restart, so you can pick up the same job later.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section id="workflow" class="measure walkthrough" aria-labelledby="workflow-title">
       <div class="section-heading">
-        <h2 id="workflow-title">Follow a task</h2>
-        <p>Pick a recorded run to see how Gallium got to the result.</p>
+        <h2 id="workflow-title">See a task run</h2>
+        <p>Pick an example from the live tests or the local demo. Each one shows the steps Gallium took and what came back.</p>
       </div>
 
       <div class="route-console" id="element">
@@ -117,9 +148,11 @@
           </details>
         </div>
         <div class="route-tabs" data-route-tabs hidden>
-          <button type="button" id="tab-document" aria-controls="route-document">Read an RFC</button>
-          <button type="button" id="tab-live" aria-controls="route-live">Find a quote</button>
-          <button type="button" id="tab-verify" aria-controls="route-verify">Check a save</button>
+          <button type="button" id="tab-document" aria-controls="route-document" aria-label="Read an RFC">Read</button>
+          <button type="button" id="tab-live" aria-controls="route-live" aria-label="Browse for a quote">Browse</button>
+          <button type="button" id="tab-loading" aria-controls="route-loading" aria-label="Wait for a live page">Wait</button>
+          <button type="button" id="tab-verify" aria-controls="route-verify" aria-label="Save a profile name">Save</button>
+          <button type="button" id="tab-handoff" aria-controls="route-handoff" aria-label="Pause and hand back">Pause</button>
         </div>
 
         <article class="route-panel" id="route-document" data-route-panel>
@@ -139,12 +172,25 @@
           <h3>Find the Bob Marley quote about who's worth suffering for.</h3>
           <ol class="trace">
             <li><span>HTTPS</span><p>The fetched HTML has a template for the quotes. JavaScript fills it in.</p></li>
-            <li><span>Chrome</span><p>Gallium opens a task tab and follows Next three times. It checks the quote in the rendered page before closing its tab.</p></li>
+            <li><span>Chrome</span><p>Gallium opens its own tab and follows Next three times. It checks the quote on page four and closes the tab.</p></li>
           </ol>
           <div class="route-result">
             <p class="result-state"><code>evidence_found</code> <code>shared-chrome-exploration</code></p>
             <blockquote>“You just got to find the ones worth suffering for.”</blockquote>
             <a href="https://quotes.toscrape.com/js/page/4/">Quotes to Scrape, page 4</a>
+          </div>
+        </article>
+
+        <article class="route-panel" id="route-loading" data-route-panel>
+          <h3>Start the example and tell me what text appears.</h3>
+          <ol class="trace">
+            <li><span>Chrome</span><p>Gallium opens the page and clicks Start.</p></li>
+            <li><span>Wait</span><p>The page shows a loading indicator. Gallium waits, then reads the text that appears.</p></li>
+          </ol>
+          <div class="route-result">
+            <p class="result-state"><code>evidence_found</code> <code>shared-chrome-exploration</code></p>
+            <blockquote>“Hello World!”</blockquote>
+            <a href="https://the-internet.herokuapp.com/dynamic_loading/1">Dynamic loading test page</a>
           </div>
         </article>
 
@@ -156,8 +202,21 @@
           </ol>
           <div class="route-result">
             <p class="result-state"><code>verified</code></p>
-            <p>Repeat request returned <code>ALREADY_VERIFIED</code>.</p>
+            <p>Gallium saved Ada once. The repeat returned <code>ALREADY_VERIFIED</code>.</p>
             <a href="#demo">Run this demo locally</a>
+          </div>
+        </article>
+
+        <article class="route-panel" id="route-handoff" data-route-panel>
+          <h3>Pause the profile update. I'll finish it myself.</h3>
+          <ol class="trace">
+            <li><span>Pause</span><p>The demo pauses the fixture and restarts the engine. A request to save Lin still returns <code>PAUSED</code>.</p></li>
+            <li><span>Hand back</span><p>The demo simulates the person saving Lin. It resumes and sends the same request again. Gallium reads the profile and finds Lin.</p></li>
+          </ol>
+          <div class="route-result">
+            <p class="result-state"><code>verified</code></p>
+            <p>Zero additional actions after handback.</p>
+            <a href="#demo">Run the local demo</a>
           </div>
         </article>
       </div>
@@ -198,7 +257,7 @@
 
           <article id="engine-control">
             <h3>Take over in Chrome</h3>
-            <p>Pause a configured workflow to finish a step yourself. Gallium releases the debugger and keeps the pause through a restart. After you hand control back, it checks whether you already finished.</p>
+            <p>Pause a configured workflow to finish a step yourself. Gallium releases the debugger and keeps the pause through a restart. Hand control back, then repeat the original request. Gallium checks whether you already finished.</p>
             <p>The service queues Chrome work and requests on the same account. Independent HTTP reads can run in parallel.</p>
             <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#tools-and-control">Read the handoff guide</a>
           </article>
@@ -235,7 +294,7 @@ npm run install:local</code></pre>
 
           <article id="install-skill">
             <h3>Add the skill to a project</h3>
-            <p>Run this where you use your agent. The skill tells it when to hand a task to Gallium. It uses the CLI or MCP server from the engine setup.</p>
+            <p>Run this where you use your agent. The skill uses the CLI or MCP server from the engine setup.</p>
             <div class="command-block">
               <div class="command-bar">
                 <span>Terminal</span>
@@ -244,14 +303,15 @@ npm run install:local</code></pre>
                   <svg class="copied-icon" aria-hidden="true"><use href="#icon-copied"/></svg>
                 </button>
               </div>
-              <pre tabindex="0"><code id="skill-command">npx skills add davidjbeveridge/gallium --skill gallium</code></pre>
+              <pre tabindex="0"><code id="skill-command">npx skills add davidjbeveridge/gallium</code></pre>
               <p class="copy-status" role="status"></p>
             </div>
+            <p>Open a new agent session to load the skill. To use Gallium by default, add <q>Use the Gallium skill for web tasks.</q> to your project's agent instructions.</p>
           </article>
 
           <article id="demo">
             <h3>Try the local demo</h3>
-            <p>The demo checks a saved profile name, skips a duplicate save, and holds a pause through a restart. If you already cloned the repo, run <code>npm run demo</code> from the checkout.</p>
+            <p>The demo uses a temporary test profile and runs with Git and Node alone. It checks a save, repeats the request to show what happens to a duplicate, then pauses a second update through a restart. If you've already cloned the repo, run <code>npm run demo</code> from the checkout.</p>
             <div class="command-block">
               <div class="command-bar">
                 <span>Terminal</span>
@@ -269,7 +329,7 @@ npm run demo</code></pre>
 
           <article id="first-task">
             <h3>Look up a public document</h3>
-            <p>This reads an RFC directly over HTTPS. First, <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#shared-service-and-internal-routing">configure the Jev router</a>. To work with a live page, <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#connect-chrome">connect the Chrome bridge</a>.</p>
+            <p>Ask your agent to use Gallium, then give it the question and the public URL. You can make the same request in a terminal. First, configure the Jev router. The Chrome bridge adds access to live pages. <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#shared-service-and-internal-routing">Router setup</a> · <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#connect-chrome">Chrome bridge setup</a></p>
             <div class="command-block">
               <div class="command-bar">
                 <span>Terminal</span>
@@ -317,6 +377,7 @@ npm run demo</code></pre>
       <div class="faq">
         <details><summary>When do I need Chrome?</summary><p>Live page tasks and requests inside a browser session use desktop Chrome with the Gallium bridge enabled. The demo and direct HTTPS reads run from the local engine.</p></details>
         <details><summary>Can it work on a site I'm signed into?</summary><p>Yes, with a procedure that names the account, the allowed actions, and the result to check. Gallium can use the existing session in the Chrome tab you enabled.</p></details>
+        <details><summary>What if a public site asks me to sign in?</summary><p>A public lookup stops at sign-in and challenge pages and tells your agent what it hit. Use a configured account workflow for signed-in work. That lets you pause and take over a step in Chrome.</p></details>
         <details><summary>Do I need a model key?</summary><p>Public lookups and goal-based procedure matching use Jev through OpenRouter. The fixture demo and procedures with fixed steps can run locally without a model call.</p></details>
         <details><summary>What gets sent to the model?</summary><p>The engine and journal live on your machine. When a task uses Jev, Gallium sends the goal and the page excerpts, controls, or nonsecret procedure details it needs to make a decision. The browser uses cookies and CSRF tokens inside the tab.</p></details>
         <details><summary>Can I use another MCP client?</summary><p>Configure it to launch <code>node bin/mcp.mjs</code> from the checkout. Gallium exposes <code>web_task</code> for goals, <code>web_status</code> for receipts, and <code>web_control</code> for pause and handback.</p></details>

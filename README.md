@@ -2,7 +2,7 @@
 
 <img src="site/og-card.png" width="900" alt="Gallium. Like Chromium, but fluid.">
 
-Gallium runs web tasks for AI agents. Give it a goal through MCP or the CLI. It can read a public page over HTTPS, then switch to Chrome if the answer takes a search or a click. When you ask it to change a configured account, it reads back the result to check that the change took effect.
+Use Gallium in place of your agent's default browser skill. The skill hands the whole job to a local engine through MCP or the CLI. Gallium can fetch a public document directly or switch to Chrome if the answer takes a search or a click. For a change you've configured, it reads back the result.
 
 [Visit the website](https://davidjbeveridge.github.io/gallium/) · [Setup and configuration](docs/guide.md) · [Validation](VALIDATION.md)
 
@@ -29,11 +29,14 @@ actionsAfterHumanCompletedGoal        0
 
 | Task | What Gallium does |
 | --- | --- |
-| **Find a fact on a public site** | Reads the page or follows supported controls in Chrome, then returns a source passage you can check. |
+| **Quote a line from a public guide** | Fetches the text directly when it can and returns the passage with its URL. |
+| **Find an answer on a live page** | Uses Chrome to follow links, search, or wait for content. One request covered three Next clicks in the quote demo. |
 | **Change a setting on a configured account** | Checks the account, uses an allowed route, and independently reads back the result. |
 | **Take over partway through** | Pauses the scope, releases the browser debugger when handoff is confirmed, and waits for an explicit handback. |
 
 Public exploration needs a configured model router. Signed-in tasks and changes need a procedure that defines the account, actions, and verification. The current browser integration uses desktop Chrome and requires explicit extension setup.
+
+[See the five task demos](https://davidjbeveridge.github.io/gallium/#workflow)
 
 ## Install the engine
 
@@ -73,10 +76,10 @@ gallium task --operation rfc2324-status \
 Run this from the project where you use your agent:
 
 ```sh
-npx skills add davidjbeveridge/gallium --skill gallium
+npx skills add davidjbeveridge/gallium
 ```
 
-The skill tells the agent how to delegate tasks through the CLI or MCP server. Set those up with the [engine installer](#install-the-engine).
+The skill uses the CLI or MCP server from the engine installer. Open a new agent session to load it. Add “Use the Gallium skill for web tasks.” to your project's agent instructions to make it your default. [Engine setup](#install-the-engine)
 
 ## How control and verification work
 

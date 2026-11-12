@@ -257,9 +257,10 @@ h3 { font-size: clamp(1.3rem, 2.55vw, 1.85rem); font-weight: 715; }
   }
 }
 
-.architecture { background: var(--paper); }
-.engine-notes, .setup-steps { display: flex; flex-direction: column; gap: clamp(30px, 6vw, 62px); }
-.engine-notes p, .setup-steps article > p { color: var(--steel); margin: 11px 0; max-width: 64ch; }
+.use-cases, .architecture { background: var(--paper); }
+.case-list, .engine-notes, .setup-steps { display: flex; flex-direction: column; gap: clamp(30px, 6vw, 62px); }
+.case-list p, .engine-notes p, .setup-steps article > p { color: var(--steel); margin: 11px 0; max-width: 64ch; }
+.case-list blockquote { margin: 12px 0 8px; color: var(--signal-ink); font-weight: 600; }
 .engine-notes p + p { margin-top: 9px; }
 .route-order { margin: 11px 0 15px; padding-left: 1.45em; }
 .route-order li { padding-left: .12em; }
@@ -384,8 +385,8 @@ code { font-family: var(--mono); }
   .lede { margin-block: 14px 20px; }
   .hero-actions { gap: 6px 15px; }
   .motion-toggle { right: 6px; bottom: 6px; }
-  .route-tabs { flex-wrap: nowrap; gap: 4px; }
-  .route-tabs button { flex: 1 1 0; min-width: 0; padding-inline: 4px; font-size: .8rem; text-wrap: balance; }
+  .route-tabs { gap: 4px; }
+  .route-tabs button { flex: 1 1 auto; min-width: 44px; padding-inline: 2px; font-size: .8rem; }
   .route-result { padding: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
