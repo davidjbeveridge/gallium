@@ -1,23 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   <defs>
     <radialGradient id="back" cx=".64" cy=".38" r=".65"><stop stop-color="#37434a"/><stop offset=".62" stop-color="#192228"/><stop offset="1" stop-color="#10171b"/></radialGradient>
-    <linearGradient id="face" x1=".1" y1="0" x2=".83" y2="1" gradientUnits="objectBoundingBox">
-      <stop stop-color="#f9ffff"/><stop offset=".15" stop-color="#b7c5cb"/><stop offset=".36" stop-color="#52656e"/><stop offset=".48" stop-color="#e8f3f5"/><stop offset=".55" stop-color="#fdffff"/><stop offset=".70" stop-color="#8a9ba4"/><stop offset=".91" stop-color="#dae7ea"/><stop offset="1" stop-color="#849ba9"/>
-    </linearGradient>
-    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#28353b"/><stop offset=".52" stop-color="#7f919b"/><stop offset=".72" stop-color="#29363e"/><stop offset="1" stop-color="#526872"/></linearGradient>
     <linearGradient id="pool" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#171e23"/><stop offset=".45" stop-color="#92a8b2"/><stop offset=".52" stop-color="#e9f4f6"/><stop offset=".67" stop-color="#536670"/><stop offset="1" stop-color="#283339"/></linearGradient>
     <filter id="shadow"><feGaussianBlur stdDeviation="17"/></filter>
-    <path id="g" d="M32 6a26 26 0 1 0 26 26v-5H32v10h15A16 16 0 1 1 43 20l7-7A26 26 0 0 0 32 6Z"/>
-    <path id="drop" d="M49 45c0 0-8 7-8 12a8 8 0 0 0 16 0c0-5-8-12-8-12Z"/>
+    <g id="tile" fill="currentColor" font-family="Arial, sans-serif">
+      <rect x="3" y="3" width="58" height="58" fill="none" stroke="currentColor" stroke-width="3.5"/>
+      <text x="12" y="19" font-size="10">31</text>
+      <text x="32" y="47" font-size="29" font-weight="700" text-anchor="middle">Ga</text>
+    </g>
   </defs>
   <path fill="url(#back)" d="M0 0h1280v720H0z"/>
   <ellipse cx="680" cy="613" rx="265" ry="25" fill="#000" opacity=".75" filter="url(#shadow)"/>
   <path d="M393 612c38-19 107-7 145-12 45-7 80-13 124-13 67 1 136 7 170 16 40 11 94 8 82 16-15 10-147 19-251 17-120-2-284-10-270-24Z" fill="url(#pool)"/>
-  <g transform="translate(454 112) scale(6.4) rotate(-12 32 32)">
-    <g fill="url(#edge)" stroke="#37454e" stroke-width=".6">
-      <use href="#g" transform="translate(3.1 3.5)"/><use href="#g" transform="translate(2.3 2.6)"/><use href="#g" transform="translate(1.6 1.8)"/><use href="#g" transform="translate(.8 .9)"/>
-      <use href="#drop" transform="translate(2.4 2.8)"/>
+  <g transform="translate(454 112) scale(6.4) rotate(-8 32 32)">
+    <g color="#41515a">
+      <use href="#tile" transform="translate(2.4 3)"/>
+      <use href="#tile" transform="translate(1.6 2)"/>
+      <use href="#tile" transform="translate(.8 1)"/>
     </g>
-    <g fill="url(#face)" stroke="#d4e0e4" stroke-width=".32" stroke-linejoin="round"><use href="#g"/><use href="#drop"/></g>
+    <use href="#tile" color="#e1ecef"/>
   </g>
 </svg>

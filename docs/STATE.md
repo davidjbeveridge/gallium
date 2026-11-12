@@ -74,4 +74,9 @@ The owner selected Gallium. The GitHub repository and public package, CLI, MCP, 
 - The preview uses a split G and drop mark, a graphite and platinum palette, and a period-four element strip. It gives installation the primary call to action. The command clones and installs from this repository. Codex registration is optional when the Codex CLI is absent.
 - Chrome checked the layout at 320, 390, 820, 1024, and 1440 pixels. Clipboard contents and status, FAQ disclosure, video playback, manual pause, offscreen pause, and the reduced-motion still passed. The 92-test runtime suite and static site checks passed.
 - Astra reviewed the renders twice. The second review gave the install path 9/10, composition and legibility 8.5/10, and brand distinction 8/10. It identified unrealistic compression in the local melt. The fallback was then revised to enter a growing pool and was checked for playback. It has not received a new independent visual score.
-- Google Flow received the metallic mark reference and is waiting on one 24-credit approval before generating the 8-second shot. The local six-second WebM is a stylized fallback. The redesigned site remains a preview pending the final motion review.
+- The approved square Arial Ga tile is now used in the navigation, favicon, hero still, six-second local loop, and social card. Static site checks passed. The new hero still is prepared as a Flow reference. The old pending Flow render uses the previous mark and was left unsubmitted. The redesign remains local.
+
+## Final elemental release
+
+- Google Flow generated one eight-second Omni 1.2 Flash clip from the approved square Ga tile for 24 credits. The site serves the silent WebM, with the approved still for reduced motion. The deterministic loop remains reproducible from its source.
+- All 92 unit tests passed. The extension built locally. The local browser fixture detected two bridge connections, so the isolated CI browser gate is the release check.

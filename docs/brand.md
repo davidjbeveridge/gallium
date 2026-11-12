@@ -1,6 +1,6 @@
 # Gallium visual identity
 
-The mark is a split G and a falling drop. Use the one-color silhouette for small icons, the navigation, and places that need a clean stamp. Its metallic form uses the same G and drop, with depth and broad reflections. The periodic tile is a separate label with the real element data: 31, Ga, Gallium, 69.723.
+The logo is a transparent square outline containing Ga and atomic number 31. Use the same monochrome tile at small sizes and reverse it on dark surfaces. Arial Bold sets Ga, with regular Arial for 31. The frame has sharp 90-degree corners.
 
 | Role | Color | Use |
 | --- | --- | --- |
