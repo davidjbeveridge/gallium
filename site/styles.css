@@ -227,6 +227,7 @@ h3 { font-size: clamp(1.35rem, 2.45vw, 2.1rem); font-weight: 720; }
 .periodic-chromium { background: #414d53; }
 .periodic-row[data-active] .periodic-cell { background: #45555d; }
 .periodic-cell:hover, .periodic-row[data-active] .periodic-cell:hover { background: #5a6e76; }
+.periodic-cell:hover small { color: #f0f5f6; }
 .periodic-board:not([data-interactive]) .periodic-gallium, .periodic-row .periodic-cell[data-selected] {
   color: #132226;
   background: var(--signal);

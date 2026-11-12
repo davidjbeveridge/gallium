@@ -118,3 +118,5 @@ The Xenia critique found that the old pool read as a pedestal and repeated gradi
 A single WebGL Ga tile now melts in place through a shallow sag and traveling chrome reflection. The tile remains in view, then turns with the pointer after the melt. The bevel is slight. Pause and replay are available, rendering suspends offscreen, and a matching WebP still covers reduced motion and unavailable WebGL.
 
 Verified 17 Xenia preservation checks, the material bounds at neutral and extreme poses, and the interactive page in isolated Chrome at 320–1440 px. Pause, replay during pointer motion, touch selection, keyboard navigation, clipboard, reduced motion, unavailable WebGL, and the static page passed. Type checking, all 92 tests, and site checks passed.
+
+The final hover check measured 4.86:1 contrast for the atomic number on an unselected tile.
