@@ -19,24 +19,16 @@ copyButton.addEventListener('click', async () => {
 });
 
 const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const strip = document.querySelector('.element-strip');
-let scrollFrame = 0;
-
-function updateTile() {
-  scrollFrame = 0;
-  if (motion.matches) return;
-  const box = strip.getBoundingClientRect();
-  const progress = Math.max(0, Math.min(1, (innerHeight - box.top) / (innerHeight * 0.8)));
-  strip.style.setProperty('--lift', `${-24 * progress}px`);
+const board = document.querySelector('.periodic-board');
+if ('IntersectionObserver' in window && !motion.matches) {
+  board.setAttribute('data-awaiting', '');
+  const revealGallium = new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return;
+    board.removeAttribute('data-awaiting');
+    revealGallium.disconnect();
+  }, { threshold: 0.3 });
+  revealGallium.observe(board);
 }
-
-function requestTileUpdate() {
-  if (!scrollFrame) scrollFrame = requestAnimationFrame(updateTile);
-}
-
-window.addEventListener('scroll', requestTileUpdate, { passive: true });
-motion.addEventListener('change', requestTileUpdate);
-requestTileUpdate();
 
 if ('IntersectionObserver' in window) {
   const sections = document.querySelectorAll('.section-heading, .steps li, .faq details');
