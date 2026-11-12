@@ -39,7 +39,7 @@ class Page(HTMLParser):
                 self.links.append(attrs["src"])
             self.in_schema = attrs.get("type") == "application/ld+json"
         if tag == "video":
-            self.links.append(attrs["data-motion-src"])
+            self.links.extend((attrs["data-motion-src"], attrs["data-motion-fallback"]))
 
     def handle_data(self, data):
         if self.in_schema:

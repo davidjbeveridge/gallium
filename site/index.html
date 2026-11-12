@@ -67,6 +67,11 @@
 
   <main>
     <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-media" aria-hidden="true">
+        <img class="material-poster" src="media/gallium-hero.webp" alt="" width="1280" height="720" fetchpriority="high">
+        <video data-motion-src="media/gallium-flow-melt.webm" data-motion-fallback="media/gallium-flow-melt.mp4" muted loop playsinline preload="none" hidden></video>
+      </div>
+      <button class="motion-toggle" type="button" aria-label="Pause background video" title="Pause background video" hidden></button>
       <div class="shell hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">LOCAL BROWSER AUTOMATION</p>
@@ -82,12 +87,6 @@ npm run install:local</code></pre>
           </div>
           <p class="requirements">Git and Node 24+ · Codex optional · <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#connect-chrome">Connect Chrome</a> separately.</p>
         </div>
-        <figure class="material" aria-label="The Gallium mark rendered in polished metal">
-          <img class="material-poster" src="media/gallium-hero.webp" alt="" width="1280" height="720" fetchpriority="high">
-          <video data-motion-src="media/gallium-flow-melt.webm" muted loop playsinline preload="none" hidden aria-hidden="true"></video>
-          <figcaption>GALLIUM · STATE CHANGE</figcaption>
-          <button class="motion-toggle" type="button" hidden>Pause animation</button>
-        </figure>
       </div>
     </section>
 

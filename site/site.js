@@ -56,35 +56,70 @@ if ('IntersectionObserver' in window) {
 }
 
 const video = document.querySelector('[data-motion-src]');
+const heroMedia = video.parentElement;
 const motionButton = document.querySelector('.motion-toggle');
-let inView = false;
+let inView = !('IntersectionObserver' in window);
 let userPaused = false;
 
+function updateControl(paused) {
+  const label = paused ? 'Play background video' : 'Pause background video';
+  motionButton.toggleAttribute('data-paused', paused);
+  motionButton.setAttribute('aria-label', label);
+  motionButton.title = label;
+}
+
+function loadVideo() {
+  if (video.firstElementChild) return;
+  for (const [url, type] of [
+    [video.dataset.motionSrc, 'video/webm'],
+    [video.dataset.motionFallback, 'video/mp4'],
+  ]) {
+    const source = document.createElement('source');
+    source.src = url;
+    source.type = type;
+    video.append(source);
+  }
+  video.load();
+}
+
 function updateVideo() {
-  const reduced = motion.matches;
-  video.hidden = reduced;
-  motionButton.hidden = reduced || !video.currentSrc;
-  if (reduced || userPaused || !inView || document.hidden) {
+  if (motion.matches || userPaused || !inView || document.hidden) {
     video.pause();
+    if (motion.matches) {
+      heroMedia.removeAttribute('data-playing');
+      video.hidden = true;
+      motionButton.hidden = true;
+    }
     return;
   }
 
-  if (!video.getAttribute('src')) video.src = video.dataset.motionSrc;
+  loadVideo();
+  video.hidden = false;
   video.play().then(() => {
-    if (motion.matches || userPaused || !inView || document.hidden) video.pause();
-    motionButton.hidden = motion.matches;
-  }).catch(() => {
-    video.hidden = true;
-    motionButton.hidden = true;
+    if (motion.matches || userPaused || !inView || document.hidden) {
+      video.pause();
+      return;
+    }
+    heroMedia.setAttribute('data-playing', '');
+    motionButton.hidden = false;
+    updateControl(false);
+  }).catch((error) => {
+    if (error.name !== 'NotAllowedError' || motion.matches || !inView || document.hidden) return;
+    userPaused = true;
+    motionButton.hidden = false;
+    updateControl(true);
   });
 }
 
 motionButton.addEventListener('click', () => {
   userPaused = !userPaused;
-  motionButton.textContent = userPaused ? 'Play animation' : 'Pause animation';
+  updateControl(userPaused);
   updateVideo();
 });
-motion.addEventListener('change', updateVideo);
+motion.addEventListener('change', () => {
+  if (!motion.matches && userPaused) motionButton.hidden = false;
+  updateVideo();
+});
 document.addEventListener('visibilitychange', updateVideo);
 
 if ('IntersectionObserver' in window) {
@@ -92,5 +127,7 @@ if ('IntersectionObserver' in window) {
     inView = entry.isIntersecting;
     updateVideo();
   }, { threshold: 0.2 });
-  mediaObserver.observe(video.closest('figure'));
+  mediaObserver.observe(video.closest('.hero'));
+} else {
+  updateVideo();
 }

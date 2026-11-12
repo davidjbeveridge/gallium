@@ -80,3 +80,9 @@ The owner selected Gallium. The GitHub repository and public package, CLI, MCP, 
 
 - Google Flow generated one eight-second Omni 1.2 Flash clip from the approved square Ga tile for 24 credits. The site serves the silent WebM, with the approved still for reduced motion. The deterministic loop remains reproducible from its source.
 - All 92 unit tests passed. The extension built locally. The local browser fixture detected two bridge connections, so the isolated CI browser gate is the release check.
+
+## Full-bleed site hero
+
+The existing Gallium melt plays behind the hero with a staggered text entrance and a corner pause control. Mobile keeps the tile in frame above the text. Reduced motion uses the still and skips video loading. The silent H.264 MP4 backs up WebM.
+
+Verified in isolated Chrome at 320, 390, 820, 1024, and 1440 px, including clipboard contents, pause, offscreen suspension, reduced motion, and actual MP4 playback with WebM blocked. All 92 project tests passed.
