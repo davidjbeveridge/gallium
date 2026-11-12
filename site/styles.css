@@ -42,8 +42,7 @@ button { font: inherit; }
 .hero-media {
   position: relative;
   aspect-ratio: 4 / 3;
-  overflow: hidden;
-  background: #101619;
+  perspective: 850px;
 }
 .hero-media img, .hero-media video {
   position: absolute;
@@ -51,9 +50,19 @@ button { font: inherit; }
   width: 100%;
   height: 100%;
   object-fit: cover;
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent),
+    linear-gradient(to bottom, transparent, black 11%, black 88%, transparent);
+  mask-composite: intersect;
 }
-.hero-media img { z-index: 1; }
-.hero-media[data-playing] img { visibility: hidden; }
+.hero-media img {
+  z-index: 1;
+  pointer-events: none;
+  transform: rotateX(var(--pitch, 0deg)) rotateY(var(--yaw, 0deg));
+  transition: opacity 700ms ease, transform 240ms ease-out;
+}
+.hero-media[data-playing] img { opacity: 0; transition-duration: 160ms, 240ms; }
+.hero-media video { transition: opacity 700ms ease; }
+.hero-media[data-settled] video { opacity: 0; }
 @media (prefers-reduced-motion: no-preference) {
   .hero-copy > * { animation: hero-enter .68s cubic-bezier(.2,.7,.25,1) both; }
   .hero-copy > :nth-child(2) { animation-delay: .08s; }

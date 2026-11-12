@@ -100,6 +100,7 @@ function updateVideo() {
       video.pause();
       return;
     }
+    heroMedia.removeAttribute('data-settled');
     heroMedia.setAttribute('data-playing', '');
     motionButton.hidden = false;
     updateControl(false);
@@ -111,9 +112,30 @@ function updateVideo() {
   });
 }
 
-video.addEventListener('ended', () => updateControl(true));
+video.addEventListener('ended', () => {
+  heroMedia.setAttribute('data-settled', '');
+  heroMedia.removeAttribute('data-playing');
+  updateControl(true);
+});
+
+const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+heroMedia.addEventListener('pointermove', (event) => {
+  if (!video.ended || motion.matches || !finePointer.matches || event.pointerType !== 'mouse') return;
+  const box = heroMedia.getBoundingClientRect();
+  heroMedia.style.setProperty('--pitch', `${(0.5 - (event.clientY - box.top) / box.height) * 8}deg`);
+  heroMedia.style.setProperty('--yaw', `${((event.clientX - box.left) / box.width - 0.5) * 10}deg`);
+});
+
+function resetTilt() {
+  heroMedia.style.removeProperty('--pitch');
+  heroMedia.style.removeProperty('--yaw');
+}
+
+heroMedia.addEventListener('pointerleave', resetTilt);
+finePointer.addEventListener('change', resetTilt);
 motionButton.addEventListener('click', () => {
   if (video.ended) {
+    resetTilt();
     video.currentTime = 0;
     userPaused = false;
   } else {
@@ -123,6 +145,7 @@ motionButton.addEventListener('click', () => {
   updateVideo();
 });
 motion.addEventListener('change', () => {
+  resetTilt();
   if (!motion.matches && userPaused) motionButton.hidden = false;
   updateVideo();
 });

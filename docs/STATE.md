@@ -92,3 +92,5 @@ Mobile follow-up: the melt sits behind the headline, with the copy button visibl
 Hero loop follow-up: the existing clip reverses before the Ga tile leaves the frame. Both video formats return to the opening pose and loop with the mark visible throughout.
 
 Hero motion and layout follow-up: Astra recommended a forward one-shot that settles on the tile, with matched transition frames required for any future intro and steady-state pair. The site uses a 4.8-second edit of the original Flow shot, holds the last frame, and offers replay. Separate copy and media regions remove the mask, with stacked art on phones and natural headline wrapping. Verified Chrome layout at 320–1440 px, end and replay, reduced motion, both codecs, and 92 project tests.
+
+Hero resting state: the one-shot dissolves to its intact opening frame, with a subtle CSS perspective tilt on fine-pointer devices. The video and still feather into the hero on all four edges. Verified the completed transition, pointer response, replay, reduced motion, and both codecs in Chrome at phone through desktop widths. All 92 project tests passed.
