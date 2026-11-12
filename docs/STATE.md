@@ -122,3 +122,9 @@ Verified 17 Xenia preservation checks, the material bounds at neutral and extrem
 The final hover check measured 4.86:1 contrast for the atomic number on an unselected tile.
 
 For the stronger melt, isolated Chrome playback at 320, 390, and 1440 px reached the same pose it started from. Captured frames confirmed visible edge flow and stable lettering through the melt. The pointer, pause, replay, and fallback checks, all 92 tests, and the static site check passed.
+
+## Fluid positioning and install
+
+“Like Chromium, but fluid.” leads the site and social card. The [positioning guide](../.agents/product-marketing.md) grounds that line in route changes during a task. The single-column page replaces the element picker with a Ga walkthrough of the recorded RFC lookup, the Chrome quote lookup, and the local verified save. The Cr disclosure carries the chromium aside.
+
+The `npx skills add davidjbeveridge/gallium --skill gallium` path installs the routing skill in an agent's project. Engine setup provides the CLI and MCP server. A clean Codex project install found the skill under `.agents/skills/gallium`. Isolated Chrome checked the single-column layout from 320 to 1440 px, mouse, touch and keyboard walkthrough selection, all five exact clipboard payloads, and clipboard fallback. Reduced motion and the static page passed. The local fixture verified the save, skipped the duplicate, and retained the pause across restart. All 92 tests, type checking, and the site check passed.

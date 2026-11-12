@@ -1,12 +1,13 @@
 # Gallium
 
-> Gallium is a standalone local web task engine for AI agents. Submit a goal through MCP or the CLI. Gallium chooses a route, adapts to observed page state, and returns source evidence or a verified result from a configured workflow.
+> Gallium runs web tasks for AI agents. Give it a goal through MCP or the CLI. It can read a public document directly, use the live page in Chrome when needed, and check the result of a configured change.
 
 ## Start here
 
-- [Examples](https://davidjbeveridge.github.io/gallium/#workflow): Public HTTPS retrieval, live page exploration, and a verified local fixture change.
+- [Walkthrough](https://davidjbeveridge.github.io/gallium/#workflow): An RFC lookup, a JavaScript page in Chrome, and a local profile save with a separate check.
 - [Engine architecture](https://davidjbeveridge.github.io/gallium/#engine): Route selection, live feedback, durable state, concurrency, and human handoff.
-- [Quickstart](https://davidjbeveridge.github.io/gallium/#install): Run the fixture demo or install the engine with Git and Node.js 24 or later.
+- [Install](https://davidjbeveridge.github.io/gallium/#install): Set up the engine or run the local fixture with Git and Node.js 24 or later.
+- [Agent skill](https://davidjbeveridge.github.io/gallium/#install-skill): Run `npx skills add davidjbeveridge/gallium --skill gallium` in your agent project. The skill uses the installed CLI or MCP server.
 - [Setup and configuration](https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md): Configure the CLI, stdio MCP server, Chrome bridge, model router, and procedures.
 - [Validation](https://github.com/davidjbeveridge/gallium/blob/main/VALIDATION.md): Test commands, observed outcomes, and qualification boundaries.
 
@@ -14,4 +15,4 @@
 
 - Public goals use a configured Jev router through OpenRouter System One. Gallium tries direct HTTPS for document lookups and can move to bounded, same-origin browser exploration. Explicit UI goals start in the live page. The result includes a source URL, passage, and evidence hash. The model assesses relevance.
 - Configured goals match existing procedures. Code prefers direct HTTP, then browser-session requests, then browser interaction among eligible web procedures. Signed-in workflows and mutations require a configured account, allowed actions, and an independent result check. The browser routes use installed desktop Chrome through the bridge.
-- Live observations inform the next step during a run. The SQLite journal tracks operation identity, configured route choices, effects, and human control across restarts. The current release uses fixed route preference. Learned route ranking is a research direction.
+- Gallium chooses its next browser action from the current page. Configured route preference is fixed. The SQLite journal keeps the operation ID, chosen procedure, effects, and human ownership across restarts.

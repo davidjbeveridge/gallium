@@ -4,16 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gallium | Web task engine for AI agents</title>
-  <meta name="description" content="Gallium is a local web task engine for AI agents. It chooses between direct HTTP, browser-session requests, and live interaction, then checks the result.">
+  <meta name="description" content="Gallium runs web tasks for AI agents. It can read public pages directly, switch to Chrome when needed, and check that a configured change took effect.">
   <meta name="theme-color" content="#11181c">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Gallium | Web task engine for AI agents">
-  <meta property="og:description" content="Gallium is a local web task engine for AI agents. It chooses between direct HTTP, browser-session requests, and live interaction, then checks the result.">
+  <meta property="og:title" content="Gallium | Like Chromium, but fluid">
+  <meta property="og:description" content="Gallium runs web tasks for AI agents. It can read public pages directly, switch to Chrome when needed, and check that a configured change took effect.">
   <meta property="og:url" content="https://davidjbeveridge.github.io/gallium/">
   <meta property="og:image" content="https://davidjbeveridge.github.io/gallium/og-card.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Gallium. A better route through the web.">
+  <meta property="og:image:alt" content="Gallium. Like Chromium, but fluid.">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://davidjbeveridge.github.io/gallium/">
   <link rel="icon" href="mark.svg" type="image/svg+xml">
@@ -47,12 +47,12 @@
       "url": "https://davidjbeveridge.github.io/gallium/",
       "applicationCategory": "DeveloperApplication",
       "softwareVersion": "0.2.0",
-      "description": "Gallium is a local web task engine for AI agents. It chooses between direct HTTP, browser-session requests, and live interaction, then checks the result.",
+      "description": "Gallium runs web tasks for AI agents. It can read public pages directly, switch to Chrome when needed, and check that a configured change took effect.",
       "softwareRequirements": "Node.js 24+. Desktop Chrome and the Gallium bridge for browser routes.",
       "featureList": [
-        "Bounded public HTTPS reads with source passages",
-        "Live read-only exploration through the Chrome bridge",
-        "Configured workflows with independent result verification",
+        "Direct HTTPS lookups with passages from the source",
+        "Live public site exploration in desktop Chrome",
+        "Configured changes with a separate result check",
         "Persistent operation state and human handoff"
       ],
       "downloadUrl": "https://github.com/davidjbeveridge/gallium",
@@ -63,405 +63,263 @@
   </script>
 </head>
 <body>
+  <svg class="icon-defs" width="0" height="0" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="icon-copy" viewBox="0 0 24 24">
+      <path d="M8 16H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v3"/>
+      <rect x="8" y="8" width="13" height="13" rx="2"/>
+    </symbol>
+    <symbol id="icon-copied" viewBox="0 0 24 24">
+      <path d="m5 12 4 4L19 6"/>
+    </symbol>
+  </svg>
+
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="top">
     <div class="shell nav">
       <a class="brand" href="./"><img src="mark.svg" alt="" width="26" height="26">Gallium</a>
-      <nav aria-label="Main"><a href="#workflow">Examples</a><a href="#engine">Architecture</a><a href="#element">Elements</a><a href="#install">Install</a></nav>
+      <nav aria-label="Main"><a href="#workflow">Walkthrough</a><a href="#engine">How it works</a><a href="#install">Install</a></nav>
       <a class="source-link" href="https://github.com/davidjbeveridge/gallium">GitHub <span aria-hidden="true">↗</span></a>
     </div>
   </header>
 
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
-      <div class="shell hero-grid">
-        <div class="hero-copy">
-          <p class="eyebrow">WEB TASK ENGINE FOR AI AGENTS</p>
-          <h1 id="hero-title">A better route through the web.</h1>
-          <p class="lede">Gallium is a standalone engine that takes a web goal, chooses how to reach it, and adapts to what it finds. It brings back a source passage or checks that a configured change took effect.</p>
-          <div class="hero-actions">
-            <a class="primary" href="#install">Install Gallium <span aria-hidden="true">↘</span></a>
-            <a class="hero-secondary" href="#workflow">See a task run <span aria-hidden="true">↓</span></a>
-          </div>
-          <p class="requirements">Runs locally through the CLI or MCP.</p>
-        </div>
+      <div class="shell hero-stack">
         <div class="hero-media">
           <img class="material-poster" src="media/gallium-chrome.webp" alt="" width="896" height="672" fetchpriority="high">
           <canvas class="hero-metal" width="640" height="480" aria-hidden="true" hidden></canvas>
           <button class="motion-toggle" type="button" aria-label="Pause melt animation" title="Pause melt animation" hidden></button>
         </div>
+        <div class="hero-copy">
+          <h1 id="hero-title">Like Chromium, <span>but fluid.</span></h1>
+          <p class="lede">Gallium runs web tasks for AI agents. It can read a public page over HTTPS, then switch to Chrome if finding the answer takes a search or a click.</p>
+          <div class="hero-actions">
+            <a class="primary" href="#install">Install Gallium</a>
+            <a class="hero-secondary" href="#workflow">See how it works <span aria-hidden="true">↓</span></a>
+          </div>
+          <p class="requirements">Runs locally through MCP or the CLI.</p>
+        </div>
       </div>
     </section>
 
-    <section id="workflow" class="shell examples" aria-labelledby="workflow-title">
-      <div class="section-heading split-heading">
-        <h2 id="workflow-title">From a goal to evidence.</h2>
-        <p>Driving a browser one action at a time leaves the agent to decide what to click, when to wait, and whether the job is done. Gallium handles that loop inside one task request. When a document has the answer, it can fetch the text directly.</p>
+    <section id="workflow" class="measure walkthrough" aria-labelledby="workflow-title">
+      <div class="section-heading">
+        <h2 id="workflow-title">Follow a task</h2>
+        <p>Pick a recorded run to see how Gallium got to the result.</p>
       </div>
 
-      <div class="route-console">
+      <div class="route-console" id="element">
+        <div class="route-console-head">
+          <img class="route-mark" src="mark.svg" alt="Gallium" width="58" height="58">
+          <details class="chromium">
+            <summary aria-label="Chromium" title="Chromium">Cr</summary>
+            <p>Chromium polishes up nicely. It takes a lot more heat to make it flow.</p>
+          </details>
+        </div>
         <div class="route-tabs" data-route-tabs hidden>
-          <button type="button" id="tab-document" aria-controls="route-document">Read a document</button>
-          <button type="button" id="tab-live" aria-controls="route-live">Explore a live page</button>
-          <button type="button" id="tab-verify" aria-controls="route-verify">Verify a change</button>
+          <button type="button" id="tab-document" aria-controls="route-document">Read an RFC</button>
+          <button type="button" id="tab-live" aria-controls="route-live">Find a quote</button>
+          <button type="button" id="tab-verify" aria-controls="route-verify">Check a save</button>
         </div>
 
         <article class="route-panel" id="route-document" data-route-panel>
-          <div class="route-story">
-            <h3>“What does status 418 mean?”</h3>
-            <ol class="trace">
-              <li><strong>Fetch the source.</strong> A direct HTTPS request gets the text of RFC 2324.</li>
-              <li><strong>Select the passage.</strong> The model picks from excerpts in the document.</li>
-              <li><strong>Return the evidence.</strong> Gallium includes the source URL and a hash of the passage.</li>
-            </ol>
-          </div>
+          <h3>What does HTTP status 418 mean?</h3>
+          <ol class="trace">
+            <li><span>HTTPS</span><p>Gallium fetches RFC 2324 as plain text.</p></li>
+            <li><span>Passage</span><p>The model picks an excerpt. Gallium returns it with the source URL and a hash of the passage.</p></li>
+          </ol>
           <div class="route-result">
-            <p class="console-label">Public lookup · Response excerpt</p>
-            <pre><code>{
-  "state": <span class="code-value">"evidence_found"</span>,
-  "route": <span class="code-value">"public-http"</span>
-}</code></pre>
-            <p class="result-note">RFC 2324 calls it <a href="https://datatracker.ietf.org/doc/html/rfc2324#section-2.3.2">“418 I’m a teapot.”</a></p>
+            <p class="result-state"><code>evidence_found</code> <code>public-http</code></p>
+            <blockquote>“418 I'm a teapot”</blockquote>
+            <a href="https://datatracker.ietf.org/doc/html/rfc2324#section-2.3.2">RFC 2324, section 2.3.2</a>
           </div>
         </article>
 
         <article class="route-panel" id="route-live" data-route-panel>
-          <div class="route-story">
-            <h3>“Start the example and report the greeting when it loads.”</h3>
-            <ol class="trace">
-              <li><strong>Open a task tab.</strong> An explicit UI request goes straight to the live page.</li>
-              <li><strong>Act on what’s visible.</strong> Gallium selects Start, then waits when it sees a loading indicator.</li>
-              <li><strong>Check again.</strong> It finds the greeting, confirms it is still in the live DOM, and closes its tab.</li>
-            </ol>
-          </div>
+          <h3>Find the Bob Marley quote about who's worth suffering for.</h3>
+          <ol class="trace">
+            <li><span>HTTPS</span><p>The fetched HTML has a template for the quotes. JavaScript fills it in.</p></li>
+            <li><span>Chrome</span><p>Gallium opens a task tab and follows Next three times. It checks the quote in the rendered page before closing its tab.</p></li>
+          </ol>
           <div class="route-result">
-            <p class="console-label">Live exploration · Response excerpt</p>
-            <pre><code>{
-  "state": <span class="code-value">"evidence_found"</span>,
-  "route": <span class="code-value">"shared-chrome-exploration"</span>
-}</code></pre>
-            <p class="result-note">The <a href="https://github.com/davidjbeveridge/gallium/blob/main/VALIDATION.md#recipe-free-dynamic-exploration">live MCP test</a> found “Hello World!” after loading.</p>
+            <p class="result-state"><code>evidence_found</code> <code>shared-chrome-exploration</code></p>
+            <blockquote>“You just got to find the ones worth suffering for.”</blockquote>
+            <a href="https://quotes.toscrape.com/js/page/4/">Quotes to Scrape, page 4</a>
           </div>
         </article>
 
         <article class="route-panel" id="route-verify" data-route-panel>
-          <div class="route-story">
-            <h3>“Save Ada as the profile name.”</h3>
-            <ol class="trace">
-              <li><strong>Run the procedure.</strong> The local demo uses a fixture with a defined save action.</li>
-              <li><strong>Read back the result.</strong> Gallium checks the saved name independently.</li>
-              <li><strong>Handle a repeat.</strong> Reusing the operation ID returns the verified receipt.</li>
-            </ol>
-          </div>
+          <h3>Save Ada as the profile name.</h3>
+          <ol class="trace">
+            <li><span>Procedure</span><p>The local fixture saves Ada to a test profile.</p></li>
+            <li><span>Read back</span><p>Gallium checks the stored name. When the same operation ID comes in again, it returns the receipt and skips the save.</p></li>
+          </ol>
           <div class="route-result">
-            <p class="console-label">Local demo · Output excerpt</p>
-            <pre><code>{
-  "firstOperation": <span class="code-value">"verified"</span>,
-  "repeatResult": <span class="code-value">"ALREADY_VERIFIED"</span>,
-  "pauseSurvivedRestart": <span class="code-value">true</span>,
-  "actionsAfterHumanCompletedGoal": <span class="code-value">0</span>
-}</code></pre>
-            <p class="result-note"><a href="#demo">Run the same fixture on your machine</a>.</p>
+            <p class="result-state"><code>verified</code></p>
+            <p>Repeat request returned <code>ALREADY_VERIFIED</code>.</p>
+            <a href="#demo">Run this demo locally</a>
           </div>
         </article>
       </div>
     </section>
 
-    <section id="engine" class="workflow" aria-labelledby="engine-title">
-      <div class="shell workflow-inner">
-        <div class="section-heading split-heading">
-          <h2 id="engine-title">Inside the engine.</h2>
-          <p>CLI and MCP clients share one local service per state directory. Its task controller makes routing decisions, adapters execute them, and a SQLite journal records what happened.</p>
+    <section id="engine" class="architecture" aria-labelledby="engine-title">
+      <div class="measure section-stack">
+        <div class="section-heading">
+          <h2 id="engine-title">How Gallium runs a task</h2>
+          <p>The CLI and MCP server share a local service by default. Give it a goal and an operation ID. The service picks the route and keeps the receipt in SQLite.</p>
         </div>
-
-        <figure class="engine-map" aria-labelledby="map-caption">
-          <figcaption id="map-caption">Task execution</figcaption>
-          <ol>
-            <li><a href="#install"><strong>CLI or MCP</strong><span>Goal + operation ID</span></a></li>
-            <li><a href="#engine-routing"><strong>Task controller</strong><span>Intent + route policy</span></a></li>
-            <li class="engine-routes">
-              <a href="#engine-execution">
-                <strong>Execution adapter</strong>
-                <span>Direct HTTP</span><span>Browser-session request</span><span>Page interaction</span>
-              </a>
-            </li>
-            <li><a href="#workflow"><strong>Result</strong><span>Source evidence or verified state</span></a></li>
-          </ol>
-          <a class="journal-link" href="#engine-journal"><strong>SQLite journal</strong><span>Operation identity, effects, and ownership</span></a>
-        </figure>
 
         <div class="engine-notes">
           <article id="engine-routing">
-            <h3>Pick a route.</h3>
-            <p>For a public URL, Gallium assesses the goal and tries HTTPS when document text could answer it. Missing evidence or certain fetch failures can move the task to live exploration. An explicit request to use the interface starts there.</p>
-            <p>For a configured task, Gallium filters procedures by scope and input. Jev, the model, makes one structured assessment of which candidates fit the goal. Code picks an eligible procedure in the following order and keeps it for that operation.</p>
+            <h3>Start with the request</h3>
+            <p>A public lookup can start with a direct HTTPS read. If the text comes up short, Gallium can open the site in Chrome. Ask it to use the interface and it starts in Chrome.</p>
+            <p>For a configured account, the Jev model checks which procedures fit the goal. The controller uses the first eligible route in this order.</p>
             <ol class="route-order">
               <li>Direct HTTP request</li>
-              <li>Request inside the signed-in browser session</li>
-              <li>Browser interaction</li>
+              <li>Request inside the signed-in Chrome session</li>
+              <li>Interaction with the page</li>
             </ol>
-            <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/src/task-controller.ts">Read the task controller <span aria-hidden="true">↗</span></a>
+            <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/src/task-controller.ts">Read the task controller</a>
           </article>
 
           <article id="engine-execution">
-            <h3>Observe, act, and check.</h3>
-            <p>Gallium observes visible controls and passages. Jev can select an observed control, identify a loading state, or point to a passage that answers the question. The engine validates the selection, acts, and looks again.</p>
-            <p>Public exploration stays on the same origin. It runs for up to 12 decision steps or 60 seconds and stops when the next action has an unclear effect. Gallium rechecks the chosen passage in the live page before returning it. Jev assesses relevance.</p>
-            <p>Configured procedures can use deterministic steps or a structured model decision. The procedure defines a separate check for the actual result.</p>
-            <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/src/exploration.ts">Read the exploration loop <span aria-hidden="true">↗</span></a>
+            <h3>Work from the page</h3>
+            <p>In Chrome, Jev can choose a link or control that Gallium has observed. Gallium checks the choice, acts, and looks again. If the page shows a loading state, it waits.</p>
+            <p>Public exploration stays on the same site origin for up to 12 observations or 60 seconds. Gallium stops when the next action has an unclear effect. Before it returns a passage, it checks that the text is still on the page.</p>
+            <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/src/exploration.ts">Read the exploration loop</a>
           </article>
 
           <article id="engine-journal">
-            <h3>Carry forward the right state.</h3>
-            <p>Feedback drives the next move within a task. Across runs, the journal remembers the selected procedure, verified outcomes, and writes with uncertain effects. If a save may have gone through, Gallium checks the resulting state before any retry.</p>
-            <p>Today’s route preference follows a fixed policy. Gallium records model latency and reported cost for evaluation. Learned route ranking is a research direction in the <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/build-plan.md">architecture roadmap</a>.</p>
-            <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/src/journal.ts">Read the journal schema <span aria-hidden="true">↗</span></a>
+            <h3>Check the result before a retry</h3>
+            <p>A click can go through just before a connection drops. Gallium checks the saved state before it tries that write again. Reuse the same operation ID and inputs so it can pick up the previous receipt and procedure.</p>
+            <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/src/journal.ts">Read the journal schema</a>
           </article>
 
-          <article>
-            <h3>Keep control with the person.</h3>
-            <p>Independent HTTP work can run in parallel. Browser work and work on the same account run in queues. If ownership changes while a task is waiting, the engine discards the stale request.</p>
-            <p>Pause a configured browser workflow to take over. Gallium confirms its debugger has detached and keeps the pause through restarts. After explicit handback, it checks whether you already finished the task.</p>
-            <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#tools-and-control">Read the handoff contract <span aria-hidden="true">↗</span></a>
+          <article id="engine-control">
+            <h3>Take over in Chrome</h3>
+            <p>Pause a configured workflow to finish a step yourself. Gallium releases the debugger and keeps the pause through a restart. After you hand control back, it checks whether you already finished.</p>
+            <p>The service queues Chrome work and requests on the same account. Independent HTTP reads can run in parallel.</p>
+            <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#tools-and-control">Read the handoff guide</a>
           </article>
         </div>
       </div>
-    </section>
-
-    <section class="element-section" id="element" aria-labelledby="element-title">
-      <div class="shell section-heading split-heading">
-        <h2 id="element-title">Element 31.</h2>
-        <p>Gallium <a href="https://periodic-table.rsc.org/element/31/gallium">melts just below 30 °C</a>. It shares a row with chromium on the periodic table. That change of state inspired the tile and its motion.</p>
-      </div>
-      <figure class="periodic-scene">
-        <div class="periodic-stage">
-          <div class="periodic-board" role="table" aria-label="Periodic table of 118 elements" aria-colcount="18">
-            <div class="periodic-row" role="row">
-              <span class="periodic-cell" role="cell" aria-colindex="1" style="--column:1"><small>1</small><b>H</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="18" style="--column:18"><small>2</small><b>He</b></span>
-            </div>
-            <div class="periodic-row" role="row">
-              <span class="periodic-cell" role="cell" aria-colindex="1" style="--column:1"><small>3</small><b>Li</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="2" style="--column:2"><small>4</small><b>Be</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="13" style="--column:13"><small>5</small><b>B</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="14" style="--column:14"><small>6</small><b>C</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="15" style="--column:15"><small>7</small><b>N</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="16" style="--column:16"><small>8</small><b>O</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="17" style="--column:17"><small>9</small><b>F</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="18" style="--column:18"><small>10</small><b>Ne</b></span>
-            </div>
-            <div class="periodic-row" role="row">
-              <span class="periodic-cell" role="cell" aria-colindex="1" style="--column:1"><small>11</small><b>Na</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="2" style="--column:2"><small>12</small><b>Mg</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="13" style="--column:13"><small>13</small><b>Al</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="14" style="--column:14"><small>14</small><b>Si</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="15" style="--column:15"><small>15</small><b>P</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="16" style="--column:16"><small>16</small><b>S</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="17" style="--column:17"><small>17</small><b>Cl</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="18" style="--column:18"><small>18</small><b>Ar</b></span>
-            </div>
-            <div class="periodic-row" role="row">
-              <span class="periodic-cell" role="cell" aria-colindex="1" style="--column:1"><small>19</small><b>K</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="2" style="--column:2"><small>20</small><b>Ca</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="3" style="--column:3"><small>21</small><b>Sc</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="4" style="--column:4"><small>22</small><b>Ti</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="5" style="--column:5"><small>23</small><b>V</b></span>
-              <span class="periodic-cell periodic-chromium" role="cell" aria-colindex="6" style="--column:6"><small>24</small><b>Cr</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="7" style="--column:7"><small>25</small><b>Mn</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="8" style="--column:8"><small>26</small><b>Fe</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="9" style="--column:9"><small>27</small><b>Co</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="10" style="--column:10"><small>28</small><b>Ni</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="11" style="--column:11"><small>29</small><b>Cu</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="12" style="--column:12"><small>30</small><b>Zn</b></span>
-              <span class="periodic-cell periodic-gallium" role="cell" aria-colindex="13" style="--column:13"><small>31</small><b>Ga</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="14" style="--column:14"><small>32</small><b>Ge</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="15" style="--column:15"><small>33</small><b>As</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="16" style="--column:16"><small>34</small><b>Se</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="17" style="--column:17"><small>35</small><b>Br</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="18" style="--column:18"><small>36</small><b>Kr</b></span>
-            </div>
-            <div class="periodic-row" role="row">
-              <span class="periodic-cell" role="cell" aria-colindex="1" style="--column:1"><small>37</small><b>Rb</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="2" style="--column:2"><small>38</small><b>Sr</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="3" style="--column:3"><small>39</small><b>Y</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="4" style="--column:4"><small>40</small><b>Zr</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="5" style="--column:5"><small>41</small><b>Nb</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="6" style="--column:6"><small>42</small><b>Mo</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="7" style="--column:7"><small>43</small><b>Tc</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="8" style="--column:8"><small>44</small><b>Ru</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="9" style="--column:9"><small>45</small><b>Rh</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="10" style="--column:10"><small>46</small><b>Pd</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="11" style="--column:11"><small>47</small><b>Ag</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="12" style="--column:12"><small>48</small><b>Cd</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="13" style="--column:13"><small>49</small><b>In</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="14" style="--column:14"><small>50</small><b>Sn</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="15" style="--column:15"><small>51</small><b>Sb</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="16" style="--column:16"><small>52</small><b>Te</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="17" style="--column:17"><small>53</small><b>I</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="18" style="--column:18"><small>54</small><b>Xe</b></span>
-            </div>
-            <div class="periodic-row" role="row">
-              <span class="periodic-cell" role="cell" aria-colindex="1" style="--column:1"><small>55</small><b>Cs</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="2" style="--column:2"><small>56</small><b>Ba</b></span>
-              <span class="periodic-range" style="--column:3" aria-hidden="true">57–71</span>
-              <span class="periodic-cell" role="cell" aria-colindex="4" style="--column:4"><small>72</small><b>Hf</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="5" style="--column:5"><small>73</small><b>Ta</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="6" style="--column:6"><small>74</small><b>W</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="7" style="--column:7"><small>75</small><b>Re</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="8" style="--column:8"><small>76</small><b>Os</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="9" style="--column:9"><small>77</small><b>Ir</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="10" style="--column:10"><small>78</small><b>Pt</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="11" style="--column:11"><small>79</small><b>Au</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="12" style="--column:12"><small>80</small><b>Hg</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="13" style="--column:13"><small>81</small><b>Tl</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="14" style="--column:14"><small>82</small><b>Pb</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="15" style="--column:15"><small>83</small><b>Bi</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="16" style="--column:16"><small>84</small><b>Po</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="17" style="--column:17"><small>85</small><b>At</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="18" style="--column:18"><small>86</small><b>Rn</b></span>
-            </div>
-            <div class="periodic-row" role="row">
-              <span class="periodic-cell" role="cell" aria-colindex="1" style="--column:1"><small>87</small><b>Fr</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="2" style="--column:2"><small>88</small><b>Ra</b></span>
-              <span class="periodic-range" style="--column:3" aria-hidden="true">89–103</span>
-              <span class="periodic-cell" role="cell" aria-colindex="4" style="--column:4"><small>104</small><b>Rf</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="5" style="--column:5"><small>105</small><b>Db</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="6" style="--column:6"><small>106</small><b>Sg</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="7" style="--column:7"><small>107</small><b>Bh</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="8" style="--column:8"><small>108</small><b>Hs</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="9" style="--column:9"><small>109</small><b>Mt</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="10" style="--column:10"><small>110</small><b>Ds</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="11" style="--column:11"><small>111</small><b>Rg</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="12" style="--column:12"><small>112</small><b>Cn</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="13" style="--column:13"><small>113</small><b>Nh</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="14" style="--column:14"><small>114</small><b>Fl</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="15" style="--column:15"><small>115</small><b>Mc</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="16" style="--column:16"><small>116</small><b>Lv</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="17" style="--column:17"><small>117</small><b>Ts</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="18" style="--column:18"><small>118</small><b>Og</b></span>
-            </div>
-            <div class="periodic-row periodic-series" role="row">
-              <span class="periodic-cell" role="cell" aria-colindex="4" style="--column:4"><small>57</small><b>La</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="5" style="--column:5"><small>58</small><b>Ce</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="6" style="--column:6"><small>59</small><b>Pr</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="7" style="--column:7"><small>60</small><b>Nd</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="8" style="--column:8"><small>61</small><b>Pm</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="9" style="--column:9"><small>62</small><b>Sm</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="10" style="--column:10"><small>63</small><b>Eu</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="11" style="--column:11"><small>64</small><b>Gd</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="12" style="--column:12"><small>65</small><b>Tb</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="13" style="--column:13"><small>66</small><b>Dy</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="14" style="--column:14"><small>67</small><b>Ho</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="15" style="--column:15"><small>68</small><b>Er</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="16" style="--column:16"><small>69</small><b>Tm</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="17" style="--column:17"><small>70</small><b>Yb</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="18" style="--column:18"><small>71</small><b>Lu</b></span>
-            </div>
-            <div class="periodic-row" role="row">
-              <span class="periodic-cell" role="cell" aria-colindex="4" style="--column:4"><small>89</small><b>Ac</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="5" style="--column:5"><small>90</small><b>Th</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="6" style="--column:6"><small>91</small><b>Pa</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="7" style="--column:7"><small>92</small><b>U</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="8" style="--column:8"><small>93</small><b>Np</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="9" style="--column:9"><small>94</small><b>Pu</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="10" style="--column:10"><small>95</small><b>Am</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="11" style="--column:11"><small>96</small><b>Cm</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="12" style="--column:12"><small>97</small><b>Bk</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="13" style="--column:13"><small>98</small><b>Cf</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="14" style="--column:14"><small>99</small><b>Es</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="15" style="--column:15"><small>100</small><b>Fm</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="16" style="--column:16"><small>101</small><b>Md</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="17" style="--column:17"><small>102</small><b>No</b></span>
-              <span class="periodic-cell" role="cell" aria-colindex="18" style="--column:18"><small>103</small><b>Lr</b></span>
-            </div>
-          </div>
-        </div>
-        <figcaption class="shell periodic-caption">
-          <div class="specimen">
-            <div class="specimen-mark" aria-hidden="true"><small id="specimen-number">31</small><b id="specimen-symbol">Ga</b></div>
-            <div class="specimen-detail" role="status">
-              <h3 id="specimen-name">Gallium</h3>
-              <p id="specimen-position">Atomic number 31 · Group 13 · Period&nbsp;4</p>
-            </div>
-          </div>
-          <label class="specimen-picker" hidden>
-            Select an element
-            <select id="element-picker"></select>
-          </label>
-        </figcaption>
-      </figure>
     </section>
 
     <section id="install" class="setup" aria-labelledby="install-title">
-      <div class="shell setup-inner">
-        <div class="section-heading split-heading">
-          <h2 id="install-title">Run Gallium locally.</h2>
-          <p>Start with Git and Node.js 24 or later. The demo runs in a temporary fixture. The full install adds the CLI and routing skill from this repository.</p>
+      <div class="measure section-stack">
+        <div class="section-heading">
+          <h2 id="install-title">Install Gallium</h2>
+          <p>You'll need Git and Node.js 24 or later to run the engine.</p>
         </div>
 
-        <div class="setup-options">
-          <article>
-            <h3>Install the engine.</h3>
-            <p>The installer registers the MCP server when the Codex CLI is available. Already cloned the repo for the demo? Start at <code>npm ci</code>.</p>
+        <div class="setup-steps">
+          <article id="install-engine">
+            <h3>Set up the engine</h3>
+            <p>Run this in a terminal. The installer adds the CLI and routing skill. If you have the Codex CLI, it registers the MCP server too. Open a new chat to load it.</p>
             <div class="command-block">
-              <div class="command-bar"><span>Terminal</span><button type="button" data-copy="install-command" hidden>Copy install commands</button></div>
-              <pre tabindex="0"><code id="install-command">git clone https://github.com/<wbr>davidjbeveridge/<wbr>gallium.git &amp;&amp;
+              <div class="command-bar">
+                <span>Terminal</span>
+                <button class="copy-button" type="button" data-copy="install-command" aria-label="Copy engine install commands" title="Copy engine install commands" hidden>
+                  <svg class="copy-icon" aria-hidden="true"><use href="#icon-copy"/></svg>
+                  <svg class="copied-icon" aria-hidden="true"><use href="#icon-copied"/></svg>
+                </button>
+              </div>
+              <pre tabindex="0"><code id="install-command">git clone https://github.com/davidjbeveridge/gallium.git &amp;&amp;
 cd gallium &amp;&amp;
 npm ci &amp;&amp;
 npm run install:local</code></pre>
               <p class="copy-status" role="status"></p>
             </div>
           </article>
-          <article id="demo">
-            <h3>Try the demo.</h3>
-            <p>Watch Gallium verify a save, skip a duplicate, and keep a human pause through a restart. The fixture needs only Git and Node.</p>
+
+          <article id="install-skill">
+            <h3>Add the skill to a project</h3>
+            <p>Run this where you use your agent. The skill tells it when to hand a task to Gallium. It uses the CLI or MCP server from the engine setup.</p>
             <div class="command-block">
-              <div class="command-bar"><span>Terminal</span><button type="button" data-copy="demo-command" hidden>Copy demo commands</button></div>
-              <pre tabindex="0"><code id="demo-command">git clone https://github.com/<wbr>davidjbeveridge/<wbr>gallium.git &amp;&amp;
+              <div class="command-bar">
+                <span>Terminal</span>
+                <button class="copy-button" type="button" data-copy="skill-command" aria-label="Copy skill install command" title="Copy skill install command" hidden>
+                  <svg class="copy-icon" aria-hidden="true"><use href="#icon-copy"/></svg>
+                  <svg class="copied-icon" aria-hidden="true"><use href="#icon-copied"/></svg>
+                </button>
+              </div>
+              <pre tabindex="0"><code id="skill-command">npx skills add davidjbeveridge/gallium --skill gallium</code></pre>
+              <p class="copy-status" role="status"></p>
+            </div>
+          </article>
+
+          <article id="demo">
+            <h3>Try the local demo</h3>
+            <p>The demo checks a saved profile name, skips a duplicate save, and holds a pause through a restart. If you already cloned the repo, run <code>npm run demo</code> from the checkout.</p>
+            <div class="command-block">
+              <div class="command-bar">
+                <span>Terminal</span>
+                <button class="copy-button" type="button" data-copy="demo-command" aria-label="Copy demo commands" title="Copy demo commands" hidden>
+                  <svg class="copy-icon" aria-hidden="true"><use href="#icon-copy"/></svg>
+                  <svg class="copied-icon" aria-hidden="true"><use href="#icon-copied"/></svg>
+                </button>
+              </div>
+              <pre tabindex="0"><code id="demo-command">git clone https://github.com/davidjbeveridge/gallium.git &amp;&amp;
 cd gallium &amp;&amp;
 npm run demo</code></pre>
               <p class="copy-status" role="status"></p>
             </div>
           </article>
-        </div>
 
-        <div class="first-task">
-          <div>
-            <h3>Make your first public lookup.</h3>
-            <p>Set up the <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#shared-service-and-internal-routing">Jev router</a> first. This lookup reads an RFC directly over HTTPS. For tasks that use the live interface, <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#connect-chrome">connect the Chrome bridge</a>.</p>
-          </div>
-          <div class="command-block">
-            <div class="command-bar"><span>Terminal</span><button type="button" data-copy="lookup-command" hidden>Copy lookup command</button></div>
-            <pre tabindex="0"><code id="lookup-command">~/.local/bin/gallium task --operation rfc418 \
+          <article id="first-task">
+            <h3>Look up a public document</h3>
+            <p>This reads an RFC directly over HTTPS. First, <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#shared-service-and-internal-routing">configure the Jev router</a>. To work with a live page, <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#connect-chrome">connect the Chrome bridge</a>.</p>
+            <div class="command-block">
+              <div class="command-bar">
+                <span>Terminal</span>
+                <button class="copy-button" type="button" data-copy="lookup-command" aria-label="Copy public lookup command" title="Copy public lookup command" hidden>
+                  <svg class="copy-icon" aria-hidden="true"><use href="#icon-copy"/></svg>
+                  <svg class="copied-icon" aria-hidden="true"><use href="#icon-copied"/></svg>
+                </button>
+              </div>
+              <pre tabindex="0"><code id="lookup-command">~/.local/bin/gallium task --operation rfc418 \
   --goal 'What does HTTP status 418 mean in this document?' \
   --target https://www.rfc-editor.org/rfc/rfc2324.txt</code></pre>
-            <p class="copy-status" role="status"></p>
-          </div>
-        </div>
-        <details class="mcp-example">
-          <summary>Send the same goal over MCP</summary>
-          <p>Call <code>web_task</code> with a stable operation ID, the goal, and the public URL.</p>
-          <pre><code>{
+              <p class="copy-status" role="status"></p>
+            </div>
+            <details class="mcp-example">
+              <summary>Send the lookup over MCP</summary>
+              <p>Pass these arguments to <code>web_task</code>.</p>
+              <div class="command-block">
+                <div class="command-bar">
+                  <span>JSON</span>
+                  <button class="copy-button" type="button" data-copy="mcp-command" aria-label="Copy MCP lookup arguments" title="Copy MCP lookup arguments" hidden>
+                    <svg class="copy-icon" aria-hidden="true"><use href="#icon-copy"/></svg>
+                    <svg class="copied-icon" aria-hidden="true"><use href="#icon-copied"/></svg>
+                  </button>
+                </div>
+                <pre tabindex="0"><code id="mcp-command">{
   "operationId": "rfc418",
   "goal": "What does HTTP status 418 mean in this document?",
   "target": "https://www.rfc-editor.org/rfc/rfc2324.txt"
 }</code></pre>
-        </details>
+                <p class="copy-status" role="status"></p>
+              </div>
+            </details>
+          </article>
+        </div>
+
         <div class="setup-links">
-          <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md">Setup and configuration <span aria-hidden="true">↗</span></a>
-          <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/VALIDATION.md">Validation results <span aria-hidden="true">↗</span></a>
+          <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md">Setup guide</a>
+          <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/VALIDATION.md">Validation results</a>
         </div>
       </div>
     </section>
 
-    <section id="questions" class="shell questions" aria-labelledby="questions-title">
-      <div class="section-heading"><h2 id="questions-title">Before you connect.</h2></div>
+    <section id="questions" class="measure questions section-stack" aria-labelledby="questions-title">
+      <div class="section-heading"><h2 id="questions-title">Before you run it</h2></div>
       <div class="faq">
-        <details><summary>Which browser does Gallium use?</summary><p>Direct HTTP runs without a browser. For browser-session requests and live UI tasks, the current adapter uses installed desktop Chrome through a separately enabled bridge.</p></details>
-        <details><summary>What can it do on a site I’m signed into?</summary><p>Configure a procedure with the account, allowed actions, and the state Gallium should verify. Browser-session requests use the session in the enabled tab. Public exploration stops at sign-in or challenge pages.</p></details>
-        <details><summary>When do I need a model provider?</summary><p>Public tasks and goal-based procedure matching use a configured Jev router through OpenRouter System One. Deterministic procedures and the local demo can run without a model call.</p></details>
-        <details><summary>What leaves my machine?</summary><p>The engine and its journal run locally. When a task uses the configured router, Gallium sends the goal and relevant excerpts, controls, or nonsecret procedure details to the model provider. Browser-session requests use cookies and CSRF tokens inside the tab.</p></details>
-        <details><summary>Can I use another MCP client?</summary><p>Gallium exposes a stdio MCP server. Configure your client to launch <code>node bin/mcp.mjs</code> from the checkout. Use <code>web_task</code> for a goal, <code>web_status</code> for receipts, and <code>web_control</code> for pause and handback.</p></details>
+        <details><summary>When do I need Chrome?</summary><p>Live page tasks and requests inside a browser session use desktop Chrome with the Gallium bridge enabled. The demo and direct HTTPS reads run from the local engine.</p></details>
+        <details><summary>Can it work on a site I'm signed into?</summary><p>Yes, with a procedure that names the account, the allowed actions, and the result to check. Gallium can use the existing session in the Chrome tab you enabled.</p></details>
+        <details><summary>Do I need a model key?</summary><p>Public lookups and goal-based procedure matching use Jev through OpenRouter. The fixture demo and procedures with fixed steps can run locally without a model call.</p></details>
+        <details><summary>What gets sent to the model?</summary><p>The engine and journal live on your machine. When a task uses Jev, Gallium sends the goal and the page excerpts, controls, or nonsecret procedure details it needs to make a decision. The browser uses cookies and CSRF tokens inside the tab.</p></details>
+        <details><summary>Can I use another MCP client?</summary><p>Configure it to launch <code>node bin/mcp.mjs</code> from the checkout. Gallium exposes <code>web_task</code> for goals, <code>web_status</code> for receipts, and <code>web_control</code> for pause and handback.</p></details>
       </div>
     </section>
   </main>
@@ -472,6 +330,5 @@ npm run demo</code></pre>
   </footer>
   <script type="module" src="hero-metal.js"></script>
   <script src="site.js" defer></script>
-  <script type="module" src="periodic-table.js"></script>
 </body>
 </html>

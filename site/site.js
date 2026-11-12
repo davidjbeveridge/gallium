@@ -1,20 +1,29 @@
 for (const button of document.querySelectorAll('[data-copy]')) {
   const command = document.getElementById(button.dataset.copy);
   const status = button.closest('.command-block').querySelector('.copy-status');
+  let confirmation;
   button.hidden = false;
   button.addEventListener('click', async () => {
+    clearTimeout(confirmation);
+    status.textContent = '';
     try {
       await navigator.clipboard.writeText(command.textContent);
       button.setAttribute('data-copied', '');
-      status.textContent = 'Copied. Paste into your terminal.';
+      status.classList.add('copy-confirmation');
+      status.textContent = 'Copied';
+      confirmation = setTimeout(() => {
+        button.removeAttribute('data-copied');
+        status.textContent = '';
+      }, 2000);
     } catch {
       button.removeAttribute('data-copied');
+      status.classList.remove('copy-confirmation');
       const range = document.createRange();
       range.selectNodeContents(command);
       const selection = window.getSelection();
       selection.removeAllRanges();
       selection.addRange(range);
-      status.textContent = 'Command selected. Use your keyboard shortcut to copy.';
+      status.textContent = 'Selected. Use your keyboard shortcut to copy.';
     }
   });
 }
@@ -58,21 +67,14 @@ tabs.forEach((tab, index) => {
 selectRoute(0);
 routeTabs.hidden = false;
 
-const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const routeConsole = routeTabs.closest('.route-console');
 if ('IntersectionObserver' in window) {
-  const sections = document.querySelectorAll('.section-heading, .engine-notes article, .engine-map');
-  const observer = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      if (!entry.isIntersecting) continue;
-      if (!motion.matches) {
-        if (entry.target.matches('.engine-map')) entry.target.setAttribute('data-entered', '');
-        entry.target.animate(
-          [{ opacity: 0.55, transform: 'translateY(15px)' }, { opacity: 1, transform: 'translateY(0)' }],
-          { duration: 450, easing: 'cubic-bezier(.2,.7,.3,1)' }
-        );
-      }
-      observer.unobserve(entry.target);
-    }
-  }, { threshold: 0.18 });
-  sections.forEach((section) => observer.observe(section));
+  const observer = new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return;
+    routeConsole.setAttribute('data-seen', '');
+    observer.disconnect();
+  });
+  observer.observe(routeConsole);
+} else {
+  routeConsole.setAttribute('data-seen', '');
 }

@@ -62,6 +62,16 @@ gallium resume --scope demo
 
 Repeat the same operation ID and inputs after interruption. A changed task needs a new ID. Credentials are never recipe inputs.
 
+## Add the skill to a project
+
+Run this in the project where your agent works:
+
+```sh
+npx skills add davidjbeveridge/gallium --skill gallium
+```
+
+The skill uses the Gallium CLI or MCP server. Follow the [engine setup](#run) to make those available, then open a new agent session to load the skill.
+
 ## Connect Chrome
 
 From the checkout, run `npm run build:extension` to build the bridge into `dist/extension`. Loading it into a personal Chrome profile grants debugger and website access and requires a separate step in Chrome.

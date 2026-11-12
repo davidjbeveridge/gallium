@@ -1,14 +1,12 @@
 # Gallium
 
-<img src="site/og-card.png" width="900" alt="Gallium. A better route through the web.">
+<img src="site/og-card.png" width="900" alt="Gallium. Like Chromium, but fluid.">
 
-**A standalone web task engine for AI agents.**
-
-Give Gallium a goal through MCP or the CLI. It can read a public document directly, adapt to a live site, or run a configured procedure. It returns source evidence for a lookup and independently checks the result of a configured change. The browser routes use the desktop Chrome bridge.
+Gallium runs web tasks for AI agents. Give it a goal through MCP or the CLI. It can read a public page over HTTPS, then switch to Chrome if the answer takes a search or a click. When you ask it to change a configured account, it reads back the result to check that the change took effect.
 
 [Visit the website](https://davidjbeveridge.github.io/gallium/) · [Setup and configuration](docs/guide.md) · [Validation](VALIDATION.md)
 
-## Try it in one minute
+## Run the demo
 
 With **Node 24 or later**, run this from a terminal:
 
@@ -37,7 +35,7 @@ actionsAfterHumanCompletedGoal        0
 
 Public exploration needs a configured model router. Signed-in tasks and changes need a procedure that defines the account, actions, and verification. The current browser integration uses desktop Chrome and requires explicit extension setup.
 
-## Connect it to Codex or use the CLI
+## Install the engine
 
 ```sh
 npm ci
@@ -69,6 +67,16 @@ gallium task --operation rfc2324-status \
   --goal 'What does HTTP status 418 mean in this document?' \
   --target https://www.rfc-editor.org/rfc/rfc2324.txt
 ```
+
+## Add the skill to a project
+
+Run this from the project where you use your agent:
+
+```sh
+npx skills add davidjbeveridge/gallium --skill gallium
+```
+
+The skill tells the agent how to delegate tasks through the CLI or MCP server. Set those up with the [engine installer](#install-the-engine).
 
 ## How control and verification work
 
