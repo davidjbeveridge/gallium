@@ -5,8 +5,10 @@ for (const button of document.querySelectorAll('[data-copy]')) {
   button.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(command.textContent);
+      button.setAttribute('data-copied', '');
       status.textContent = 'Copied. Paste into your terminal.';
     } catch {
+      button.removeAttribute('data-copied');
       const range = document.createRange();
       range.selectNodeContents(command);
       const selection = window.getSelection();
@@ -57,23 +59,39 @@ selectRoute(0);
 routeTabs.hidden = false;
 
 const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const board = document.querySelector('.periodic-board');
-if ('IntersectionObserver' in window && !motion.matches) {
-  board.setAttribute('data-awaiting', '');
-  const revealGallium = new IntersectionObserver(([entry]) => {
-    if (!entry.isIntersecting) return;
-    board.removeAttribute('data-awaiting');
-    revealGallium.disconnect();
-  }, { threshold: 0.3 });
-  revealGallium.observe(board);
-}
+const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
 
+for (const surface of document.querySelectorAll('.route-console, .engine-map')) {
+  let lightFrame = 0;
+  let point;
+  function resetLight() {
+    cancelAnimationFrame(lightFrame);
+    lightFrame = 0;
+    surface.style.removeProperty('--surface-x');
+    surface.style.removeProperty('--surface-y');
+  }
+  surface.addEventListener('pointermove', (event) => {
+    if (event.pointerType !== 'mouse' || !finePointer.matches || motion.matches) return;
+    point = { x: event.clientX, y: event.clientY };
+    if (lightFrame) return;
+    lightFrame = requestAnimationFrame(() => {
+      lightFrame = 0;
+      const bounds = surface.getBoundingClientRect();
+      surface.style.setProperty('--surface-x', `${(point.x - bounds.left) / bounds.width * 100}%`);
+      surface.style.setProperty('--surface-y', `${(point.y - bounds.top) / bounds.height * 100}%`);
+    });
+  }, { passive: true });
+  surface.addEventListener('pointerleave', resetLight);
+  motion.addEventListener('change', resetLight);
+  finePointer.addEventListener('change', resetLight);
+}
 if ('IntersectionObserver' in window) {
-  const sections = document.querySelectorAll('.section-heading, .engine-notes article');
+  const sections = document.querySelectorAll('.section-heading, .engine-notes article, .engine-map');
   const observer = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
       if (!motion.matches) {
+        if (entry.target.matches('.engine-map')) entry.target.setAttribute('data-entered', '');
         entry.target.animate(
           [{ opacity: 0.55, transform: 'translateY(15px)' }, { opacity: 1, transform: 'translateY(0)' }],
           { duration: 450, easing: 'cubic-bezier(.2,.7,.3,1)' }
@@ -188,7 +206,6 @@ canvas.addEventListener('webglcontextlost', () => {
   if (video.ended) showPoster();
 });
 
-const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
 heroMedia.addEventListener('pointermove', (event) => {
   if (!fullyRaised || motion.matches || !finePointer.matches || event.pointerType !== 'mouse') return;
   const box = heroMedia.getBoundingClientRect();

@@ -104,3 +104,9 @@ Reflective hero: restored the full eight-second Flow source through the liquid-o
 The homepage now leads with Gallium as a standalone web task engine. The current browser adapter is desktop Chrome. The examples distinguish public HTTPS, live exploration, and configured verification. The architecture describes fixed preference among eligible procedures, in-run feedback, durable state, and verified handoff. Learned route ranking remains research. An Astra source review grounded the claims. The README introduction, social card, metadata, and llms.txt match the page.
 
 Verified all 92 project tests, type checking, and site metadata. The published fixture excerpt matched a fresh local demo. Chrome checks passed at 320, 390, 760, 761, 820, 1024, and 1440 px, including pointer and keyboard example selection, three command copy actions, the MCP example, FAQ, hero replay, reduced motion, and static content with JavaScript disabled.
+
+## Material-driven site motion
+
+The periodic table fills a graphite stage with the hero’s silver lighting. Scroll changes its angle, a mouse moves the light, and a selected tile rises from the board. All 118 original symbols, numbers, and positions remain available. Cells support keyboard navigation and the labeled picker supports narrow touch screens. Reduced motion uses a flat, selectable table. The task traces draw their path, the architecture diagram animates once and links to its details, and setup and disclosure controls give immediate feedback.
+
+Xenia’s source-bound before/after preservation check passed all 19 checks. Isolated Chrome verified 320–1440 px, pointer lighting, scroll pose, lifted selection, touch emulation, keyboard navigation, detached-series details, diagram links, clipboard, hero replay, reduced motion, and the static fallback. Type checking, all 92 tests, and site checks passed.
