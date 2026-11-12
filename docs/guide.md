@@ -4,6 +4,24 @@
 
 ## Run
 
+From a fresh checkout, the shortest full local install is:
+
+```sh
+git clone https://github.com/davidjbeveridge/gallium.git
+cd gallium
+npm ci
+npm run install:local
+~/.local/bin/gallium --help
+```
+
+The demo can be run before installing dependencies or configuring a browser:
+
+```sh
+npm run demo
+```
+
+For development and browser validation, run the complete check sequence:
+
 ```sh
 node --version                     # 24 or newer
 npm ci
@@ -11,10 +29,18 @@ npm run check
 npm run demo
 npm run build:extension
 npm run test:browser               # installed Chrome; disposable test profile
-npm run install:local
 ```
 
-The installer installs the `gallium` command and routing skill and registers the stdio MCP server with Codex. Open a new chat to load the server. Fresh installations use `~/.config/gallium/config.json` and `~/Library/Application Support/Gallium`. Upgrades keep an existing `~/.config/web-operator/config.json` and the state directory it specifies. The old `web-operator` command remains an alias.
+The installer installs the `gallium` command and routing skill from the
+checkout. When the Codex CLI is available, it also registers the stdio MCP
+server; open a new chat to load it. Without Codex, the CLI install still
+completes and MCP registration can be added later by rerunning
+`npm run install:local`. Fresh installations use `~/.config/gallium/config.json`
+and `~/Library/Application Support/Gallium`. Upgrades keep an existing
+`~/.config/web-operator/config.json` and the state directory it specifies. The
+old `web-operator` command remains an alias.
+
+Add `~/.local/bin` to your shell's `PATH` to run `gallium` by name.
 
 Set `GALLIUM_CONFIG` to select a config file or `GALLIUM_NODE` to select a Node executable. After upgrading an existing checkout, run `gallium service-restart` when the service is idle. The service retains human ownership and operation receipts across restart.
 
@@ -38,7 +64,7 @@ Repeat the same operation ID and inputs after interruption. A changed task needs
 
 ## Connect Chrome
 
-The local compatibility extension is built into `dist/extension`. Installing it into a personal Chrome profile is a separate, explicit permission step because it grants debugger and website access. It is not installed by the CLI installer.
+From the checkout, run `npm run build:extension` to build the bridge into `dist/extension`. Loading it into a personal Chrome profile grants debugger and website access and requires a separate step in Chrome.
 
 After approving installation, load that folder through Chrome's **Load unpacked** control. Open `http://127.0.0.1:8787/profile`, then click the bridge extension to enable that tab. Only enable `playwriter.preserveExtensionsVerified` in the private configuration after checking the installed build. Use MCP web_control pause and resume to qualify the actual profile. [Compatibility details](playwriter-compatibility.md).
 

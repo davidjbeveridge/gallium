@@ -42,10 +42,15 @@ Public exploration needs a configured model router. Signed-in tasks and changes 
 ```sh
 npm ci
 npm run install:local
-gallium --help
+~/.local/bin/gallium --help
 ```
 
-Open a new Codex chat after installation to use the Gallium MCP server. Follow the [Chrome setup and fixture walkthrough](docs/guide.md#connect-chrome) to try the browser route on a local test page. For public website tasks, see the [model configuration](docs/guide.md#shared-service-and-internal-routing).
+`install:local` installs the CLI and routing skill from this checkout. If Codex is
+installed, it also registers Gallium's MCP server; otherwise it skips that one
+step and tells you how to finish later. Open a new Codex chat after MCP
+registration. Follow the [Chrome setup and fixture walkthrough](docs/guide.md#connect-chrome)
+to try the browser route on a local test page. For public website tasks, see the
+[model configuration](docs/guide.md#shared-service-and-internal-routing).
 
 For an MCP client, submit a goal with `web_task`:
 

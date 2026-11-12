@@ -1,17 +1,21 @@
 # Gallium visual identity
 
-Gallium helps people delegate web tasks and check what happened. The mark uses the element symbol Ga inside a bright green circle. The homepage pairs it with an illustration of the source evidence a public lookup can return.
+The mark is a split G and a falling drop. Use the one-color silhouette for small icons, the navigation, and places that need a clean stamp. Its metallic form uses the same G and drop, with depth and broad reflections. The periodic tile is a separate label with the real element data: 31, Ga, Gallium, 69.723.
 
-| Role | Value | Use |
+| Role | Color | Use |
 | --- | --- | --- |
-| Paper | `#f4f1e9` | Background and text on dark panels |
-| Ink | `#141413` | Text, buttons, dark panels |
-| Accent | `#d8ff45` | Mark, highlights, dark-panel calls to action |
-| Smoke | `#d9d3c7` | Supporting surfaces |
-| Muted ink | `#66635b` | Secondary text on paper |
+| Graphite | `#11181c` | Hero and workflow backgrounds |
+| Paper | `#f6f7f5` | Reading surfaces |
+| Ink | `#172126` | Text on light surfaces |
+| Platinum | `#e4e9e9` | Supporting panels and tiles |
+| Smoked blue | `#a6c6d8` | Primary install button and focus on dark backgrounds |
 
-Use DM Sans for text, Georgia italic for occasional display emphasis, and Space Mono for code and short labels. Use ink text on accent green and keep keyboard focus visible. The [site stylesheet](../site/styles.css) defines the tokens. The [Ga mark](../site/mark.svg) is the favicon source.
+Use the system sans stack for reading and headings. Reserve monospace for commands and element data. Keep metallic reflections inside the artwork so copy and controls sit on solid surfaces.
 
-The [cover artwork](../site/og-card.svg) is the source for the [PNG](../site/og-card.png) used by the README and social previews. Regenerate it with `rsvg-convert site/og-card.svg -o site/og-card.png`. Use fixture evidence or approved public content in product captures. Keep personal sessions, account data, and browser profiles out of the assets.
+- [Monochrome mark](../site/mark.svg) works on light or dark backgrounds with a single color.
+- [Hero artwork](../site/media/gallium-hero.svg) supplies the still frame. The motion uses solid → melt → pool → reset. Preserve the mark at the start and hold the pool long enough to read the transformation.
+- [Cover source](../site/og-card.svg) renders the [README and social card](../site/og-card.png).
+- [Site styles](../site/styles.css) define the palette and type.
+- [Render script](../scripts/render-hero.py) reproduces the local fallback loop using librsvg and FFmpeg.
 
-Public copy leads with the outcome a person can check, explains where setup is needed, and links to evidence. Describe handoff and result verification in concrete terms.
+Play the video only while it is visible. Keep a pause control on the figure and use the still for reduced motion. The element strip contains selected elements in their real period-four order. The gap after Cr stands for omitted cells. The Ga tile rises on scroll without changing its reading order.

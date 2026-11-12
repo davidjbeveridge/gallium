@@ -35,7 +35,11 @@ class Page(HTMLParser):
         if tag in {"a", "link", "img"}:
             self.links.append(attrs.get("href") or attrs["src"])
         if tag == "script":
+            if "src" in attrs:
+                self.links.append(attrs["src"])
             self.in_schema = attrs.get("type") == "application/ld+json"
+        if tag == "video":
+            self.links.append(attrs["data-motion-src"])
 
     def handle_data(self, data):
         if self.in_schema:

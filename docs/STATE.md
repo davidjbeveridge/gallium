@@ -68,3 +68,10 @@ The owner selected Gallium. The GitHub repository and public package, CLI, MCP, 
 - The local demo verified a save, rejected a repeat, preserved a pause across restart, and verified a task completed during handoff with zero extra actions. The full 92-test suite and static site checks passed locally.
 - The checkout now lives at `~/src/gallium`. A link from the former directory keeps the existing unpacked extension and CLI alias reachable. Gallium's installer and MCP initialization were checked against the original config and state. The legacy global MCP registration and duplicate skill link were retired locally.
 - Pages deployment and the real Chrome fixture passed in [run 43109328325](https://github.com/davidjbeveridge/gallium/actions/runs/43109328325). Browser viewport and live HTTP evidence are summarized in [validation](../VALIDATION.md).
+
+## Elemental redesign preview
+
+- The preview uses a split G and drop mark, a graphite and platinum palette, and a period-four element strip. It gives installation the primary call to action. The command clones and installs from this repository. Codex registration is optional when the Codex CLI is absent.
+- Chrome checked the layout at 320, 390, 820, 1024, and 1440 pixels. Clipboard contents and status, FAQ disclosure, video playback, manual pause, offscreen pause, and the reduced-motion still passed. The 92-test runtime suite and static site checks passed.
+- Astra reviewed the renders twice. The second review gave the install path 9/10, composition and legibility 8.5/10, and brand distinction 8/10. It identified unrealistic compression in the local melt. The fallback was then revised to enter a growing pool and was checked for playback. It has not received a new independent visual score.
+- Google Flow received the metallic mark reference and is waiting on one 24-credit approval before generating the 8-second shot. The local six-second WebM is a stylized fallback. The redesigned site remains a preview pending the final motion review.

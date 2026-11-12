@@ -47,10 +47,22 @@ const legacyTarget = join(bin, 'web-operator');
 if (!existsSync(legacyTarget)) symlinkSync(resolve(root, 'bin/web-operator.mjs'), legacyTarget);
 chmodSync(resolve(root, 'bin/gallium.mjs'), 0o755);
 chmodSync(resolve(root, 'bin/web-operator.mjs'), 0o755);
-execFileSync('codex', ['mcp', 'add', 'gallium', '--', 'node', resolve(root, 'bin/mcp.mjs')], { stdio: 'inherit' });
+let codexRegistered = false;
+try {
+  execFileSync('codex', ['mcp', 'add', 'gallium', '--', 'node', resolve(root, 'bin/mcp.mjs')], { stdio: 'inherit' });
+  codexRegistered = true;
+} catch (error) {
+  // Installing from a checkout should still make the CLI usable on machines
+  // that do not have Codex installed. A later rerun can register the MCP
+  // server after Codex is available; do not hide failures from an installed
+  // Codex executable.
+  if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+}
 const skills = join(home, '.agents/skills'); mkdirSync(skills, { recursive: true });
 const skill = join(skills, 'gallium');
 const skillSource = resolve(root, 'skills/web-operator');
 if (existsSync(skill) && realpathSync(skill) !== skillSource) throw new Error('Existing Gallium skill belongs to another installation.');
 if (!existsSync(skill)) symlinkSync(skillSource, skill);
-console.log('Installed Gallium CLI, MCP and routing skill. Existing configuration preserved. Chrome extension installation is separate.');
+console.log(codexRegistered
+  ? 'Installed Gallium CLI, MCP and routing skill. Existing configuration preserved. Chrome extension installation is separate.'
+  : 'Installed Gallium CLI and routing skill. Codex was not found, so MCP registration was skipped; rerun npm run install:local after installing Codex. Existing configuration preserved. Chrome extension installation is separate.');
