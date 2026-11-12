@@ -158,12 +158,23 @@ pre { margin: 0; padding: 15px 18px 10px; font: .75rem/1.7 var(--mono); color: v
   .nav { min-height: 66px; }
   .nav nav { display: none; }
   .hero-grid, .questions { grid-template-columns: minmax(0, 1fr); }
-  .hero-grid { min-height: auto; padding-block: clamp(185px, 49vw, 360px) 62px; }
-  .hero-media img, .hero-media video { object-fit: contain; object-position: center top; transform: none; }
-  .hero-media::after { background: linear-gradient(180deg, transparent 0, #11181c44 33vw, #11181c 58vw); }
+  .hero-grid { min-height: auto; padding-block: clamp(96px, 24vw, 156px) 58px; }
+  .hero-media img, .hero-media video {
+    height: clamp(250px, 66vw, 440px);
+    object-position: 55% 50%;
+    transform: translateX(19%);
+  }
+  .hero-media::after {
+    background: linear-gradient(180deg, transparent, #11181c42 76px, #11181cdd 190px, #11181c 300px),
+      linear-gradient(90deg, #11181c 4%, #11181cca 34%, transparent 88%);
+  }
+  .hero .install pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .hero .copy-status:empty { min-height: 0; padding-bottom: 0; }
+  .hero .motion-toggle { top: 8px; bottom: auto; }
+  .hero .install-bar button { min-height: 44px; }
   h1 { font-size: clamp(2.12rem, 10.7vw, 3.8rem); }
-  .hero .eyebrow { margin-bottom: 18px; }
-  .hero .lede { margin-block: 18px 24px; }
+  .hero .eyebrow { margin-bottom: 12px; }
+  .hero .lede { margin-block: 14px 19px; }
   .element-strip { grid-template-columns: 1fr .18fr repeat(4, 1fr); gap: 4px; }
   .element-tile { min-height: 76px; padding: 7px 5px; }
   .element-tile b { font-size: clamp(1.25rem, 5vw, 2.8rem); }
