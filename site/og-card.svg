@@ -10,8 +10,8 @@
   <path fill="#1a242a" d="M746 0h454v630H746z"/>
   <path stroke="#465b67" d="M746 0v630M0 530h1200"/>
   <text x="72" y="105" fill="#a6c6d8" font-family="monospace" font-size="25" letter-spacing="4">GALLIUM / 31</text>
-  <text x="65" y="294" fill="#fcfdfa" font-family="Arial,sans-serif" font-size="85" font-weight="700" letter-spacing="-4">Give your agent</text>
-  <text x="65" y="393" fill="#fcfdfa" font-family="Arial,sans-serif" font-size="96" font-weight="700" letter-spacing="-5">a web task.</text>
-  <text x="72" y="580" fill="#a6c6d8" font-family="monospace" font-size="20">LOCAL BROWSER AUTOMATION</text>
+  <text x="65" y="294" fill="#fcfdfa" font-family="Arial,sans-serif" font-size="85" font-weight="700" letter-spacing="-4">A better route</text>
+  <text x="65" y="393" fill="#fcfdfa" font-family="Arial,sans-serif" font-size="84" font-weight="700" letter-spacing="-4">through the web.</text>
+  <text x="72" y="580" fill="#a6c6d8" font-family="monospace" font-size="20">WEB TASK ENGINE FOR AI AGENTS</text>
   <use href="#tile" transform="translate(816 105) scale(4.9)" color="#e1ecef"/>
 </svg>

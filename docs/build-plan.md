@@ -1,8 +1,8 @@
 # Architecture roadmap
 
-The finish/shelve decisions and current release boundary in STATE.md supersede the historical roadmap below. Broad dynamic browser exploration, inferred write procedures, alternate engines, learned route ranking, native automation, and artificial interaction noise are shelved. Public-document retrieval, scheduling, and controlled shared-service restart are implemented.
+[Current state](STATE.md) and [validation](../VALIDATION.md) describe the shipped engine. It supports public-document retrieval, bounded live exploration, configured procedures, and a shared local service. Learned route ranking, inferred write procedures, alternate browser engines, and native automation remain research directions.
 
-0.2 implements the browser/control/request vertical slice. See `STATE.md` and `VALIDATION.md` for current evidence. The original staged architecture below remains a roadmap; personal password-manager, native, discovery/learning and live-model gates remain open.
+The staged architecture below records the original roadmap.
 
 ## Revised product contract
 

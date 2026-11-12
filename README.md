@@ -1,10 +1,10 @@
 # Gallium
 
-<img src="site/og-card.png" width="900" alt="Gallium. Give your agent a web task.">
+<img src="site/og-card.png" width="900" alt="Gallium. A better route through the web.">
 
-**Give your agent a web task. Get a result you can check.**
+**A standalone web task engine for AI agents.**
 
-Gallium is a local browser automation tool for AI agents. It can explore public websites and run configured tasks in the Chrome session you already use. For a lookup it returns a source passage. For a configured change it checks the resulting state before reporting success. You can pause the agent and take over.
+Give Gallium a goal through MCP or the CLI. It can read a public document directly, adapt to a live site, or run a configured procedure. It returns source evidence for a lookup and independently checks the result of a configured change. The browser routes use the desktop Chrome bridge.
 
 [Visit the website](https://davidjbeveridge.github.io/gallium/) · [Setup and configuration](docs/guide.md) · [Validation](VALIDATION.md)
 
@@ -72,7 +72,7 @@ gallium task --operation rfc2324-status \
 
 ## How control and verification work
 
-Gallium tries an applicable direct request first, then a request inside the signed-in browser session, then browser interaction. For a configured write, the procedure defines what to read back and compare. If a write might have succeeded, Gallium checks the result before it will retry. Reuse the same operation ID and inputs after an interruption.
+For public goals, Gallium can move from a direct HTTPS read to live exploration when the document does not supply the answer. For configured goals, the model judges which procedures fit and code selects one in a fixed order: direct HTTP, a request inside the signed-in browser session, then browser interaction. The selection persists for the operation. If a write might have succeeded, Gallium checks the result before retrying. Reuse the same operation ID and inputs after an interruption.
 
 Use `web_control` or the CLI to pause a scope. Gallium keeps that pause across restarts. After an explicit resume, reissue the operation to check whether you already completed it during handoff.
 

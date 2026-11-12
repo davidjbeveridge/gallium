@@ -1,22 +1,60 @@
-const copyButton = document.querySelector('[data-copy]');
-const command = document.querySelector('#install-command');
-const copyStatus = document.querySelector('.copy-status');
+for (const button of document.querySelectorAll('[data-copy]')) {
+  const command = document.getElementById(button.dataset.copy);
+  const status = button.closest('.command-block').querySelector('.copy-status');
+  button.hidden = false;
+  button.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(command.textContent);
+      status.textContent = 'Copied. Paste into your terminal.';
+    } catch {
+      const range = document.createRange();
+      range.selectNodeContents(command);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      status.textContent = 'Command selected. Use your keyboard shortcut to copy.';
+    }
+  });
+}
 
-copyButton.hidden = false;
-copyButton.addEventListener('click', async () => {
-  try {
-    await navigator.clipboard.writeText(command.textContent);
-    copyButton.textContent = 'Copied';
-    copyStatus.textContent = 'Copied. Paste the commands into your terminal.';
-  } catch {
-    const range = document.createRange();
-    range.selectNodeContents(command);
-    const selection = window.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
-    copyStatus.textContent = 'Commands selected. Use your keyboard shortcut to copy.';
-  }
+const routeTabs = document.querySelector('[data-route-tabs]');
+const tabs = [...routeTabs.querySelectorAll('button')];
+const panels = tabs.map((tab) => document.getElementById(tab.getAttribute('aria-controls')));
+
+function selectRoute(index) {
+  tabs.forEach((tab, position) => {
+    const selected = position === index;
+    tab.setAttribute('aria-selected', String(selected));
+    tab.tabIndex = selected ? 0 : -1;
+    panels[position].hidden = !selected;
+  });
+}
+
+routeTabs.setAttribute('role', 'tablist');
+routeTabs.setAttribute('aria-label', 'Example tasks');
+tabs.forEach((tab, index) => {
+  const panel = panels[index];
+  tab.setAttribute('role', 'tab');
+  panel.setAttribute('role', 'tabpanel');
+  panel.setAttribute('aria-labelledby', tab.id);
+  panel.tabIndex = 0;
+  tab.addEventListener('click', () => selectRoute(index));
+  tab.addEventListener('keydown', (event) => {
+    let next;
+    switch (event.key) {
+      case 'ArrowLeft': next = (index - 1 + tabs.length) % tabs.length; break;
+      case 'ArrowRight': next = (index + 1) % tabs.length; break;
+      case 'Home': next = 0; break;
+      case 'End': next = tabs.length - 1; break;
+      default: return;
+    }
+    event.preventDefault();
+    selectRoute(next);
+    tabs[next].focus();
+  });
 });
+selectRoute(0);
+routeTabs.hidden = false;
 
 const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const board = document.querySelector('.periodic-board');
@@ -31,7 +69,7 @@ if ('IntersectionObserver' in window && !motion.matches) {
 }
 
 if ('IntersectionObserver' in window) {
-  const sections = document.querySelectorAll('.section-heading, .steps li, .faq details');
+  const sections = document.querySelectorAll('.section-heading, .engine-notes article');
   const observer = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;

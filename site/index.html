@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gallium | Verified browser automation for AI agents</title>
-  <meta name="description" content="Give AI agents bounded web tasks in your existing Chrome session. Verify results and take over when needed. Use Gallium locally through MCP or the CLI.">
+  <title>Gallium | Web task engine for AI agents</title>
+  <meta name="description" content="Gallium is a local web task engine for AI agents. It chooses between direct HTTP, browser-session requests, and live interaction, then checks the result.">
   <meta name="theme-color" content="#11181c">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Gallium | Verified browser automation for AI agents">
-  <meta property="og:description" content="A local MCP and CLI tool for bounded web research, browser-session work, and human handoff.">
+  <meta property="og:title" content="Gallium | Web task engine for AI agents">
+  <meta property="og:description" content="Gallium is a local web task engine for AI agents. It chooses between direct HTTP, browser-session requests, and live interaction, then checks the result.">
   <meta property="og:url" content="https://davidjbeveridge.github.io/gallium/">
   <meta property="og:image" content="https://davidjbeveridge.github.io/gallium/og-card.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Gallium. Give your agent a web task.">
+  <meta property="og:image:alt" content="Gallium. A better route through the web.">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://davidjbeveridge.github.io/gallium/">
   <link rel="icon" href="mark.svg" type="image/svg+xml">
@@ -32,7 +32,7 @@
       "@type": "WebPage",
       "@id": "https://davidjbeveridge.github.io/gallium/#page",
       "url": "https://davidjbeveridge.github.io/gallium/",
-      "name": "Gallium | Verified browser automation for AI agents",
+      "name": "Gallium | Web task engine for AI agents",
       "isPartOf": {
         "@id": "https://davidjbeveridge.github.io/gallium/#website"
       },
@@ -47,8 +47,14 @@
       "url": "https://davidjbeveridge.github.io/gallium/",
       "applicationCategory": "DeveloperApplication",
       "softwareVersion": "0.2.0",
-      "description": "Local browser automation for AI agents with verified task outcomes and human takeover.",
-      "softwareRequirements": "Node.js 24+; desktop Chrome for browser tasks",
+      "description": "Gallium is a local web task engine for AI agents. It chooses between direct HTTP, browser-session requests, and live interaction, then checks the result.",
+      "softwareRequirements": "Node.js 24+. Desktop Chrome and the Gallium bridge for browser routes.",
+      "featureList": [
+        "Bounded public HTTPS reads with source passages",
+        "Live read-only exploration through the Chrome bridge",
+        "Configured workflows with independent result verification",
+        "Persistent operation state and human handoff"
+      ],
       "downloadUrl": "https://github.com/davidjbeveridge/gallium",
       "sameAs": "https://github.com/davidjbeveridge/gallium"
     }
@@ -57,30 +63,27 @@
   </script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <header class="top">
     <div class="shell nav">
       <a class="brand" href="./"><img src="mark.svg" alt="" width="26" height="26">Gallium</a>
-      <nav aria-label="Main"><a href="#element">The element</a><a href="#workflow">How it works</a></nav>
+      <nav aria-label="Main"><a href="#workflow">Examples</a><a href="#engine">Architecture</a><a href="#install">Install</a></nav>
       <a class="source-link" href="https://github.com/davidjbeveridge/gallium">GitHub <span aria-hidden="true">↗</span></a>
     </div>
   </header>
 
-  <main>
+  <main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <div class="shell hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow">LOCAL BROWSER AUTOMATION</p>
-          <h1 id="hero-title">Give your agent a web task.</h1>
-          <p class="lede">Use the Chrome session you already have. Gallium finds sources, checks that configured changes took effect, and lets you take over.</p>
-          <div class="install" id="install">
-            <div class="install-bar"><span>Install from GitHub</span><button type="button" data-copy hidden>Copy commands</button></div>
-            <pre tabindex="0"><code id="install-command">git clone https://github.com/davidjbeveridge/gallium.git &amp;&amp;
-cd gallium &amp;&amp;
-npm ci &amp;&amp;
-npm run install:local</code></pre>
-            <p class="copy-status" role="status" aria-live="polite"></p>
+          <p class="eyebrow">WEB TASK ENGINE FOR AI AGENTS</p>
+          <h1 id="hero-title">A better route through the web.</h1>
+          <p class="lede">Gallium is a standalone engine that takes a web goal, chooses how to reach it, and adapts to what it finds. It brings back a source passage or checks that a configured change took effect.</p>
+          <div class="hero-actions">
+            <a class="primary" href="#install">Install Gallium <span aria-hidden="true">↘</span></a>
+            <a class="hero-secondary" href="#workflow">See a task run <span aria-hidden="true">↓</span></a>
           </div>
-          <p class="requirements">Git and Node 24+ · Codex optional · <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#connect-chrome">Connect Chrome</a> separately.</p>
+          <p class="requirements">Runs locally through the CLI or MCP.</p>
         </div>
         <div class="hero-media">
           <img class="material-poster" src="media/gallium-rest.webp" alt="" width="1280" height="720" fetchpriority="high">
@@ -91,11 +94,143 @@ npm run install:local</code></pre>
       </div>
     </section>
 
+    <section id="workflow" class="shell examples" aria-labelledby="workflow-title">
+      <div class="section-heading split-heading">
+        <h2 id="workflow-title">From a goal to evidence.</h2>
+        <p>Driving a browser one action at a time leaves the agent to decide what to click, when to wait, and whether the job is done. Gallium handles that loop inside one task request. When a document has the answer, it can fetch the text directly.</p>
+      </div>
+
+      <div class="route-console">
+        <div class="route-tabs" data-route-tabs hidden>
+          <button type="button" id="tab-document" aria-controls="route-document">Read a document</button>
+          <button type="button" id="tab-live" aria-controls="route-live">Explore a live page</button>
+          <button type="button" id="tab-verify" aria-controls="route-verify">Verify a change</button>
+        </div>
+
+        <article class="route-panel" id="route-document" data-route-panel>
+          <div class="route-story">
+            <h3>“What does status 418 mean?”</h3>
+            <ol class="trace">
+              <li><strong>Fetch the source.</strong> A direct HTTPS request gets the text of RFC 2324.</li>
+              <li><strong>Select the passage.</strong> The model picks from excerpts in the document.</li>
+              <li><strong>Return the evidence.</strong> Gallium includes the source URL and a hash of the passage.</li>
+            </ol>
+          </div>
+          <div class="route-result">
+            <p class="console-label">Public lookup · Response excerpt</p>
+            <pre><code>{
+  "state": <span class="code-value">"evidence_found"</span>,
+  "route": <span class="code-value">"public-http"</span>
+}</code></pre>
+            <p class="result-note">RFC 2324 calls it <a href="https://datatracker.ietf.org/doc/html/rfc2324#section-2.3.2">“418 I’m a teapot.”</a></p>
+          </div>
+        </article>
+
+        <article class="route-panel" id="route-live" data-route-panel>
+          <div class="route-story">
+            <h3>“Start the example and report the greeting when it loads.”</h3>
+            <ol class="trace">
+              <li><strong>Open a task tab.</strong> An explicit UI request goes straight to the live page.</li>
+              <li><strong>Act on what’s visible.</strong> Gallium selects Start, then waits when it sees a loading indicator.</li>
+              <li><strong>Check again.</strong> It finds the greeting, confirms it is still in the live DOM, and closes its tab.</li>
+            </ol>
+          </div>
+          <div class="route-result">
+            <p class="console-label">Live exploration · Response excerpt</p>
+            <pre><code>{
+  "state": <span class="code-value">"evidence_found"</span>,
+  "route": <span class="code-value">"shared-chrome-exploration"</span>
+}</code></pre>
+            <p class="result-note">The <a href="https://github.com/davidjbeveridge/gallium/blob/main/VALIDATION.md#recipe-free-dynamic-exploration">live MCP test</a> found “Hello World!” after loading.</p>
+          </div>
+        </article>
+
+        <article class="route-panel" id="route-verify" data-route-panel>
+          <div class="route-story">
+            <h3>“Save Ada as the profile name.”</h3>
+            <ol class="trace">
+              <li><strong>Run the procedure.</strong> The local demo uses a fixture with a defined save action.</li>
+              <li><strong>Read back the result.</strong> Gallium checks the saved name independently.</li>
+              <li><strong>Handle a repeat.</strong> Reusing the operation ID returns the verified receipt.</li>
+            </ol>
+          </div>
+          <div class="route-result">
+            <p class="console-label">Local demo · Output excerpt</p>
+            <pre><code>{
+  "firstOperation": <span class="code-value">"verified"</span>,
+  "repeatResult": <span class="code-value">"ALREADY_VERIFIED"</span>,
+  "pauseSurvivedRestart": <span class="code-value">true</span>,
+  "actionsAfterHumanCompletedGoal": <span class="code-value">0</span>
+}</code></pre>
+            <p class="result-note"><a href="#demo">Run the same fixture on your machine</a>.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="engine" class="workflow" aria-labelledby="engine-title">
+      <div class="shell workflow-inner">
+        <div class="section-heading split-heading">
+          <h2 id="engine-title">Inside the engine.</h2>
+          <p>CLI and MCP clients share one local service per state directory. Its task controller makes routing decisions, adapters execute them, and a SQLite journal records what happened.</p>
+        </div>
+
+        <figure class="engine-map" aria-labelledby="map-caption">
+          <figcaption id="map-caption">Task execution</figcaption>
+          <ol>
+            <li><strong>CLI or MCP</strong><span>Goal + operation ID</span></li>
+            <li><strong>Task controller</strong><span>Intent + route policy</span></li>
+            <li class="engine-routes">
+              <strong>Execution adapter</strong>
+              <span>Direct HTTP</span><span>Browser-session request</span><span>Page interaction</span>
+            </li>
+            <li><strong>Result</strong><span>Source evidence or verified state</span></li>
+          </ol>
+          <p><strong>SQLite journal</strong><span>Operation identity, effects, and ownership</span></p>
+        </figure>
+
+        <div class="engine-notes">
+          <article>
+            <h3>Pick a route.</h3>
+            <p>For a public URL, Gallium assesses the goal and tries HTTPS when document text could answer it. Missing evidence or certain fetch failures can move the task to live exploration. An explicit request to use the interface starts there.</p>
+            <p>For a configured task, Gallium filters procedures by scope and input. Jev, the model, makes one structured assessment of which candidates fit the goal. Code picks an eligible procedure in the following order and keeps it for that operation.</p>
+            <ol class="route-order">
+              <li>Direct HTTP request</li>
+              <li>Request inside the signed-in browser session</li>
+              <li>Browser interaction</li>
+            </ol>
+            <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/src/task-controller.ts">Read the task controller <span aria-hidden="true">↗</span></a>
+          </article>
+
+          <article>
+            <h3>Observe, act, and check.</h3>
+            <p>Gallium observes visible controls and passages. Jev can select an observed control, identify a loading state, or point to a passage that answers the question. The engine validates the selection, acts, and looks again.</p>
+            <p>Public exploration stays on the same origin. It runs for up to 12 decision steps or 60 seconds and stops when the next action has an unclear effect. Gallium rechecks the chosen passage in the live page before returning it. Jev assesses relevance.</p>
+            <p>Configured procedures can use deterministic steps or a structured model decision. The procedure defines a separate check for the actual result.</p>
+            <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/src/exploration.ts">Read the exploration loop <span aria-hidden="true">↗</span></a>
+          </article>
+
+          <article>
+            <h3>Carry forward the right state.</h3>
+            <p>Feedback drives the next move within a task. Across runs, the journal remembers the selected procedure, verified outcomes, and writes with uncertain effects. If a save may have gone through, Gallium checks the resulting state before any retry.</p>
+            <p>Today’s route preference follows a fixed policy. Gallium records model latency and reported cost for evaluation. Learned route ranking is a research direction in the <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/build-plan.md">architecture roadmap</a>.</p>
+            <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/src/journal.ts">Read the journal schema <span aria-hidden="true">↗</span></a>
+          </article>
+
+          <article>
+            <h3>Keep control with the person.</h3>
+            <p>Independent HTTP work can run in parallel. Browser work and work on the same account run in queues. If ownership changes while a task is waiting, the engine discards the stale request.</p>
+            <p>Pause a configured browser workflow to take over. Gallium confirms its debugger has detached and keeps the pause through restarts. After explicit handback, it checks whether you already finished the task.</p>
+            <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#tools-and-control">Read the handoff contract <span aria-hidden="true">↗</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="element-section shell" id="element" aria-labelledby="element-title">
-      <div class="section-heading">
-        <p class="eyebrow">PERIOD 04</p>
-        <h2 id="element-title">Chrome is the browser.<br>Gallium does the work.</h2>
-        <p>Chromium and gallium sit on the same row of the periodic table. <a href="https://periodic-table.rsc.org/element/31/gallium">Gallium melts at about 30°C</a>. Its change of state inspired the mark.</p>
+      <div class="section-heading split-heading">
+        <h2 id="element-title">Element 31.</h2>
+        <p>Gallium <a href="https://periodic-table.rsc.org/element/31/gallium">melts just below 30 °C</a>. It shares a row with chromium on the periodic table. That change of state inspired the tile and its motion.</p>
       </div>
       <figure class="periodic-scene">
         <div class="periodic-board" role="list" aria-label="Periodic table of 118 elements">
@@ -224,46 +359,83 @@ npm run install:local</code></pre>
       </figure>
     </section>
 
-    <section id="workflow" class="workflow" aria-labelledby="workflow-title">
-      <div class="shell workflow-inner">
-        <div class="section-heading">
-          <p class="eyebrow">FROM REQUEST TO RESULT</p>
-          <h2 id="workflow-title">Check what happened.</h2>
-          <p>Give Gallium a task through MCP or the command line. It picks an allowed route and returns the evidence for the result.</p>
+    <section id="install" class="setup" aria-labelledby="install-title">
+      <div class="shell setup-inner">
+        <div class="section-heading split-heading">
+          <h2 id="install-title">Run Gallium locally.</h2>
+          <p>Start with Git and Node.js 24 or later. The demo runs in a temporary fixture. The full install adds the CLI and routing skill from this repository.</p>
         </div>
-        <ol class="steps">
-          <li><span>01</span><h3>Ask</h3><p>Look up a fact on a public site or run a procedure for a configured account.</p></li>
-          <li><span>02</span><h3>Route</h3><p>Gallium can use a direct request, a request inside your browser session, or visible interaction in Chrome.</p></li>
-          <li><span>03</span><h3>Verify</h3><p>Get a source passage for a lookup. For a configured change, Gallium checks the new state before reporting success.</p></li>
-        </ol>
-        <div class="verification">
-          <div><p class="eyebrow">LOCAL DEMO RESULT</p><p>A verified save, followed by a repeat request and a human handoff.</p></div>
-          <dl><div><dt>First save</dt><dd>verified</dd></div><div><dt>Repeat request</dt><dd>already verified</dd></div><div><dt>Extra actions after handoff</dt><dd>0</dd></div></dl>
+
+        <div class="setup-options">
+          <article>
+            <h3>Install the engine.</h3>
+            <p>The installer registers the MCP server when the Codex CLI is available. Already cloned the repo for the demo? Start at <code>npm ci</code>.</p>
+            <div class="command-block">
+              <div class="command-bar"><span>Terminal</span><button type="button" data-copy="install-command" hidden>Copy install commands</button></div>
+              <pre tabindex="0"><code id="install-command">git clone https://github.com/<wbr>davidjbeveridge/<wbr>gallium.git &amp;&amp;
+cd gallium &amp;&amp;
+npm ci &amp;&amp;
+npm run install:local</code></pre>
+              <p class="copy-status" role="status"></p>
+            </div>
+          </article>
+          <article id="demo">
+            <h3>Try the demo.</h3>
+            <p>Watch Gallium verify a save, skip a duplicate, and keep a human pause through a restart. The fixture needs only Git and Node.</p>
+            <div class="command-block">
+              <div class="command-bar"><span>Terminal</span><button type="button" data-copy="demo-command" hidden>Copy demo commands</button></div>
+              <pre tabindex="0"><code id="demo-command">git clone https://github.com/<wbr>davidjbeveridge/<wbr>gallium.git &amp;&amp;
+cd gallium &amp;&amp;
+npm run demo</code></pre>
+              <p class="copy-status" role="status"></p>
+            </div>
+          </article>
+        </div>
+
+        <div class="first-task">
+          <div>
+            <h3>Make your first public lookup.</h3>
+            <p>Set up the <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#shared-service-and-internal-routing">Jev router</a> first. This lookup reads an RFC directly over HTTPS. For tasks that use the live interface, <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#connect-chrome">connect the Chrome bridge</a>.</p>
+          </div>
+          <div class="command-block">
+            <div class="command-bar"><span>Terminal</span><button type="button" data-copy="lookup-command" hidden>Copy lookup command</button></div>
+            <pre tabindex="0"><code id="lookup-command">~/.local/bin/gallium task --operation rfc418 \
+  --goal 'What does HTTP status 418 mean in this document?' \
+  --target https://www.rfc-editor.org/rfc/rfc2324.txt</code></pre>
+            <p class="copy-status" role="status"></p>
+          </div>
+        </div>
+        <details class="mcp-example">
+          <summary>Send the same goal over MCP</summary>
+          <p>Call <code>web_task</code> with a stable operation ID, the goal, and the public URL.</p>
+          <pre><code>{
+  "operationId": "rfc418",
+  "goal": "What does HTTP status 418 mean in this document?",
+  "target": "https://www.rfc-editor.org/rfc/rfc2324.txt"
+}</code></pre>
+        </details>
+        <div class="setup-links">
+          <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md">Setup and configuration <span aria-hidden="true">↗</span></a>
+          <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/VALIDATION.md">Validation results <span aria-hidden="true">↗</span></a>
         </div>
       </div>
     </section>
 
     <section id="questions" class="shell questions" aria-labelledby="questions-title">
-      <div class="section-heading"><p class="eyebrow">SETUP &amp; CONTROL</p><h2 id="questions-title">Before you connect.</h2></div>
+      <div class="section-heading"><h2 id="questions-title">Before you connect.</h2></div>
       <div class="faq">
-        <details><summary>Can Gallium use my existing login?</summary><p>Yes, for configured workflows. Install the bridge in your Chrome profile and enable it on the relevant tab. A procedure defines the account, allowed actions, and result to check.</p></details>
-        <details><summary>Can Gallium explore an unfamiliar site?</summary><p>Gallium can read public HTTPS documents and follow supported controls with a configured model router. Exploration stays on the same origin, has a time limit, and stops at sign-in and challenge pages.</p></details>
-        <details><summary>Can I take over partway through a task?</summary><p>Yes. Pause the operation’s scope to take control. The pause survives a restart. Hand control back explicitly when you’re ready.</p></details>
-        <details><summary>Can I try it before connecting Chrome?</summary><p>Yes. Run the <a href="https://github.com/davidjbeveridge/gallium#try-it-in-one-minute">local fixture demo</a> with Node 24 or later. It demonstrates a verified save, duplicate prevention, and human handoff.</p></details>
-      </div>
-    </section>
-
-    <section class="closing">
-      <div class="shell closing-inner">
-        <div><p class="eyebrow">GALLIUM / 31</p><h2>Install Gallium.</h2></div>
-        <div><a class="primary" href="#install">Get the install commands <span aria-hidden="true">↑</span></a><a class="evidence-link" href="https://github.com/davidjbeveridge/gallium/blob/main/VALIDATION.md">See the validation results</a></div>
+        <details><summary>Which browser does Gallium use?</summary><p>Direct HTTP runs without a browser. For browser-session requests and live UI tasks, the current adapter uses installed desktop Chrome through a separately enabled bridge.</p></details>
+        <details><summary>What can it do on a site I’m signed into?</summary><p>Configure a procedure with the account, allowed actions, and the state Gallium should verify. Browser-session requests use the session in the enabled tab. Public exploration stops at sign-in or challenge pages.</p></details>
+        <details><summary>When do I need a model provider?</summary><p>Public tasks and goal-based procedure matching use a configured Jev router through OpenRouter System One. Deterministic procedures and the local demo can run without a model call.</p></details>
+        <details><summary>What leaves my machine?</summary><p>The engine and its journal run locally. When a task uses the configured router, Gallium sends the goal and relevant excerpts, controls, or nonsecret procedure details to the model provider. Browser-session requests use cookies and CSRF tokens inside the tab.</p></details>
+        <details><summary>Can I use another MCP client?</summary><p>Gallium exposes a stdio MCP server. Configure your client to launch <code>node bin/mcp.mjs</code> from the checkout. Use <code>web_task</code> for a goal, <code>web_status</code> for receipts, and <code>web_control</code> for pause and handback.</p></details>
       </div>
     </section>
   </main>
 
   <footer class="shell footer">
     <a class="brand" href="./"><img src="mark.svg" alt="" width="24" height="24">Gallium</a>
-    <div><a href="https://github.com/davidjbeveridge/gallium">Source</a><a href="llms.txt">llms.txt</a></div>
+    <div><a href="https://github.com/davidjbeveridge/gallium">Source on GitHub</a><a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md">Documentation</a><a href="llms.txt">llms.txt</a></div>
   </footer>
   <script src="hero-metal.js" defer></script>
   <script src="site.js" defer></script>

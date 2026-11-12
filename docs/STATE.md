@@ -98,3 +98,9 @@ Hero resting state: the one-shot dissolves to its intact opening frame, with a s
 Periodic table: the ImageGen concept informed a graphite slab with cyan element cells, amber chromium, and a raised Gallium tile. The site renders all 118 numbered elements as HTML, with the two detached series and a CSS 3D scroll reveal. Reduced motion keeps the board flat. Verified placement, unique atomic numbers, reveal, and responsive rendering in Chrome from 320 to 1440 px. All 92 project tests passed. Jacques inspection found no repository-local DESIGN.md or manifest to validate.
 
 Reflective hero: restored the full eight-second Flow source through the liquid-only frame. A beveled WebGL tile rises from the held pool and reflects procedural studio lights as the pointer changes its orientation. The intact poster remains the reduced-motion and WebGL fallback. Verified the rendered rise, pointer-dependent output, replay, both codecs, and responsive layout in Chrome. All 92 project tests passed.
+
+## Task-engine positioning and architecture site
+
+The homepage now leads with Gallium as a standalone web task engine. The current browser adapter is desktop Chrome. The examples distinguish public HTTPS, live exploration, and configured verification. The architecture describes fixed preference among eligible procedures, in-run feedback, durable state, and verified handoff. Learned route ranking remains research. An Astra source review grounded the claims. The README introduction, social card, metadata, and llms.txt match the page.
+
+Verified all 92 project tests, type checking, and site metadata. The published fixture excerpt matched a fresh local demo. Chrome checks passed at 320, 390, 760, 761, 820, 1024, and 1440 px, including pointer and keyboard example selection, three command copy actions, the MCP example, FAQ, hero replay, reduced motion, and static content with JavaScript disabled.
