@@ -62,7 +62,7 @@ let inView = !('IntersectionObserver' in window);
 let userPaused = false;
 
 function updateControl(paused) {
-  const label = paused ? 'Play background video' : 'Pause background video';
+  const label = video.ended ? 'Replay hero video' : paused ? 'Play hero video' : 'Pause hero video';
   motionButton.toggleAttribute('data-paused', paused);
   motionButton.setAttribute('aria-label', label);
   motionButton.title = label;
@@ -83,7 +83,7 @@ function loadVideo() {
 }
 
 function updateVideo() {
-  if (motion.matches || userPaused || !inView || document.hidden) {
+  if (motion.matches || userPaused || video.ended || !inView || document.hidden) {
     video.pause();
     if (motion.matches) {
       heroMedia.removeAttribute('data-playing');
@@ -111,8 +111,14 @@ function updateVideo() {
   });
 }
 
+video.addEventListener('ended', () => updateControl(true));
 motionButton.addEventListener('click', () => {
-  userPaused = !userPaused;
+  if (video.ended) {
+    video.currentTime = 0;
+    userPaused = false;
+  } else {
+    userPaused = !userPaused;
+  }
   updateControl(userPaused);
   updateVideo();
 });

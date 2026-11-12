@@ -32,33 +32,28 @@ button { font: inherit; }
 .top .brand img { filter: invert(1); }
 .hero { position: relative; isolation: isolate; overflow: hidden; }
 .hero-grid {
-  position: relative;
   display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr);
+  gap: clamp(24px, 4vw, 64px);
   align-items: center;
-  min-height: min(760px, 86vh);
-  padding-block: clamp(72px, 10vw, 142px);
+  padding-block: clamp(48px, 7vw, 100px);
 }
-.hero-copy { max-width: 650px; }
-.hero-media { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.hero-copy { min-width: 0; }
+.hero-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #101619;
+}
 .hero-media img, .hero-media video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-  transform: translateX(16%);
 }
 .hero-media img { z-index: 1; }
 .hero-media[data-playing] img { visibility: hidden; }
-.hero-media::after {
-  z-index: 2;
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, #11181c 10%, #11181cfa 23%, #11181ce8 34%, #11181c73 54%, #11181c00 76%),
-    linear-gradient(0deg, #11181caa, transparent 25%);
-}
 @media (prefers-reduced-motion: no-preference) {
   .hero-copy > * { animation: hero-enter .68s cubic-bezier(.2,.7,.25,1) both; }
   .hero-copy > :nth-child(2) { animation-delay: .08s; }
@@ -73,7 +68,7 @@ button { font: inherit; }
 .eyebrow { margin: 0 0 24px; font: 650 .72rem/1.4 var(--mono); letter-spacing: .14em; color: var(--steel); }
 .hero .eyebrow, .workflow .eyebrow { color: var(--blue); }
 h1, h2, h3 { line-height: 1.04; margin: 0; letter-spacing: -.065em; }
-h1 { font-size: clamp(3.4rem, 5.65vw, 6.2rem); font-weight: 760; letter-spacing: -.037em; }
+h1 { max-width: 13ch; text-wrap: balance; font-size: clamp(2.65rem, 5.2vw, 5.4rem); font-weight: 760; letter-spacing: -.037em; }
 h2 { font-size: clamp(2.5rem, 5.1vw, 5.2rem); font-weight: 730; }
 .lede { color: #c8d3d7; font-size: clamp(1rem, 1.4vw, 1.23rem); max-width: 460px; margin: 24px 0 32px; }
 .install { max-width: 525px; background: #1c272d; border: 1px solid #435760; border-radius: 8px; scroll-margin-top: 32px; }
@@ -81,6 +76,7 @@ h2 { font-size: clamp(2.5rem, 5.1vw, 5.2rem); font-weight: 730; }
 .install-bar button, .primary { border: 0; border-radius: 5px; background: var(--blue); color: var(--graphite); padding: .66em .9em; font-weight: 730; cursor: pointer; transition: background .18s ease, transform .18s ease; }
 .install-bar button:hover, .primary:hover { background: #cee4ef; transform: translateY(-1px); }
 pre { margin: 0; padding: 15px 18px 10px; font: .75rem/1.7 var(--mono); color: var(--white); overflow-x: auto; scrollbar-color: #64808f #1c272d; }
+.hero .install pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .copy-status { margin: 0; padding: 0 18px 10px; color: var(--blue); font-size: .76rem; min-height: 1.75rem; }
 .requirements { color: #b5c4cb; font-size: .82rem; margin: 14px 0 0; }
 .motion-toggle {
@@ -158,21 +154,18 @@ pre { margin: 0; padding: 15px 18px 10px; font: .75rem/1.7 var(--mono); color: v
   .nav { min-height: 66px; }
   .nav nav { display: none; }
   .hero-grid, .questions { grid-template-columns: minmax(0, 1fr); }
-  .hero-grid { min-height: auto; padding-block: clamp(96px, 24vw, 156px) 58px; }
-  .hero-media img, .hero-media video {
-    height: clamp(250px, 66vw, 440px);
-    object-position: 55% 50%;
-    transform: translateX(19%);
+  .hero-grid { padding-block: 28px 44px; gap: 26px; }
+  .hero-media {
+    grid-row: 1;
+    aspect-ratio: auto;
+    height: clamp(156px, 52vw, 290px);
+    width: min(100%, 560px);
+    justify-self: center;
   }
-  .hero-media::after {
-    background: linear-gradient(180deg, transparent, #11181c42 76px, #11181cdd 190px, #11181c 300px),
-      linear-gradient(90deg, #11181c 4%, #11181cca 34%, transparent 88%);
-  }
-  .hero .install pre { white-space: pre-wrap; overflow-wrap: anywhere; }
   .hero .copy-status:empty { min-height: 0; padding-bottom: 0; }
-  .hero .motion-toggle { top: 8px; bottom: auto; }
+  .hero .motion-toggle { right: 6px; bottom: 6px; }
   .hero .install-bar button { min-height: 44px; }
-  h1 { font-size: clamp(2.12rem, 10.7vw, 3.8rem); }
+  h1 { font-size: clamp(2.12rem, 9.6vw, 3.6rem); }
   .hero .eyebrow { margin-bottom: 12px; }
   .hero .lede { margin-block: 14px 19px; }
   .element-strip { grid-template-columns: 1fr .18fr repeat(4, 1fr); gap: 4px; }

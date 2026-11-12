@@ -90,3 +90,5 @@ Verified in isolated Chrome at 320, 390, 820, 1024, and 1440 px, including clipb
 Mobile follow-up: the melt sits behind the headline, with the copy button visible sooner and commands wrapping within the card. Verified the rendered phone layout and reran the isolated Chrome hero checks.
 
 Hero loop follow-up: the existing clip reverses before the Ga tile leaves the frame. Both video formats return to the opening pose and loop with the mark visible throughout.
+
+Hero motion and layout follow-up: Astra recommended a forward one-shot that settles on the tile, with matched transition frames required for any future intro and steady-state pair. The site uses a 4.8-second edit of the original Flow shot, holds the last frame, and offers replay. Separate copy and media regions remove the mask, with stacked art on phones and natural headline wrapping. Verified Chrome layout at 320–1440 px, end and replay, reduced motion, both codecs, and 92 project tests.

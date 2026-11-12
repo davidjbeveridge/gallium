@@ -67,15 +67,10 @@
 
   <main>
     <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-media" aria-hidden="true">
-        <img class="material-poster" src="media/gallium-hero.webp" alt="" width="1280" height="720" fetchpriority="high">
-        <video data-motion-src="media/gallium-flow-melt.webm" data-motion-fallback="media/gallium-flow-melt.mp4" muted loop playsinline preload="none" hidden></video>
-      </div>
-      <button class="motion-toggle" type="button" aria-label="Pause background video" title="Pause background video" hidden></button>
       <div class="shell hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">LOCAL BROWSER AUTOMATION</p>
-          <h1 id="hero-title">Give your agent<br> a web task.</h1>
+          <h1 id="hero-title">Give your agent a web task.</h1>
           <p class="lede">Use the Chrome session you already have. Gallium finds sources, checks that configured changes took effect, and lets you take over.</p>
           <div class="install" id="install">
             <div class="install-bar"><span>Install from GitHub</span><button type="button" data-copy hidden>Copy commands</button></div>
@@ -86,6 +81,11 @@ npm run install:local</code></pre>
             <p class="copy-status" role="status" aria-live="polite"></p>
           </div>
           <p class="requirements">Git and Node 24+ · Codex optional · <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#connect-chrome">Connect Chrome</a> separately.</p>
+        </div>
+        <div class="hero-media">
+          <img class="material-poster" src="media/gallium-hero.webp" alt="" width="1280" height="720" fetchpriority="high">
+          <video data-motion-src="media/gallium-flow-melt.webm" data-motion-fallback="media/gallium-flow-melt.mp4" muted playsinline preload="none" aria-hidden="true" hidden></video>
+          <button class="motion-toggle" type="button" aria-label="Pause hero video" title="Pause hero video" hidden></button>
         </div>
       </div>
     </section>
