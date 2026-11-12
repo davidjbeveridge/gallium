@@ -1,0 +1,12 @@
+Set up Gallium for this project and use it for a first public lookup.
+
+1. Check for Git, Node.js 24 or later, and an installed Gallium CLI. If Gallium is missing, clone https://github.com/davidjbeveridge/gallium.git into a separate checkout. In that checkout, run npm ci and npm run install:local. Keep any existing Gallium config.
+
+2. Return to this project and run npx skills add davidjbeveridge/gallium for my agent. Add "Use the Gallium skill for web tasks." to this project's agent instructions while preserving the existing instructions.
+
+3. Use the active Gallium config. GALLIUM_CONFIG can select it. The launcher prefers an existing ~/.config/web-operator/config.json, then ~/.config/gallium/config.json. If taskRouter is missing, add it with provider "typesafe", endpoint "https://openrouter.ai/api/v1/systemone", model "typesafe/jev-1.14-20261014", apiKeyEnv "OPENROUTER_API_KEY", and timeoutMs 15000. Keep the other settings. After editing the config, run ~/.local/bin/gallium service-restart when the service is idle.
+
+4. Use Gallium to answer "What does HTTP status 418 mean in this document?" at https://www.rfc-editor.org/rfc/rfc2324.txt. Use operation ID rfc418 with Gallium's web_task if it is loaded, or run:
+~/.local/bin/gallium task --operation rfc418 --goal 'What does HTTP status 418 mean in this document?' --target https://www.rfc-editor.org/rfc/rfc2324.txt
+
+Use the configured OpenRouter credential and keep the value out of chat. If the key is missing, run ~/.local/bin/gallium demo and tell me how to set OPENROUTER_API_KEY or taskRouter.apiKeyFile. For a successful lookup, show the source URL and the passage. If the installer just registered MCP, use the CLI for this run and tell me to open a new chat for MCP.

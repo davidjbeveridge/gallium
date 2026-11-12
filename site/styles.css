@@ -193,64 +193,54 @@ h3 { font-size: clamp(1.3rem, 2.55vw, 1.85rem); font-weight: 715; }
 .route-panel + .route-panel { margin-top: 32px; }
 .route-panel[role="tabpanel"] { margin-top: 0; }
 .route-panel h3 { max-width: 32ch; text-wrap: pretty; }
-.trace {
-  position: relative;
+.flow-lane { margin-top: 24px; }
+.flow-label { display: flex; align-items: baseline; justify-content: space-between; gap: 10px 16px; }
+.flow-label h4 { margin: 0; font-size: 1rem; font-weight: 680; }
+.flow-time { flex: none; color: var(--signal); font: 650 .86rem var(--mono); }
+.flow-browser .flow-time { color: #c5d2d7; }
+.flow-steps {
+  display: flex;
+  gap: 9px 24px;
+  margin: 9px 0 0;
+  padding: 0;
   list-style: none;
-  margin: 24px 0;
-  padding-left: 23px;
-  color: #c6d3d7;
 }
-.trace::before {
-  content: "";
+.flow-steps li {
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  padding: 6px 9px;
+  border-radius: 5px;
+  background: #28373e;
+  color: #e2eced;
+  font-size: .86rem;
+  overflow-wrap: anywhere;
+}
+.flow-steps li + li::before {
   position: absolute;
-  inset: 10px auto 6px 4px;
-  width: 1px;
-  background: #72c3c3;
-  transform-origin: top;
+  top: 50%;
+  left: -18px;
+  transform: translateY(-50%);
+  color: #9bc0c5;
+  content: "→";
 }
-.trace li { position: relative; }
-.trace li + li { margin-top: 15px; }
-.trace li::before {
-  content: "";
-  position: absolute;
-  top: .54em;
-  left: -23px;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--signal);
-}
-.trace span { color: var(--signal); font: 650 .82rem var(--mono); }
-.trace p { margin: 2px 0 0; max-width: 58ch; }
+.route-note { margin: 19px 0 0; color: #c6d3d7; font-size: .89rem; }
 .route-result {
+  margin: 20px 0 0;
   padding: 16px 18px;
   background: var(--dark);
   border-radius: 10px;
   overflow-wrap: anywhere;
 }
-.route-result p, .route-result blockquote { margin: 0; }
-.route-result blockquote, .route-result .result-state + p { margin-bottom: 7px; }
-.route-result blockquote { font-size: clamp(1.05rem, 2vw, 1.24rem); }
-.route-result .result-state {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px 13px;
-  margin: 0 0 8px;
-  font-size: .78rem;
-  color: #beced3;
-}
-.result-state code:first-child { color: var(--signal); }
-.route-result a { color: var(--signal); font-size: .87rem; }
+.route-result code { color: var(--signal); }
 @media (prefers-reduced-motion: no-preference) {
   .hero-copy > * { animation: arrive .68s cubic-bezier(.2,.7,.25,1) both; }
   .hero-copy > :nth-child(2) { animation-delay: .08s; }
   .hero-copy > :nth-child(3) { animation-delay: .16s; }
   .hero-copy > :nth-child(4) { animation-delay: .24s; }
-  .route-console[data-seen] [role="tabpanel"] .trace::before { animation: trace-line .53s cubic-bezier(.22,.7,.28,1) both; }
-  .route-console[data-seen] [role="tabpanel"] .trace li { animation: arrive .32s ease-out both; }
-  .route-console[data-seen] [role="tabpanel"] .trace li + li { animation-delay: .14s; }
+  .route-console[data-seen] [role="tabpanel"] .flow-lane { animation: arrive .32s ease-out both; }
+  .route-console[data-seen] [role="tabpanel"] .flow-lane + .flow-lane { animation-delay: .10s; }
   .route-console[data-seen] [role="tabpanel"] .route-result { animation: arrive .38s .18s ease-out both; }
-  @keyframes trace-line { from { transform: scaleY(0); } to { transform: scaleY(1); } }
   @keyframes arrive {
     from { opacity: .38; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
@@ -337,13 +327,7 @@ code { font-family: var(--mono); }
 .setup-links { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 26px; }
 .setup-choices { max-width: 64ch; padding-left: 1.3em; color: var(--steel); }
 .setup-choices li + li { margin-top: 8px; }
-.prompt-details summary {
-  display: list-item;
-  min-height: 44px;
-  padding: 11px 18px;
-  color: #d4e2e6;
-  cursor: pointer;
-}
+#setup-prompt a { color: var(--signal); }
 
 .doc-page { padding-block: var(--section-space); overflow-wrap: anywhere; }
 .doc-page h1 { font-size: clamp(2.35rem, 6vw, 4.75rem); }
@@ -423,6 +407,8 @@ code { font-family: var(--mono); }
   .motion-toggle { right: 6px; bottom: 6px; }
   .route-tabs { gap: 4px; }
   .route-tabs button { flex: 1 1 auto; min-width: 44px; padding-inline: 2px; font-size: .8rem; }
+  .flow-steps { display: grid; justify-items: start; gap: 14px; }
+  .flow-steps li + li::before { top: -15px; left: 10px; transform: none; content: "↓"; }
   .route-result { padding: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {

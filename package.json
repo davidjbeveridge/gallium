@@ -19,7 +19,9 @@
     "check": "npm run typecheck && npm test",
     "install:local": "node scripts/install.ts",
     "fixture": "node fixtures/server.ts",
-    "test:exploration": "node test/exploration-live.ts"
+    "test:exploration": "node test/exploration-live.ts",
+    "benchmark:reads": "node scripts/benchmark-reads.mjs",
+    "benchmark:profile": "node scripts/benchmark-profile.ts"
   },
   "optionalDependencies": {
     "playwriter": "0.9.0"

@@ -30,13 +30,13 @@ actionsAfterHumanCompletedGoal        0
 | Task | What Gallium does |
 | --- | --- |
 | **Quote a line from a public guide** | Fetches the text directly when it can and returns the passage with its URL. |
-| **Find an answer on a live page** | Uses Chrome to follow links, search, or wait for content. One request covered three Next clicks in the quote demo. |
+| **Find an answer on a live page** | Uses Chrome to follow links, search, or wait for content. One live test found a quote after three Next clicks. |
 | **Change a setting on a configured account** | Checks the account, uses an allowed route, and independently reads back the result. |
 | **Take over partway through** | Pauses the scope, releases the browser debugger when handoff is confirmed, and waits for an explicit handback. |
 
 Public exploration needs a configured model router. Signed-in tasks and changes need a procedure that defines the account, actions, and verification. The current browser integration uses desktop Chrome and requires explicit extension setup.
 
-[See the five task demos](https://davidjbeveridge.github.io/gallium/#workflow)
+[See the task routes](https://davidjbeveridge.github.io/gallium/#workflow) · [Read the benchmarks](docs/benchmarks.md)
 
 ## Install the engine
 

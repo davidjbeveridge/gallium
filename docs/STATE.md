@@ -146,3 +146,11 @@ A fresh local demo returned a verified save, `ALREADY_VERIFIED` on repeat, and z
 `npm run build:site` renders every tracked Markdown document into the Pages artifact at `dist/site`. The docs index links to bootstrap, router configuration, agent use, and Chrome setup. The sitemap includes the docs and their canonical URLs. The homepage has those setup steps, a copyable prompt, and the first lookup in agent, CLI, and MCP forms.
 
 The site gate checked 14 pages, their links and anchors, and the sitemap. Isolated Chrome at 320–1440 px verified the quickstart, documentation navigation, all eight copy controls, and the prompt with clipboard access blocked and JavaScript off. An isolated installer run produced the router config shown on the homepage and kept that config on rerun. The local fixture verified its save and handback. Type checking and all 92 tests passed.
+
+## Task flows and measured benchmarks
+
+The quickstart shows one copyable setup prompt linking to the published `setup.txt`. The demos compare price and stock, pickup availability, a profile save, and a host browser fallback. The curl and HAR-style paths are separate host workflows. The trace uses only a documented public GET on a disposable shop fixture.
+
+Nine verified shopping trials per path measured 10.03 ms for direct curl and 14.87 ms for scripted Chrome. Pickup took 13.25 ms in Chrome, 33.15 ms with the full diagnostic, and 10.12 ms for the documented repeat GET. Seven verified profile trials per path measured Chrome, Playwriter, a configured session request, hosted Jev route selection, and the host fallback. Jev chose the session request in every timed trial. [Methods and reproduction](benchmarks.md)
+
+Isolated Chrome at 320, 390, 708, 918, and 1440 px verified each flow, the visible prompt, exact copy, and keyboard and touch navigation. The prompt and diagrams remained visible with JavaScript off. Type checking, 92 tests, the Chrome integration gate, and the 15-page site check passed.
