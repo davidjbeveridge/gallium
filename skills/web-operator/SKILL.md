@@ -5,7 +5,7 @@ description: Delegate public website tasks with automatic dynamic-site explorati
 
 # Gallium
 
-Use the local Gallium CLI or MCP server. For a new machine, follow the [engine setup guide](https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#run).
+Use the local Gallium CLI or MCP server. For a new machine, follow the [engine setup guide](https://davidjbeveridge.github.io/gallium/docs/guide.html#run).
 
 Delegate an authorized task through `web_task` with its goal and stable operation ID. Supply a public HTTPS target for an information task, or an account scope and nonsecret inputs for a configured procedure. The internal Jev router selects the procedure and transport. Use `web_status` to discover configured scopes and input fields. The same tools are available through `gallium` CLI. If the MCP server is not loaded in this chat, use the CLI and restart the chat when convenient.
 

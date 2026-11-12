@@ -140,3 +140,9 @@ Isolated Chrome checked the handoff at 320, 390, and 1440 px, with 27.8 seconds 
 The site explains how to use Gallium as the agent's default browser skill. Four sample requests cover a direct read, a live site, a configured save, and taking over a step. The five demos show the recorded route and result. One request covered three Next clicks, and the fixture skipped a repeat save. The Chrome fallback, loading example, and handoff show how a supported task can continue when it needs another step.
 
 A fresh local demo returned a verified save, `ALREADY_VERIFIED` on repeat, and zero extra actions after handback. Both Chrome examples match the recorded live tests. Isolated Chrome at 320–1440 px verified the stacked page, five demo panels, keyboard and touch selection, the local demo link, clipboard controls, and the static and reduced-motion versions. Type checking, all 92 tests, and the site check passed.
+
+## Published documentation and quickstart
+
+`npm run build:site` renders every tracked Markdown document into the Pages artifact at `dist/site`. The docs index links to bootstrap, router configuration, agent use, and Chrome setup. The sitemap includes the docs and their canonical URLs. The homepage has those setup steps, a copyable prompt, and the first lookup in agent, CLI, and MCP forms.
+
+The site gate checked 14 pages, their links and anchors, and the sitemap. Isolated Chrome at 320–1440 px verified the quickstart, documentation navigation, all eight copy controls, and the prompt with clipboard access blocked and JavaScript off. An isolated installer run produced the router config shown on the homepage and kept that config on rerun. The local fixture verified its save and handback. Type checking and all 92 tests passed.

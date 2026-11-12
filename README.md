@@ -1,10 +1,10 @@
 # Gallium
 
-<img src="site/og-card.png" width="900" alt="Gallium. Like Chromium, but fluid.">
+![Gallium. Like Chromium, but fluid.](site/og-card.png)
 
 Use Gallium in place of your agent's default browser skill. The skill hands the whole job to a local engine through MCP or the CLI. Gallium can fetch a public document directly or switch to Chrome if the answer takes a search or a click. For a change you've configured, it reads back the result.
 
-[Visit the website](https://davidjbeveridge.github.io/gallium/) · [Setup and configuration](docs/guide.md) · [Validation](VALIDATION.md)
+[Visit the website](https://davidjbeveridge.github.io/gallium/) · [Documentation](https://davidjbeveridge.github.io/gallium/docs/) · [Validation](VALIDATION.md)
 
 ## Run the demo
 
@@ -94,6 +94,7 @@ The [validation report](VALIDATION.md) describes the real Chrome fixture tests, 
 ```sh
 npm ci
 npm run check
+npm run build:site
 npm run build:extension
 npm run test:browser
 ```

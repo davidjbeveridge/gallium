@@ -24,16 +24,16 @@ Input policy is separate from planning. Support efficient interaction and config
 
 The product remains MCP and skill driven. No standalone control panel.
 
-# Original staged plan
+## Original staged plan
 
 
-## 1. Validate the real browser bridge
+### 1. Validate the real browser bridge
 
 Build Playwriter's extension at the pinned commit with the preservation patch. Keep the existing Chrome installation and profile. Install only the optional SDK dependencies, without browser downloads. Run the local fixture through the browser recipe, then compare its independently verified result with the portable HTTP recipe.
 
 Acceptance: existing tabs stay open; no other extension iframe is removed; account and stale-node mismatches stop execution; cancellation does not dispatch queued actions; no duplicate save follows interruption. Measure actual incremental SDK/extension disk use, cold/warm connection latency, and input behavior on macOS. Until this passes, `preserveExtensionsVerified` stays false.
 
-## 2. Complete authentication handoff
+### 2. Complete authentication handoff
 
 Add a local controller/shortcut independent of the model, verified per-tab debugger detach plus reattach suppression, and a foreground native adapter where needed. Generalize scope locking to an explicit shared authentication-context ID for sites that span origins. Keep operation effect state separate from control ownership.
 
@@ -41,7 +41,7 @@ Start with existing sessions, then Bitwarden overlay/autofill, then normal user 
 
 Acceptance: Bitwarden locked/unlocked and inline popups, one-time email code, device/passkey prompt, account switching, and user completion of the entire task all recover through fresh observation. Restart never returns human control to the agent automatically. CAPTCHA or device approval can remain a human step.
 
-## 3. Add authenticated in-page fetch and route choice
+### 3. Add authenticated in-page fetch and route choice
 
 Create an `in-page` adapter behind the same operation/effect contract. Requests must execute within the active browser context, with configured same-origin endpoints and normal CSRF/nonce acquisition procedures. Never assume copied cookies recreate device-bound credentials or browser transport identity.
 
@@ -49,7 +49,7 @@ Add a route resolver before navigation. First choose an already-validated host c
 
 Acceptance: fresh token acquisition, one-use nonce consumption, expired sessions, rate cooldown shared across transports, condition/version mismatch, and ambiguous server effects. A failure after a possible write never triggers another transport's mutation. Use provider conditional writes and idempotency where available; preflight reads alone do not eliminate races.
 
-## 4. Turn successful exploration into reviewed recipes
+### 4. Turn successful exploration into reviewed recipes
 
 Add scoped endpoint observation during authorized tasks, with credentials and bodies redacted by default. The supervisor proposes a recipe containing target identity, inputs, effect class, token acquisition, preconditions, verification, and retry semantics. Record source evidence and a version fingerprint. Validate against a local or designated test account before promotion.
 
@@ -57,7 +57,7 @@ Recipes should remain human-readable files. Store measurements in SQLite, not a 
 
 Acceptance: repeated tasks progress without new model calls when the validated recipe suffices, and page/API changes lead to a safe re-observation or escalation rather than speculative writes.
 
-## 5. Expand the navigator and input layers
+### 5. Expand the navigator and input layers
 
 Keep the existing `Navigator` interface. Add broader semantic/AX observations, scoped screenshots only when useful, frame/shadow-root support, and a separately configurable text provider. Compare deterministic execution, TypeSafe, and at least one generic structured-output provider on the same tasks. Track end-to-end time, success, retries, tokens, API cost, and human interventions.
 
@@ -65,7 +65,7 @@ Extract browser input into a motor-policy interface with an efficient default an
 
 Acceptance: independent business success on repeated trials; fewer host/model round trips; measured improvement on the user's Macs. No navigation-model score grants permission or replaces verification.
 
-## 6. Package the preferred integration
+### 6. Package the preferred integration
 
 After the browser and authentication gates pass, add the routing skill and local installer. The routing policy should select connectors/direct requests before browser UI and progressively load auth/recipe references. Register Gallium as the preferred integration and disable competing configurable browser servers when the user chooses. A plugin cannot rewrite the host's built-in browser implementation.
 

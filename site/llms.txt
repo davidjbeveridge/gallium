@@ -7,10 +7,12 @@
 - [Use cases](https://davidjbeveridge.github.io/gallium/#use-cases): Public document lookups, live page search, configured updates, and taking over a step.
 - [Demos](https://davidjbeveridge.github.io/gallium/#workflow): An RFC lookup, three Next clicks in one task, a page that loads after Start, a verified profile save, and a handoff that survives restart.
 - [Engine architecture](https://davidjbeveridge.github.io/gallium/#engine): Route selection, live feedback, durable state, concurrency, and human handoff.
-- [Install](https://davidjbeveridge.github.io/gallium/#install): Set up the engine or run the local fixture with Git and Node.js 24 or later.
+- [Quickstart](https://davidjbeveridge.github.io/gallium/#install): Install, configure, and run the first lookup from the homepage.
+- [Agent setup prompt](https://davidjbeveridge.github.io/gallium/#agent-prompt): One prompt to install the engine and skill, configure the router, and try a public lookup.
 - [Agent skill](https://davidjbeveridge.github.io/gallium/#install-skill): Run `npx skills add davidjbeveridge/gallium` in your agent project. Use the local CLI or MCP server and add “Use the Gallium skill for web tasks.” to the project's agent instructions.
-- [Setup and configuration](https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md): Configure the CLI, stdio MCP server, Chrome bridge, model router, and procedures.
-- [Validation](https://github.com/davidjbeveridge/gallium/blob/main/VALIDATION.md): Test commands, observed outcomes, and qualification boundaries.
+- [Documentation](https://davidjbeveridge.github.io/gallium/docs/): All project guides and reference pages.
+- [Setup and configuration](https://davidjbeveridge.github.io/gallium/docs/guide.html): Configure the CLI, stdio MCP server, Chrome bridge, model router, and procedures.
+- [Validation](https://davidjbeveridge.github.io/gallium/docs/validation.html): Test commands, observed outcomes, and qualification boundaries.
 
 ## How the engine works
 

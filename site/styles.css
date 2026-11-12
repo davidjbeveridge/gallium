@@ -259,6 +259,7 @@ h3 { font-size: clamp(1.3rem, 2.55vw, 1.85rem); font-weight: 715; }
 
 .use-cases, .architecture { background: var(--paper); }
 .case-list, .engine-notes, .setup-steps { display: flex; flex-direction: column; gap: clamp(30px, 6vw, 62px); }
+.setup-steps { overflow-wrap: anywhere; }
 .case-list p, .engine-notes p, .setup-steps article > p { color: var(--steel); margin: 11px 0; max-width: 64ch; }
 .case-list blockquote { margin: 12px 0 8px; color: var(--signal-ink); font-weight: 600; }
 .engine-notes p + p { margin-top: 9px; }
@@ -334,6 +335,41 @@ code { font-family: var(--mono); }
 .mcp-example .copy-status { color: var(--signal); }
 .mcp-example .command-block { margin-bottom: 16px; }
 .setup-links { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 26px; }
+.setup-choices { max-width: 64ch; padding-left: 1.3em; color: var(--steel); }
+.setup-choices li + li { margin-top: 8px; }
+.prompt-details summary {
+  display: list-item;
+  min-height: 44px;
+  padding: 11px 18px;
+  color: #d4e2e6;
+  cursor: pointer;
+}
+
+.doc-page { padding-block: var(--section-space); overflow-wrap: anywhere; }
+.doc-page h1 { font-size: clamp(2.35rem, 6vw, 4.75rem); }
+.doc-page h2 { margin: 1.55em 0 .35em; font-size: clamp(1.55rem, 3.15vw, 2.65rem); }
+.doc-page h3 { margin: 1.25em 0 .35em; font-size: clamp(1.25rem, 2.4vw, 1.65rem); }
+.doc-page h2[id], .doc-page h3[id] { scroll-margin-top: 22px; }
+.doc-page p, .doc-page li { max-width: 72ch; }
+.doc-page a { color: var(--signal-ink); }
+.doc-page img { max-width: 100%; height: auto; }
+.doc-page pre { margin-block: 16px; padding: 16px 18px; background: var(--graphite); border-radius: 10px; }
+.doc-page ul, .doc-page ol { padding-left: 1.4em; }
+.doc-page li + li { margin-top: 5px; }
+.doc-parent, .doc-source { display: inline-block; }
+.doc-parent { margin-bottom: 20px; }
+.doc-source { margin-top: 32px; }
+.doc-topics { display: flex; flex-wrap: wrap; gap: 9px 24px; margin-top: 24px; }
+.doc-topics a { font-weight: 680; }
+.doc-page .doc-index { list-style: none; padding-left: 0; }
+.doc-index li { padding-block: 6px; }
+.doc-toc { margin: 23px 0; padding: 9px 17px; background: var(--paper); border-radius: 8px; }
+.doc-toc summary { padding-block: 9px; font-weight: 680; cursor: pointer; }
+.doc-toc ul { margin: 8px 0 12px; }
+.doc-table { margin-block: 18px; overflow-x: auto; }
+.doc-table table { width: 100%; border-collapse: collapse; }
+.doc-table th, .doc-table td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.doc-table th { text-align: left; background: var(--paper); }
 
 .faq { border-top: 1px solid var(--line); }
 .faq details { border-bottom: 1px solid var(--line); padding: 16px 0; }

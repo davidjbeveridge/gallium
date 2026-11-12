@@ -72,6 +72,20 @@ npx skills add davidjbeveridge/gallium
 
 The skill uses the Gallium CLI or MCP server. Follow the [engine setup](#run) to make those available, then open a new agent session to load the skill. Add “Use the Gallium skill for web tasks.” to your project's agent instructions to make it your default.
 
+## Configure the router
+
+A new installation includes a Jev router in `~/.config/gallium/config.json`. Use `GALLIUM_CONFIG` to select another file. The launcher keeps using `~/.config/web-operator/config.json` if that file already exists.
+
+For a public lookup, set `OPENROUTER_API_KEY` in the environment that launches the agent or CLI. You can also set `taskRouter.apiKeyFile` to the absolute path of a private regular file containing the key. Set that file's permissions to `0600` and keep it outside the project. The router reads the environment variable first.
+
+For an existing config, add the `taskRouter` entry from the [homepage quickstart](https://davidjbeveridge.github.io/gallium/#configure) if it is missing. Keep the other settings. After changing the config or key environment variable, run `~/.local/bin/gallium service-restart` from the configured environment when the service is idle.
+
+## Use with an agent
+
+Open a new chat after installing the skill and registering MCP. Ask your agent to use Gallium and give it the question and public URL. A first task can ask what HTTP status 418 means in `https://www.rfc-editor.org/rfc/rfc2324.txt`. Look for `evidence_found`, the passage, and its source URL.
+
+The installer registers Gallium with Codex when the Codex CLI is available. For another MCP client, add a stdio server that launches `node /absolute/path/to/gallium/bin/mcp.mjs`, then open a new session. The skill can also use the installed CLI. The [homepage quickstart](https://davidjbeveridge.github.io/gallium/#first-task) has the agent prompt, terminal command, and MCP arguments.
+
 ## Connect Chrome
 
 From the checkout, run `npm run build:extension` to build the bridge into `dist/extension`. Loading it into a personal Chrome profile grants debugger and website access and requires a separate step in Chrome.
@@ -117,6 +131,8 @@ Optional `playwriter.inputPolicy` supports `{"mode":"natural","maxOverheadMs":40
 ## Development and distribution
 
 `npm run check` runs TypeScript checks and the full local suite. `npm run test:browser` is an explicit integration gate using the installed Chrome executable and a disposable profile. It refuses a conflicting relay rather than killing another process. Set `CHROME_EXECUTABLE` on other platforms. Diagnostic test evidence stays under ignored `work/`.
+
+`npm run build:site` renders the tracked Markdown and homepage into `dist/site`. Run `python3 scripts/check-site.py` to check links, anchors, and crawl files before deploying that folder.
 
 The portable package contains `plugin.json`, `mcp.json`, and `skills/`, following [OpenAI's plugin packaging documentation](https://developers.openai.com/plugins/build/plugins). The local installer registers the same runtime directly. Public source distribution is not a Chrome Web Store or OpenAI directory approval.
 

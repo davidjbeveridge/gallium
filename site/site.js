@@ -18,6 +18,8 @@ for (const button of document.querySelectorAll('[data-copy]')) {
     } catch {
       button.removeAttribute('data-copied');
       status.classList.remove('copy-confirmation');
+      const details = command.closest('details');
+      if (details) details.open = true;
       const range = document.createRange();
       range.selectNodeContents(command);
       const selection = window.getSelection();

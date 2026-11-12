@@ -13,6 +13,7 @@
     "start": "node src/mcp.ts",
     "cli": "node src/cli.ts",
     "typecheck": "tsc",
+    "build:site": "node scripts/build-site.mjs",
     "build:extension": "node scripts/build-extension.ts",
     "test:browser": "node test/browser-e2e.ts",
     "check": "npm run typecheck && npm test",
@@ -26,6 +27,8 @@
   "devDependencies": {
     "@types/chrome": "0.0.315",
     "@types/node": "24.19.2",
+    "github-slugger": "2.0.0",
+    "markdown-it": "15.0.3",
     "typescript": "5.9.3",
     "vite": "7.3.7",
     "vite-plugin-static-copy": "3.4.0"

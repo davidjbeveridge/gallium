@@ -77,7 +77,7 @@
   <header class="top">
     <div class="shell nav">
       <a class="brand" href="./"><img src="mark.svg" alt="" width="26" height="26">Gallium</a>
-      <nav aria-label="Main"><a href="#use-cases">Use cases</a><a href="#workflow">Demos</a><a href="#engine">How it works</a><a href="#install">Install</a></nav>
+      <nav aria-label="Main"><a href="#use-cases">Use cases</a><a href="#workflow">Demos</a><a href="#install">Quickstart</a><a href="docs/">Docs</a></nav>
       <a class="source-link" href="https://github.com/davidjbeveridge/gallium">GitHub <span aria-hidden="true">↗</span></a>
     </div>
   </header>
@@ -259,7 +259,7 @@
             <h3>Take over in Chrome</h3>
             <p>Pause a configured workflow to finish a step yourself. Gallium releases the debugger and keeps the pause through a restart. Hand control back, then repeat the original request. Gallium checks whether you already finished.</p>
             <p>The service queues Chrome work and requests on the same account. Independent HTTP reads can run in parallel.</p>
-            <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#tools-and-control">Read the handoff guide</a>
+            <a class="text-link" href="docs/guide.html#tools-and-control">Read the handoff guide</a>
           </article>
         </div>
       </div>
@@ -268,14 +268,50 @@
     <section id="install" class="setup" aria-labelledby="install-title">
       <div class="measure section-stack">
         <div class="section-heading">
-          <h2 id="install-title">Install Gallium</h2>
-          <p>You'll need Git and Node.js 24 or later to run the engine.</p>
+          <h2 id="install-title">Get Gallium running</h2>
+          <p>Start with Git and Node.js 24 or later. Use an OpenRouter key for the first public lookup, or run the local demo with just Git and Node.</p>
+          <nav class="setup-links" aria-label="Quickstart">
+            <a class="text-link" href="#agent-prompt">Paste one prompt</a>
+            <a class="text-link" href="#install-engine">Bootstrap</a>
+            <a class="text-link" href="#configure">Configure</a>
+            <a class="text-link" href="#first-task">Use with an agent</a>
+          </nav>
         </div>
 
         <div class="setup-steps">
+          <article id="agent-prompt">
+            <h3>Set up with one prompt</h3>
+            <p>Copy this into the agent you want to use. It asks the agent to install Gallium, use your existing router key, and bring back a source passage.</p>
+            <div class="command-block">
+              <div class="command-bar">
+                <span>Agent setup prompt</span>
+                <button class="copy-button" type="button" data-copy="setup-prompt" aria-label="Copy agent setup prompt" title="Copy agent setup prompt" hidden>
+                  <svg class="copy-icon" aria-hidden="true"><use href="#icon-copy"/></svg>
+                  <svg class="copied-icon" aria-hidden="true"><use href="#icon-copied"/></svg>
+                </button>
+              </div>
+              <details class="prompt-details">
+                <summary>Read the prompt</summary>
+                <pre tabindex="0"><code id="setup-prompt">Set up Gallium for this project and use it for a first public lookup.
+
+1. Check for Git, Node.js 24 or later, and an installed Gallium CLI. If Gallium is missing, clone https://github.com/davidjbeveridge/gallium.git into a separate checkout. In that checkout, run npm ci and npm run install:local. Keep any existing Gallium config.
+
+2. Return to this project and run npx skills add davidjbeveridge/gallium for my agent. Add "Use the Gallium skill for web tasks." to this project's agent instructions while preserving the existing instructions.
+
+3. Use the active Gallium config. GALLIUM_CONFIG can select it. The launcher prefers an existing ~/.config/web-operator/config.json, then ~/.config/gallium/config.json. If taskRouter is missing, add it with provider "typesafe", endpoint "https://openrouter.ai/api/v1/systemone", model "typesafe/jev-1.14-20261014", apiKeyEnv "OPENROUTER_API_KEY", and timeoutMs 15000. Keep the other settings. After editing the config, run ~/.local/bin/gallium service-restart when the service is idle.
+
+4. Use Gallium to answer "What does HTTP status 418 mean in this document?" at https://www.rfc-editor.org/rfc/rfc2324.txt. Use operation ID rfc418 with Gallium's web_task if it is loaded, or run:
+~/.local/bin/gallium task --operation rfc418 --goal 'What does HTTP status 418 mean in this document?' --target https://www.rfc-editor.org/rfc/rfc2324.txt
+
+Use the configured OpenRouter credential and keep the value out of chat. If the key is missing, run ~/.local/bin/gallium demo and tell me how to set OPENROUTER_API_KEY or taskRouter.apiKeyFile. For a successful lookup, show the source URL and the passage. If the installer just registered MCP, use the CLI for this run and tell me to open a new chat for MCP.</code></pre>
+              </details>
+              <p class="copy-status" role="status"></p>
+            </div>
+          </article>
+
           <article id="install-engine">
-            <h3>Set up the engine</h3>
-            <p>Run this in a terminal. The installer adds the CLI and routing skill. If you have the Codex CLI, it registers the MCP server too. Open a new chat to load it.</p>
+            <h3>Bootstrap the engine</h3>
+            <p>Choose a folder for the Gallium checkout and keep it there after install. The installer adds the CLI and routing skill. When the Codex CLI is available, it also registers the MCP server.</p>
             <div class="command-block">
               <div class="command-bar">
                 <span>Terminal</span>
@@ -290,11 +326,12 @@ npm ci &amp;&amp;
 npm run install:local</code></pre>
               <p class="copy-status" role="status"></p>
             </div>
+            <p>Already cloned Gallium? Run <code>npm ci</code> and <code>npm run install:local</code> in that checkout. <a href="docs/guide.html#run">Full bootstrap guide</a></p>
           </article>
 
           <article id="install-skill">
             <h3>Add the skill to a project</h3>
-            <p>Run this where you use your agent. The skill uses the CLI or MCP server from the engine setup.</p>
+            <p>Run this in the project where your agent works. Choose your agent if the installer asks. The skill uses the CLI or MCP server from the engine setup.</p>
             <div class="command-block">
               <div class="command-bar">
                 <span>Terminal</span>
@@ -309,42 +346,69 @@ npm run install:local</code></pre>
             <p>Open a new agent session to load the skill. To use Gallium by default, add <q>Use the Gallium skill for web tasks.</q> to your project's agent instructions.</p>
           </article>
 
-          <article id="demo">
-            <h3>Try the local demo</h3>
-            <p>The demo uses a temporary test profile and runs with Git and Node alone. It checks a save, repeats the request to show what happens to a duplicate, then pauses a second update through a restart. If you've already cloned the repo, run <code>npm run demo</code> from the checkout.</p>
-            <div class="command-block">
-              <div class="command-bar">
-                <span>Terminal</span>
-                <button class="copy-button" type="button" data-copy="demo-command" aria-label="Copy demo commands" title="Copy demo commands" hidden>
-                  <svg class="copy-icon" aria-hidden="true"><use href="#icon-copy"/></svg>
-                  <svg class="copied-icon" aria-hidden="true"><use href="#icon-copied"/></svg>
-                </button>
+          <article id="configure">
+            <h3>Configure the router</h3>
+            <p>A new install adds a Jev router to <code>~/.config/gallium/config.json</code>. The launcher uses an existing <code>~/.config/web-operator/config.json</code> for older installs. Set <code>GALLIUM_CONFIG</code> to choose a different file.</p>
+            <ul class="setup-choices">
+              <li>Set <code>OPENROUTER_API_KEY</code> in the environment that starts your agent or the CLI.</li>
+              <li>For a desktop agent, you can set <code>taskRouter.apiKeyFile</code> to the absolute path of a private regular file containing the key. Give the file mode <code>0600</code> and keep it outside the project.</li>
+            </ul>
+            <p>After changing the config or key environment variable, run <code>~/.local/bin/gallium service-restart</code> from the configured environment when the service is idle. <a href="docs/guide.html#configure-the-router">Router configuration guide</a></p>
+            <details class="mcp-example">
+              <summary>Add a router to an existing config</summary>
+              <p>Merge this <code>taskRouter</code> entry into your config if it is missing. Keep your other settings.</p>
+              <div class="command-block">
+                <div class="command-bar">
+                  <span>JSON</span>
+                  <button class="copy-button" type="button" data-copy="router-config" aria-label="Copy router config" title="Copy router config" hidden>
+                    <svg class="copy-icon" aria-hidden="true"><use href="#icon-copy"/></svg>
+                    <svg class="copied-icon" aria-hidden="true"><use href="#icon-copied"/></svg>
+                  </button>
+                </div>
+                <pre tabindex="0"><code id="router-config">{
+  "taskRouter": {
+    "provider": "typesafe",
+    "endpoint": "https://openrouter.ai/api/v1/systemone",
+    "model": "typesafe/jev-1.14-20261014",
+    "apiKeyEnv": "OPENROUTER_API_KEY",
+    "timeoutMs": 15000
+  }
+}</code></pre>
+                <p class="copy-status" role="status"></p>
               </div>
-              <pre tabindex="0"><code id="demo-command">git clone https://github.com/davidjbeveridge/gallium.git &amp;&amp;
-cd gallium &amp;&amp;
-npm run demo</code></pre>
-              <p class="copy-status" role="status"></p>
-            </div>
+            </details>
           </article>
 
           <article id="first-task">
-            <h3>Look up a public document</h3>
-            <p>Ask your agent to use Gallium, then give it the question and the public URL. You can make the same request in a terminal. First, configure the Jev router. The Chrome bridge adds access to live pages. <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#shared-service-and-internal-routing">Router setup</a> · <a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md#connect-chrome">Chrome bridge setup</a></p>
+            <h3>Use Gallium with your agent</h3>
+            <p>Open a new chat after setup and paste this request. Look for the passage from the RFC and its source URL.</p>
             <div class="command-block">
               <div class="command-bar">
-                <span>Terminal</span>
-                <button class="copy-button" type="button" data-copy="lookup-command" aria-label="Copy public lookup command" title="Copy public lookup command" hidden>
+                <span>Agent prompt</span>
+                <button class="copy-button" type="button" data-copy="first-task-prompt" aria-label="Copy first lookup prompt" title="Copy first lookup prompt" hidden>
                   <svg class="copy-icon" aria-hidden="true"><use href="#icon-copy"/></svg>
                   <svg class="copied-icon" aria-hidden="true"><use href="#icon-copied"/></svg>
                 </button>
               </div>
-              <pre tabindex="0"><code id="lookup-command">~/.local/bin/gallium task --operation rfc418 \
-  --goal 'What does HTTP status 418 mean in this document?' \
-  --target https://www.rfc-editor.org/rfc/rfc2324.txt</code></pre>
+              <pre tabindex="0"><code id="first-task-prompt">Use Gallium to find what HTTP status 418 means in https://www.rfc-editor.org/rfc/rfc2324.txt. Give me the passage and its source URL.</code></pre>
               <p class="copy-status" role="status"></p>
             </div>
+            <p>For another MCP client, add a stdio server that launches <code>node /absolute/path/to/gallium/bin/mcp.mjs</code>. The skill can use the installed CLI in your current chat while a new chat loads MCP. <a href="docs/guide.html#use-with-an-agent">Agent setup guide</a></p>
             <details class="mcp-example">
-              <summary>Send the lookup over MCP</summary>
+              <summary>Run the lookup in a terminal or over MCP</summary>
+              <div class="command-block">
+                <div class="command-bar">
+                  <span>Terminal</span>
+                  <button class="copy-button" type="button" data-copy="lookup-command" aria-label="Copy public lookup command" title="Copy public lookup command" hidden>
+                    <svg class="copy-icon" aria-hidden="true"><use href="#icon-copy"/></svg>
+                    <svg class="copied-icon" aria-hidden="true"><use href="#icon-copied"/></svg>
+                  </button>
+                </div>
+                <pre tabindex="0"><code id="lookup-command">~/.local/bin/gallium task --operation rfc418 \
+  --goal 'What does HTTP status 418 mean in this document?' \
+  --target https://www.rfc-editor.org/rfc/rfc2324.txt</code></pre>
+                <p class="copy-status" role="status"></p>
+              </div>
               <p>Pass these arguments to <code>web_task</code>.</p>
               <div class="command-block">
                 <div class="command-bar">
@@ -363,11 +427,35 @@ npm run demo</code></pre>
               </div>
             </details>
           </article>
+
+          <article id="connect-chrome">
+            <h3>Connect Chrome for live pages</h3>
+            <p>Run <code>npm run build:extension</code> in the Gallium checkout. In desktop Chrome, open the Extensions page, turn on Developer mode, and use <strong>Load unpacked</strong> to select <code>dist/extension</code>.</p>
+            <p>Start the fixture with <code>npm run fixture</code> and enable the bridge on <code>http://127.0.0.1:8787/profile</code>. Check the installed build's handoff before setting <code>playwriter.preserveExtensionsVerified</code>. <a href="docs/guide.html#connect-chrome">Chrome setup</a> · <a href="docs/playwriter-compatibility.html#personal-profile-installation-gate">Bridge checks</a></p>
+          </article>
+
+          <article id="demo">
+            <h3>Try the local demo</h3>
+            <p>The demo uses a temporary test profile. It checks a save, skips a duplicate, and pauses a second update through a restart. If you've installed the CLI, run <code>~/.local/bin/gallium demo</code>. You can also run it from a checkout with Git and Node alone.</p>
+            <div class="command-block">
+              <div class="command-bar">
+                <span>Terminal</span>
+                <button class="copy-button" type="button" data-copy="demo-command" aria-label="Copy demo commands" title="Copy demo commands" hidden>
+                  <svg class="copy-icon" aria-hidden="true"><use href="#icon-copy"/></svg>
+                  <svg class="copied-icon" aria-hidden="true"><use href="#icon-copied"/></svg>
+                </button>
+              </div>
+              <pre tabindex="0"><code id="demo-command">git clone https://github.com/davidjbeveridge/gallium.git &amp;&amp;
+cd gallium &amp;&amp;
+npm run demo</code></pre>
+              <p class="copy-status" role="status"></p>
+            </div>
+          </article>
         </div>
 
         <div class="setup-links">
-          <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md">Setup guide</a>
-          <a class="text-link" href="https://github.com/davidjbeveridge/gallium/blob/main/VALIDATION.md">Validation results</a>
+          <a class="text-link" href="docs/">All documentation</a>
+          <a class="text-link" href="docs/validation.html">Validation results</a>
         </div>
       </div>
     </section>
@@ -387,7 +475,7 @@ npm run demo</code></pre>
 
   <footer class="shell footer">
     <a class="brand" href="./"><img src="mark.svg" alt="" width="24" height="24">Gallium</a>
-    <div><a href="https://github.com/davidjbeveridge/gallium">Source on GitHub</a><a href="https://github.com/davidjbeveridge/gallium/blob/main/docs/guide.md">Documentation</a><a href="llms.txt">llms.txt</a></div>
+    <div><a href="https://github.com/davidjbeveridge/gallium">Source on GitHub</a><a href="docs/">Documentation</a><a href="#engine">How it works</a><a href="llms.txt">llms.txt</a></div>
   </footer>
   <script type="module" src="hero-metal.js"></script>
   <script src="site.js" defer></script>
