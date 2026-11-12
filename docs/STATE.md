@@ -88,3 +88,5 @@ The existing Gallium melt plays behind the hero with a staggered text entrance a
 Verified in isolated Chrome at 320, 390, 820, 1024, and 1440 px, including clipboard contents, pause, offscreen suspension, reduced motion, and actual MP4 playback with WebM blocked. All 92 project tests passed.
 
 Mobile follow-up: the melt sits behind the headline, with the copy button visible sooner and commands wrapping within the card. Verified the rendered phone layout and reran the isolated Chrome hero checks.
+
+Hero loop follow-up: the existing clip reverses before the Ga tile leaves the frame. Both video formats return to the opening pose and loop with the mark visible throughout.
