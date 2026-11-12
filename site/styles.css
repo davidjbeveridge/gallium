@@ -44,7 +44,7 @@ button { font: inherit; }
   aspect-ratio: 4 / 3;
   perspective: 850px;
 }
-.hero-media img, .hero-media video {
+.hero-media img, .hero-media video, .hero-metal {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -57,10 +57,10 @@ button { font: inherit; }
 .hero-media img {
   z-index: 1;
   pointer-events: none;
-  transform: rotateX(var(--pitch, 0deg)) rotateY(var(--yaw, 0deg));
-  transition: opacity 700ms ease, transform 240ms ease-out;
+  transition: opacity 700ms ease;
 }
-.hero-media[data-playing] img { opacity: 0; transition-duration: 160ms, 240ms; }
+.hero-media[data-playing] img { opacity: 0; transition-duration: 160ms; }
+.hero-metal { z-index: 1; pointer-events: none; }
 .hero-media video { transition: opacity 700ms ease; }
 .hero-media[data-settled] video { opacity: 0; }
 @media (prefers-reduced-motion: no-preference) {

@@ -104,30 +104,64 @@ function updateVideo() {
   });
 }
 
-video.addEventListener('ended', () => {
+const canvas = heroMedia.querySelector('.hero-metal');
+let drawMetal;
+let animationFrame = 0;
+let fullyRaised = false;
+
+function resetTilt() {
+  if (fullyRaised) drawMetal(1);
+}
+
+function hideMetal() {
+  cancelAnimationFrame(animationFrame);
+  fullyRaised = false;
+  canvas.hidden = true;
+}
+
+function showPoster() {
+  hideMetal();
   heroMedia.setAttribute('data-settled', '');
   heroMedia.removeAttribute('data-playing');
+}
+
+video.addEventListener('ended', () => {
   updateControl(true);
+  if (motion.matches) return;
+  drawMetal ??= window.createGalliumModel(canvas);
+  if (!drawMetal) {
+    showPoster();
+    return;
+  }
+  canvas.hidden = false;
+  const started = performance.now();
+  function raise(now) {
+    const progress = Math.min(1, (now - started) / 1400);
+    drawMetal(progress * progress * (3 - 2 * progress));
+    fullyRaised = progress === 1;
+    if (!fullyRaised) animationFrame = requestAnimationFrame(raise);
+  }
+  drawMetal(0);
+  animationFrame = requestAnimationFrame(raise);
+});
+
+canvas.addEventListener('webglcontextlost', () => {
+  drawMetal = null;
+  if (video.ended) showPoster();
 });
 
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
 heroMedia.addEventListener('pointermove', (event) => {
-  if (!video.ended || motion.matches || !finePointer.matches || event.pointerType !== 'mouse') return;
+  if (!fullyRaised || motion.matches || !finePointer.matches || event.pointerType !== 'mouse') return;
   const box = heroMedia.getBoundingClientRect();
-  heroMedia.style.setProperty('--pitch', `${(0.5 - (event.clientY - box.top) / box.height) * 8}deg`);
-  heroMedia.style.setProperty('--yaw', `${((event.clientX - box.left) / box.width - 0.5) * 10}deg`);
+  drawMetal(1, (0.5 - (event.clientY - box.top) / box.height) * .36,
+    ((event.clientX - box.left) / box.width - 0.5) * .46);
 });
-
-function resetTilt() {
-  heroMedia.style.removeProperty('--pitch');
-  heroMedia.style.removeProperty('--yaw');
-}
-
 heroMedia.addEventListener('pointerleave', resetTilt);
 finePointer.addEventListener('change', resetTilt);
 motionButton.addEventListener('click', () => {
   if (video.ended) {
-    resetTilt();
+    hideMetal();
     video.currentTime = 0;
     userPaused = false;
   } else {
@@ -137,8 +171,13 @@ motionButton.addEventListener('click', () => {
   updateVideo();
 });
 motion.addEventListener('change', () => {
-  resetTilt();
-  if (!motion.matches && userPaused) motionButton.hidden = false;
+  if (motion.matches) hideMetal();
+  if (!motion.matches && (userPaused || video.ended)) motionButton.hidden = false;
+  if (!motion.matches && video.ended) {
+    video.hidden = false;
+    video.dispatchEvent(new Event('ended'));
+    if (drawMetal) heroMedia.setAttribute('data-playing', '');
+  }
   updateVideo();
 });
 document.addEventListener('visibilitychange', updateVideo);
