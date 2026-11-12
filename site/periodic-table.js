@@ -41,11 +41,13 @@ function select(entry) {
   if (entry === selected) return;
   if (selected) {
     selected.cell.removeAttribute('data-selected');
+    selected.cell.parentElement.removeAttribute('data-active');
     selected.cell.setAttribute('aria-selected', 'false');
     selected.button.tabIndex = -1;
   }
   selected = entry;
   entry.cell.setAttribute('data-selected', '');
+  entry.cell.parentElement.setAttribute('data-active', '');
   entry.cell.setAttribute('aria-selected', 'true');
   entry.button.tabIndex = 0;
   picker.value = entry.number;
@@ -109,14 +111,12 @@ function renderMaterial() {
   frame = 0;
   const bounds = stage.getBoundingClientRect();
   const depth = clamp((innerHeight * .84 - bounds.top) / (innerHeight * .65));
-  const x = pointer ? clamp((pointer.x - bounds.left) / bounds.width) : .64;
-  const y = pointer ? clamp((pointer.y - bounds.top) / bounds.height) : .24;
+  const x = pointer ? clamp((pointer.x - bounds.left) / bounds.width) : .5;
+  const y = pointer ? clamp((pointer.y - bounds.top) / bounds.height) : .5;
   const pitch = narrowTable.matches ? 15 - depth * 6 : 29 - depth * 14;
-  const lightTilt = pointer ? (.5 - y) * 8 : 0;
-  stage.style.setProperty('--board-pitch', `${pitch + lightTilt}deg`);
+  const pointerTilt = pointer ? (.5 - y) * 8 : 0;
+  stage.style.setProperty('--board-pitch', `${pitch + pointerTilt}deg`);
   stage.style.setProperty('--board-yaw', `${pointer ? (x - .5) * 12 : 0}deg`);
-  stage.style.setProperty('--light-x', `${x * 100}%`);
-  stage.style.setProperty('--light-y', `${y * 100}%`);
   if (depth > .24) stage.setAttribute('data-lifted', '');
 }
 

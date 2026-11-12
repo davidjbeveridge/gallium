@@ -110,3 +110,11 @@ Verified all 92 project tests, type checking, and site metadata. The published f
 The periodic table fills a graphite stage with the hero’s silver lighting. Scroll changes its angle, a mouse moves the light, and a selected tile rises from the board. All 118 original symbols, numbers, and positions remain available. Cells support keyboard navigation and the labeled picker supports narrow touch screens. Reduced motion uses a flat, selectable table. The task traces draw their path, the architecture diagram animates once and links to its details, and setup and disclosure controls give immediate feedback.
 
 Xenia’s source-bound before/after preservation check passed all 19 checks. Isolated Chrome verified 320–1440 px, pointer lighting, scroll pose, lifted selection, touch emulation, keyboard navigation, detached-series details, diagram links, clipboard, hero replay, reduced motion, and the static fallback. Type checking, all 92 tests, and site checks passed.
+
+## Flat surfaces and centered chrome hero
+
+The Xenia critique found that the old pool read as a pedestal and repeated gradients and borders weakened the visual hierarchy. The site now uses flat surfaces, with motion tied to the task trace, the architecture flow, and the periodic table’s raised selection. The mobile architecture diagram reads from top to bottom. All 118 element positions are unchanged.
+
+A single WebGL Ga tile now melts in place through a shallow sag and traveling chrome reflection. The tile remains in view, then turns with the pointer after the melt. The bevel is slight. Pause and replay are available, rendering suspends offscreen, and a matching WebP still covers reduced motion and unavailable WebGL.
+
+Verified 17 Xenia preservation checks, the material bounds at neutral and extreme poses, and the interactive page in isolated Chrome at 320–1440 px. Pause, replay during pointer motion, touch selection, keyboard navigation, clipboard, reduced motion, unavailable WebGL, and the static page passed. Type checking, all 92 tests, and site checks passed.
