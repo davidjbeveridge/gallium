@@ -128,15 +128,6 @@ h3 { font-size: clamp(1.3rem, 2.55vw, 1.85rem); font-weight: 715; }
   border-left: 9px solid currentColor;
   margin-left: 2px;
 }
-.motion-toggle[data-state="replay"]::before {
-  content: "↻";
-  width: auto;
-  height: auto;
-  border: 0;
-  font-size: 1.22rem;
-  line-height: 1;
-}
-
 .walkthrough, .section-stack { padding-block: var(--section-space); }
 .section-heading { margin-bottom: clamp(25px, 5vw, 50px); }
 .section-heading > p {

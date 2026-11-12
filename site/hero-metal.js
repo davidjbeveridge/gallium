@@ -1,5 +1,5 @@
-// Ray-march the frame and its dark inlay in object space. The same surface
-// renders the opening pose, the liquid pass, and the interactive resting tile.
+// Ray-march the frame and its dark inlay in object space. The opening melt
+// feeds into two currents that keep moving around the same tile.
 export function createGalliumRenderer(canvas) {
   const gl = canvas.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: false });
   if (!gl) return null;
@@ -13,6 +13,7 @@ export function createGalliumRenderer(canvas) {
     uniform vec2 resolution;
     uniform vec2 tilt;
     uniform float progress;
+    uniform vec3 currents;
     uniform sampler2D lettering;
 
     mat2 rotation(float a) {
@@ -25,31 +26,47 @@ export function createGalliumRenderer(canvas) {
       return length(max(q, 0.)) + min(max(q.x, max(q.y, q.z)), 0.) - bevel;
     }
 
-    vec2 surface(vec3 p, float liquid, float head) {
+    float currentCrest(float offset, float tail, float front) {
+      float gap = fract(offset + .5) - .5;
+      return 1. - smoothstep(0., gap < 0. ? tail : front, abs(gap));
+    }
+
+    vec2 surface(vec3 p, float liquid, float head, float circulation) {
       vec3 metal = p;
       float radius = max(abs(p.x), abs(p.y));
       float swell = 0.;
-      if (liquid > .001 && radius > .56) {
-        // Both streams start at the top center, round the corners, and
-        // meet at the bottom center. Keep the inlay and lettering fixed.
+      if (radius > .56 && (liquid > .001 || circulation > .001)) {
         vec2 rim = p.xy / radius;
         float path = .5 - .25 * rim.y;
         if (abs(rim.y) >= abs(rim.x)) {
           float along = .25 * abs(rim.x);
           path = rim.y > 0. ? along : 1. - along;
         }
-        float offset = path - head - .044 * rim.x;
-        float leadingEdge = offset / (offset > 0. ? .055 : .09);
-        float trailingEdge = (offset + .15) / .13;
-        float crest = liquid * exp(-leadingEdge * leadingEdge);
-        float wake = liquid * exp(-trailingEdge * trailingEdge);
-        swell = crest + .32 * wake;
+        float depth = 0.;
+        if (liquid > .001) {
+          // The opening streams start at the top and meet at the bottom.
+          float offset = path - head - .044 * rim.x;
+          float leadingEdge = offset / (offset > 0. ? .055 : .09);
+          float trailingEdge = (offset + .15) / .13;
+          float crest = liquid * exp(-leadingEdge * leadingEdge);
+          float wake = liquid * exp(-trailingEdge * trailingEdge);
+          swell = crest + .32 * wake;
+          depth = .155 * crest + .058 * wake;
+        }
+        if (circulation > .001) {
+          // Join the two halves of the frame into a closed path for steady flow.
+          float perimeter = path * (rim.x < 0. ? -.5 : .5);
+          float stream = currentCrest(perimeter - currents.x, .10, .049) * (.65 + .20 * currents.z);
+          float eddy = currentCrest(currents.y - perimeter, .087, .045) * (.48 - .15 * currents.z);
+          float flowingRim = stream + eddy * (1. - stream);
+          swell = mix(swell, flowingRim, circulation);
+          depth = mix(depth, .138 * flowingRim, circulation);
+        }
 
         // Round the front of the moving metal so the studio reflections roll
         // with the volume. The swell stays attached to the solid frame.
         float profile = 1. - smoothstep(0., .081, abs(radius - .688));
-        float depth = (.155 * crest + .058 * wake) * profile;
-        metal.z -= min(depth, max(metal.z, 0.));
+        metal.z -= min(depth * profile, max(metal.z, 0.));
       }
       // A shallow crown on the rim rolls the reflected light across its face.
       float rimWidth = (radius - .688) / .052;
@@ -62,8 +79,8 @@ export function createGalliumRenderer(canvas) {
       return vec2(frame, inlay);
     }
 
-    float distanceToTile(vec3 p, float liquid, float head) {
-      vec2 layers = surface(p, liquid, head);
+    float distanceToTile(vec3 p, float liquid, float head, float circulation) {
+      vec2 layers = surface(p, liquid, head, circulation);
       return min(layers.x, layers.y);
     }
 
@@ -106,7 +123,8 @@ export function createGalliumRenderer(canvas) {
 
       float liquid = smoothstep(.025, .135, progress) * (1. - smoothstep(.77, .985, progress));
       float head = mix(-.08, 1.23, progress);
-      float stride = liquid > .001 ? .60 : .78;
+      float circulation = smoothstep(.68, .96, progress);
+      float stride = liquid > .001 || circulation > .001 ? .60 : .78;
       float travel = 2.20;
       float nearest = 1.;
       float closest = travel;
@@ -114,7 +132,7 @@ export function createGalliumRenderer(canvas) {
       float distance = 1.;
       for (int step = 0; step < 40; step++) {
         p = origin + ray * travel;
-        distance = distanceToTile(p, liquid, head);
+        distance = distanceToTile(p, liquid, head, circulation);
         if (distance < nearest) { nearest = distance; closest = travel; }
         if (distance < .0007 || travel > 4.15) break;
         travel += max(distance * stride, .0005);
@@ -127,12 +145,12 @@ export function createGalliumRenderer(canvas) {
       }
 
       p = origin + ray * closest;
-      vec2 layers = surface(p, liquid, head);
+      vec2 layers = surface(p, liquid, head, circulation);
       vec3 epsilon = vec3(.0015, 0., 0.);
       vec3 normal = normalize(vec3(
-        distanceToTile(p + epsilon.xyy, liquid, head) - distanceToTile(p - epsilon.xyy, liquid, head),
-        distanceToTile(p + epsilon.yxy, liquid, head) - distanceToTile(p - epsilon.yxy, liquid, head),
-        distanceToTile(p + epsilon.yyx, liquid, head) - distanceToTile(p - epsilon.yyx, liquid, head)
+        distanceToTile(p + epsilon.xyy, liquid, head, circulation) - distanceToTile(p - epsilon.xyy, liquid, head, circulation),
+        distanceToTile(p + epsilon.yxy, liquid, head, circulation) - distanceToTile(p - epsilon.yxy, liquid, head, circulation),
+        distanceToTile(p + epsilon.yyx, liquid, head, circulation) - distanceToTile(p - epsilon.yyx, liquid, head, circulation)
       ));
       vec3 reflection = reflect(ray, normal);
       reflection.xy = rotation(-z) * reflection.xy;
@@ -195,11 +213,18 @@ export function createGalliumRenderer(canvas) {
   const resolution = gl.getUniformLocation(program, 'resolution');
   const tilt = gl.getUniformLocation(program, 'tilt');
   const progress = gl.getUniformLocation(program, 'progress');
-  return (phase, pitch = 0, yaw = 0) => {
+  const currents = gl.getUniformLocation(program, 'currents');
+  return (phase, pitch = 0, yaw = 0, seconds = 0) => {
+    // Each current keeps its own pace. Wrap their positions, so the shader
+    // retains precision even when the page has been open for a long time.
+    const stream = (.29 + seconds * .077 + .021 * Math.sin(seconds * .69)) % 1;
+    const eddy = (.60 - seconds * .061 + .018 * Math.sin(seconds * .53)) % 1;
+    const strength = .5 + .5 * Math.sin(seconds * .73);
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.uniform2f(resolution, canvas.width, canvas.height);
     gl.uniform2f(tilt, pitch, yaw);
     gl.uniform1f(progress, phase);
+    gl.uniform3f(currents, stream, eddy, strength);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
 }
@@ -209,7 +234,10 @@ const canvas = scene.querySelector('.hero-metal');
 const control = scene.querySelector('.motion-toggle');
 const motion = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
-const duration = 4200;
+const openingDuration = 4200;
+// Allow for display timing jitter around a 30 fps draw cadence.
+const flowFrameInterval = 1000 / 30 - 1;
+let reducedMotion = motion.matches;
 let visible = !('IntersectionObserver' in window);
 let draw;
 let paused = false;
@@ -222,13 +250,12 @@ let targetPitch = 0;
 let targetYaw = 0;
 
 function canRender() {
-  return visible && !document.hidden && !motion.matches;
+  return visible && !document.hidden && !reducedMotion;
 }
 
 function updateControl() {
-  const state = elapsed >= duration ? 'replay' : paused ? 'play' : 'pause';
-  const label = { replay: 'Replay melt animation', play: 'Play melt animation', pause: 'Pause melt animation' }[state];
-  control.dataset.state = state;
+  const label = paused ? 'Play hero animation' : 'Pause hero animation';
+  control.dataset.state = paused ? 'play' : 'pause';
   control.setAttribute('aria-label', label);
   control.title = label;
 }
@@ -244,6 +271,10 @@ function schedule() {
   frame = requestAnimationFrame(animate);
 }
 
+function render() {
+  draw(Math.min(elapsed / openingDuration, 1), pitch, yaw, elapsed / 1000);
+}
+
 function animate(time) {
   frame = 0;
   if (!canRender() || paused) {
@@ -251,21 +282,23 @@ function animate(time) {
     return;
   }
   const dt = previousTime === undefined ? 0 : time - previousTime;
-  previousTime = time;
-  const wasMelting = elapsed < duration;
-  elapsed = Math.min(duration, elapsed + dt);
-  if (wasMelting && elapsed === duration) updateControl();
-  const settle = 1 - Math.exp(-Math.max(dt, 16) / 90);
-  pitch += (targetPitch - pitch) * settle;
-  yaw += (targetYaw - yaw) * settle;
   const turning = Math.abs(targetPitch - pitch) + Math.abs(targetYaw - yaw) > .001;
-  if (!turning) {
+  if (elapsed >= openingDuration && !turning && previousTime !== undefined && dt < flowFrameInterval) {
+    schedule();
+    return;
+  }
+  previousTime = time;
+  elapsed += Math.min(dt, 100);
+  if (turning) {
+    const settle = 1 - Math.exp(-Math.max(dt, 16) / 90);
+    pitch += (targetPitch - pitch) * settle;
+    yaw += (targetYaw - yaw) * settle;
+  } else {
     pitch = targetPitch;
     yaw = targetYaw;
   }
-  draw(elapsed / duration, pitch, yaw);
-  if (elapsed < duration || turning) schedule();
-  else previousTime = undefined;
+  render();
+  schedule();
 }
 
 function resize() {
@@ -276,7 +309,7 @@ function resize() {
     canvas.width = width;
     canvas.height = height;
   }
-  draw(elapsed / duration, pitch, yaw);
+  render();
 }
 
 function showStill() {
@@ -288,7 +321,7 @@ function showStill() {
 
 function sync() {
   if (!canRender()) {
-    if (motion.matches) showStill();
+    if (reducedMotion) showStill();
     else stop();
     return;
   }
@@ -299,16 +332,11 @@ function sync() {
   control.hidden = false;
   scene.setAttribute('data-rendered', '');
   updateControl();
-  if (elapsed < duration || pitch !== targetPitch || yaw !== targetYaw) schedule();
+  schedule();
 }
 
 control.addEventListener('click', () => {
-  if (elapsed >= duration) {
-    elapsed = 0;
-    paused = false;
-  } else {
-    paused = !paused;
-  }
+  paused = !paused;
   updateControl();
   if (paused) stop();
   else schedule();
@@ -320,7 +348,7 @@ function center() {
 }
 
 scene.addEventListener('pointermove', (event) => {
-  if (!draw || !finePointer.matches || event.pointerType !== 'mouse' || event.target === control || motion.matches) return;
+  if (!draw || !finePointer.matches || event.pointerType !== 'mouse' || event.target === control || reducedMotion) return;
   const bounds = scene.getBoundingClientRect();
   targetPitch = (.5 - (event.clientY - bounds.top) / bounds.height) * .64;
   targetYaw = ((event.clientX - bounds.left) / bounds.width - .5) * .88;
@@ -328,7 +356,10 @@ scene.addEventListener('pointermove', (event) => {
 }, { passive: true });
 scene.addEventListener('pointerleave', center);
 finePointer.addEventListener('change', center);
-motion.addEventListener('change', sync);
+motion.addEventListener('change', (event) => {
+  reducedMotion = event.matches;
+  sync();
+});
 document.addEventListener('visibilitychange', sync);
 window.addEventListener('resize', resize, { passive: true });
 
