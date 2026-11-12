@@ -25,33 +25,45 @@ export function createGalliumRenderer(canvas) {
       return length(max(q, 0.)) + min(max(q.x, max(q.y, q.z)), 0.) - bevel;
     }
 
-    vec2 surface(vec3 p, float liquid, float flow) {
-      // A traveling wave deforms only the metal frame. The inlay holds the
-      // letterforms and the tile keeps its center throughout the transition.
+    vec2 surface(vec3 p, float liquid, float head) {
       vec3 metal = p;
-      if (liquid > .001) {
-        float band = liquid * exp(-4.6 * abs(p.y - flow + .17 * p.x));
-        float fold = sin(8.2 * p.x + 6.7 * p.y - 12. * progress);
-        float ripple = sin(19. * p.x - 10.4 * p.y + 15. * progress);
-        metal.z += band * (.046 * fold + .013 * ripple);
-        float lowerLip = smoothstep(.47, .73, -p.y);
-        float sag = .017 + .021 * (.5 + .5 * cos(8. * p.x + 7. * progress));
-        metal.y += liquid * lowerLip * smoothstep(.32, .66, progress) * sag;
+      float radius = max(abs(p.x), abs(p.y));
+      float swell = 0.;
+      if (liquid > .001 && radius > .56) {
+        // Both streams start at the top center, round the corners, and
+        // meet at the bottom center. Keep the inlay and lettering fixed.
+        vec2 rim = p.xy / radius;
+        float path = .5 - .25 * rim.y;
+        if (abs(rim.y) >= abs(rim.x)) {
+          float along = .25 * abs(rim.x);
+          path = rim.y > 0. ? along : 1. - along;
+        }
+        float offset = path - head - .044 * rim.x;
+        float leadingEdge = offset / (offset > 0. ? .055 : .09);
+        float trailingEdge = (offset + .15) / .13;
+        float crest = liquid * exp(-leadingEdge * leadingEdge);
+        float wake = liquid * exp(-trailingEdge * trailingEdge);
+        swell = crest + .32 * wake;
+
+        // Round the front of the moving metal so the studio reflections roll
+        // with the volume. The swell stays attached to the solid frame.
+        float profile = 1. - smoothstep(0., .081, abs(radius - .688));
+        float depth = (.155 * crest + .058 * wake) * profile;
+        metal.z -= min(depth, max(metal.z, 0.));
       }
       // A shallow crown on the rim rolls the reflected light across its face.
-      float rimWidth = (max(abs(metal.x), abs(metal.y)) - .688) / .052;
+      float rimWidth = (radius - .688) / .052;
       float crown = max(0., 1. - rimWidth * rimWidth);
       metal.z -= .017 * crown * smoothstep(-.012, .050, metal.z);
-      float bevel = .019 + .008 * liquid;
-      float outer = roundedBox(metal, vec3(.738, .738, .073), bevel);
-      float opening = roundedBox(metal, vec3(.638, .638, .22), .014);
+      float outer = roundedBox(metal, vec3(vec2(.738 + .018 * swell), .073), .019 + .009 * swell);
+      float opening = roundedBox(metal, vec3(vec2(.638 - .047 * swell), .22), .014 + .013 * swell);
       float frame = max(outer, -opening);
       float inlay = roundedBox(p + vec3(0., 0., .043), vec3(.672, .672, .049), .014);
       return vec2(frame, inlay);
     }
 
-    float distanceToTile(vec3 p, float liquid, float flow) {
-      vec2 layers = surface(p, liquid, flow);
+    float distanceToTile(vec3 p, float liquid, float head) {
+      vec2 layers = surface(p, liquid, head);
       return min(layers.x, layers.y);
     }
 
@@ -92,19 +104,20 @@ export function createGalliumRenderer(canvas) {
       ray.xz = turnY * ray.xz;
       ray.xy = turnZ * ray.xy;
 
-      float liquid = sin(3.14159265 * smoothstep(.055, .94, progress));
-      float flow = mix(.91, -.92, progress);
+      float liquid = smoothstep(.025, .135, progress) * (1. - smoothstep(.77, .985, progress));
+      float head = mix(-.08, 1.23, progress);
+      float stride = liquid > .001 ? .60 : .78;
       float travel = 2.20;
       float nearest = 1.;
       float closest = travel;
       vec3 p;
       float distance = 1.;
-      for (int step = 0; step < 32; step++) {
+      for (int step = 0; step < 40; step++) {
         p = origin + ray * travel;
-        distance = distanceToTile(p, liquid, flow);
+        distance = distanceToTile(p, liquid, head);
         if (distance < nearest) { nearest = distance; closest = travel; }
         if (distance < .0007 || travel > 4.15) break;
-        travel += max(distance * .78, .0005);
+        travel += max(distance * stride, .0005);
       }
       float edgeWidth = 2.25 / resolution.y;
       float coverage = 1. - smoothstep(.0005, edgeWidth, nearest);
@@ -114,12 +127,12 @@ export function createGalliumRenderer(canvas) {
       }
 
       p = origin + ray * closest;
-      vec2 layers = surface(p, liquid, flow);
+      vec2 layers = surface(p, liquid, head);
       vec3 epsilon = vec3(.0015, 0., 0.);
       vec3 normal = normalize(vec3(
-        distanceToTile(p + epsilon.xyy, liquid, flow) - distanceToTile(p - epsilon.xyy, liquid, flow),
-        distanceToTile(p + epsilon.yxy, liquid, flow) - distanceToTile(p - epsilon.yxy, liquid, flow),
-        distanceToTile(p + epsilon.yyx, liquid, flow) - distanceToTile(p - epsilon.yyx, liquid, flow)
+        distanceToTile(p + epsilon.xyy, liquid, head) - distanceToTile(p - epsilon.xyy, liquid, head),
+        distanceToTile(p + epsilon.yxy, liquid, head) - distanceToTile(p - epsilon.yxy, liquid, head),
+        distanceToTile(p + epsilon.yyx, liquid, head) - distanceToTile(p - epsilon.yyx, liquid, head)
       ));
       vec3 reflection = reflect(ray, normal);
       reflection.xy = rotation(-z) * reflection.xy;
@@ -196,7 +209,7 @@ const canvas = scene.querySelector('.hero-metal');
 const control = scene.querySelector('.motion-toggle');
 const motion = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
-const duration = 3400;
+const duration = 4200;
 let visible = !('IntersectionObserver' in window);
 let draw;
 let paused = false;

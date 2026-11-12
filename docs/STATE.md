@@ -115,8 +115,10 @@ Xenia’s source-bound before/after preservation check passed all 19 checks. Iso
 
 The Xenia critique found that the old pool read as a pedestal and repeated gradients and borders weakened the visual hierarchy. The site now uses flat surfaces, with motion tied to the task trace, the architecture flow, and the periodic table’s raised selection. The mobile architecture diagram reads from top to bottom. All 118 element positions are unchanged.
 
-A single WebGL Ga tile now melts in place through a shallow sag and traveling chrome reflection. The tile remains in view, then turns with the pointer after the melt. The bevel is slight. Pause and replay are available, rendering suspends offscreen, and a matching WebP still covers reduced motion and unavailable WebGL.
+A single WebGL Ga tile melts in place over 4.2 seconds. Two raised chrome streams carry moving reflections from the top edge down both sides and into the bottom edge. The lettering holds position while the frame flows. The tile turns with the pointer, pause and replay are available, rendering suspends offscreen, and a matching WebP still covers reduced motion and unavailable WebGL.
 
 Verified 17 Xenia preservation checks, the material bounds at neutral and extreme poses, and the interactive page in isolated Chrome at 320–1440 px. Pause, replay during pointer motion, touch selection, keyboard navigation, clipboard, reduced motion, unavailable WebGL, and the static page passed. Type checking, all 92 tests, and site checks passed.
 
 The final hover check measured 4.86:1 contrast for the atomic number on an unselected tile.
+
+For the stronger melt, isolated Chrome playback at 320, 390, and 1440 px reached the same pose it started from. Captured frames confirmed visible edge flow and stable lettering through the melt. The pointer, pause, replay, and fallback checks, all 92 tests, and the static site check passed.
